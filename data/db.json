@@ -1,0 +1,47 @@
+{
+ "books": [
+   {
+      "ID": 1,
+      "title": "The Grass is Always Greener",
+      "author": "Jeffrey Archer",
+      "publishYear": 2010,
+      "availableAmount": 5,
+      "canBeBorrow": true,
+      "type": "Humour and satire"
+   },
+   {
+      "ID": 2,
+      "title": "Dracula",
+      "author": "Stoker Bram",
+      "publishYear": 2015,
+      "availableAmount": 15,
+      "canBeBorrow": true,
+      "type": "Horror"
+   },
+   {
+      "ID": 3,
+      "title": "Sense and Sensibility",
+      "author": "Jane Austen",
+      "publishYear": 2000,
+      "availableAmount": 10,
+      "type": "Romance"
+   },
+   {
+      "ID": 4,
+      "title": "Murder!",
+      "author": "Arnold Bennet",
+      "publishYear": 2000,
+      "availableAmount": 10,
+      "type": "Crime"
+   }
+ ], 
+ "customers": [
+   {
+      "ID" : 1,
+      "firstName": "Anne",
+      "lastName": "Smith",
+      "phone": null,
+      "email": "anne123@gmail.com"
+   }
+]  
+}

@@ -1,13 +1,82 @@
-body {
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+/* BASIC RESET */
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  border: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* VARIABLES */
+
+:root {
+  --FF: "Quicksand";
+  --FCOLOR-LIGHT: #f1356d;
+  --FCOLOR-DARK: #333;
+  
+  --FCOLOR-BTN: white;
+
+  --BGCOLOR: white;
+  --BTN--BGCOLOR:var(--FCOLOR-LIGHT);
+  
+
+  --BORDER-COLOR: rgb(177, 177, 177);
+  
+}
+
+.App {
+  font-family: var(--FF);
+}
+
+
+/* header */
+
+.title {
+  color: var(--FCOLOR-LIGHT);
+}
+
+.navbar  {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+
+  display: flex;
+  justify-content: space-evenly;
+  border-bottom: 1px solid var(--BORDER-COLOR);
+
+  list-style-type: none;
+}
+
+.navbar a {
+  text-decoration: none;
+}
+
+/* book list */
+.book {
+  list-style-type: none;
+  /* margin: 0.5rem; */
+  padding: 1rem;
+  border-bottom: 1px solid var(--BORDER-COLOR);
+
+  display: grid;
+  grid-template-areas: 
+  "title btn"
+  "descr btn";
+}
+
+
+.book h2 {
+  grid-area: title;
+
+  color: #006ba6;
+}
+
+.book p {
+  grid-area: descr;
+}
+
+.book button {
+  grid-area: btn;
+
+  border-radius: 5px;
+  width: 20%;
 }
