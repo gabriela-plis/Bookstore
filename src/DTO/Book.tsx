@@ -1,4 +1,6 @@
-interface Book {
+import DTO from "./DTO";
+
+interface Book extends DTO {
     readonly ID: number,
     title: string,
     author: string,

@@ -43,5 +43,27 @@
       "phone": null,
       "email": "anne123@gmail.com"
    }
-]  
+],
+"types": [
+   {
+      "ID" : 1,
+      "name": "Crime"
+   },
+   {
+      "ID" : 2,
+      "name": "Horror"
+   },
+   {
+      "ID" : 3,
+      "name": "Humour and satire"
+   },
+   {
+      "ID" : 4,
+      "name": "Romance"
+   },
+   {
+      "ID" : 5,
+      "name": "Fairy tales"
+   }
+]
 }

@@ -2,20 +2,20 @@ import React from 'react';
 import './App.css';
 import Header from './Header';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './Home';
+import Homepage from './Homepage';
+import LogInPage from './LogInPage';
+import RegisterPage from './RegisterPage';
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Header />
-        <div className="content">
             <Routes>
-              <Route path="/" element={<Home />}></Route>
-              {/* <Route path="/"></Route>
-              <Route path="/"></Route> */}
+              <Route path="/" element={<Homepage />}></Route>
+              <Route path="/logIn" element={<LogInPage />}></Route>
+              <Route path="/register" element={<RegisterPage />}></Route>
             </Routes>
-        </div>
       </Router>
     </div>
   );

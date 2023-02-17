@@ -7,11 +7,17 @@
   border: 0;
 }
 
+img {
+  display:block; 
+  max-width:100%; 
+  height:auto;
+}
+
 /* VARIABLES */
 
 :root {
   --FF: "Quicksand";
-  --FCOLOR-LIGHT: #f1356d;
+  --FCOLOR-LIGHT: #ff7096;
   --FCOLOR-DARK: #333;
   
   --FCOLOR-BTN: white;
@@ -21,39 +27,90 @@
   
 
   --BORDER-COLOR: rgb(177, 177, 177);
+  --BORDER-RADIUS: 5px;
+
+  --NAVBAR-LINK-COLOR:var(--FCOLOR-DARK);
+  --NAVBAR-HOVER-LINK-COLOR:#1b1b1b;
+  --LINK-COLOR: #006ba6;
+  --HOVER-LINK-COLOR: #0079b9;
   
 }
 
+/* UNIVERSAL STYLE */
+
+.btn {
+  border-radius: var(--BORDER-RADIUS);
+  font-family: inherit;
+  font-weight: 700;
+}
+
+/* STYLE */
+
 .App {
   font-family: var(--FF);
+  color: var(--FCOLOR-DARK);
+  width: 100vw;
+  height: 100vh;
+
+  display: grid;
+  grid-template-rows: 1fr 5fr;
+  row-gap:0;
+
 }
 
 
 /* header */
+.header {
+  border-bottom: 1px solid var(--BORDER-COLOR);
 
-.title {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+}
+
+header .title {
   color: var(--FCOLOR-LIGHT);
+  font-size: clamp(1rem, 5vw, 2.4rem);
 }
 
 .navbar  {
   padding: 0.5rem;
-  margin-bottom: 1rem;
-
   display: flex;
   justify-content: space-evenly;
-  border-bottom: 1px solid var(--BORDER-COLOR);
-
   list-style-type: none;
 }
 
 .navbar a {
+  display: inline-block;
   text-decoration: none;
 }
 
+.navbar a:hover {
+  color: inherit;
+  font-weight: 600;
+}
+
+/* homepage */
+.homepage {
+  display: grid;
+  grid-template-areas: 
+  "filter books"
+  "filter books";
+  grid-template-columns: 1fr 4fr;
+}
+
+
 /* book list */
+.books {
+  grid-area: books;
+}
+
+.book-list {
+  padding: 0;
+}
+
 .book {
   list-style-type: none;
-  /* margin: 0.5rem; */
   padding: 1rem;
   border-bottom: 1px solid var(--BORDER-COLOR);
 
@@ -74,9 +131,148 @@
   grid-area: descr;
 }
 
-.book button {
+.borrow-btn {
   grid-area: btn;
+  width: clamp(4rem, 40%, 6rem);
 
-  border-radius: 5px;
-  width: 20%;
+}
+
+/* search filter */
+
+.filter {
+  grid-area: filter;
+
+  border-right: 1px solid var(--BORDER-COLOR);
+}
+
+.filter-types {
+  border-top: 1px solid var(--BORDER-COLOR);
+  padding-top: 0.5rem;
+}
+
+.filter-types ul {
+  padding: 0;
+  margin: 0 1rem;
+
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5rem;
+}
+
+.filter-publishyear {
+  border-top: 1px solid var(--BORDER-COLOR);
+  padding-top: 0.5rem;
+  
+  display: flex;
+  flex-flow: column nowrap;
+  /* gap: 0.5rem; */
+
+}
+
+.filter-publishyear input {
+  margin: 0 0.5rem;
+  border: solid 1px var(--BORDER-COLOR);
+  border-radius: var(--BORDER-RADIUS);
+}
+
+.search-btn {
+  margin: 0.7rem;
+  padding: 0.4rem 1rem;
+}
+
+.filter-title {
+  padding-bottom: 0.3rem ;
+}
+
+
+/* log in page */
+.logInPage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: 
+  "logIn register";
+
+}
+
+.logIn {
+  grid-area: logIn;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1.5rem;
+}
+
+.logIn form {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1.5rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+}
+
+.logIn input {
+  border-radius: var(--BORDER-RADIUS);
+  width: clamp(100px,25vw,400px);
+  height: clamp(15px, 5vh, 30px);
+
+  border: 1px solid var(--BORDER-COLOR);
+}
+
+.logIn-btn {
+  width: clamp(60px, 10vw, 120px);
+  height: clamp(30px, 5vw, 40px);
+  font-size:  clamp(0.8rem, 2.2vw, 1.1rem);
+  border-radius: 15px;
+  font-weight: 600;
+
+  background: var(--FCOLOR-LIGHT);
+}
+
+.register {
+  grid-area: register;
+
+  background: var(--FCOLOR-LIGHT);
+  background-image: url('./img/background3.jpg');
+  background-size:cover;
+  background-position: center;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+
+  font-size: 1rem;
+}
+
+.paragraph {
+  font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+  /* font-size: 1.2rem; */
+}
+
+.register a {
+  text-decoration: none;
+  color: var(--LINK-COLOR);
+  font-weight: bolder;
+}
+
+.register a:hover {
+  color: var(--HOVER-LINK-COLOR);
+
+}
+
+.logInPage .title {
+  color: black;
+  font-size: clamp(1rem, 5vw, 2.2rem);
 }

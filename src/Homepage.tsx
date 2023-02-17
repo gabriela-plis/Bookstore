@@ -1,12 +1,12 @@
 import BookList from "./BookList";
 import SearchFilter from "./SearchFilter";
 
-const Home = () => {
+const Homepage = () => {
     return ( 
-    <div>
+    <div className="homepage">
         <BookList />
         <SearchFilter />
     </div> );
 }
  
-export default Home;
+export default Homepage;
