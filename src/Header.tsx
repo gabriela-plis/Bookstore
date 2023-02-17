@@ -4,9 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 const Header = () => {
     return ( 
         <header className="header">
-            <h1 className="title">Bookstore</h1>
+            <h1 className="header__title">Bookstore</h1>
             <nav>
-                <ul className="navbar">
+                <ul className="header__navbar">
                     <li><Link to="/">Home</Link></li>
                     <li><Link to="/logIn">Log In</Link></li>
                     <li><Link to="/register">Register</Link></li>

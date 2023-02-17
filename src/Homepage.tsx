@@ -3,10 +3,11 @@ import SearchFilter from "./SearchFilter";
 
 const Homepage = () => {
     return ( 
-    <div className="homepage">
+    <main className="homepage">
         <BookList />
         <SearchFilter />
-    </div> );
+    </main> 
+    );
 }
  
 export default Homepage;

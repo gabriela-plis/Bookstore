@@ -13,7 +13,7 @@ const BookList = () => {
                 <li className="book" key={book.ID}>
                     <h2>{book.title}</h2>
                     <p>Author: {book.author}  Publish year: {book.publishYear}  Type: {book.type}</p>
-                    <button className="btn borrow-btn">borrow</button>
+                    <button className="btn btn--borrow">borrow</button>
                 </li>
                 ))}
             </ul>
