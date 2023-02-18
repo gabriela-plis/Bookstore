@@ -1,7 +1,7 @@
 import DTO from "./DTO";
 
 interface Type extends DTO {
-    ID: number,
+    id: number,
     name: string
 }
 

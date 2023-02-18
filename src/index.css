@@ -66,6 +66,12 @@ img {
   background: var(--FCOLOR-LIGHT);
 }
 
+/* for incorrect data */
+
+.incorrect-data-text {
+  font-size: 0.8rem;
+}
+
 /* for forms */
 
 .form {
@@ -76,6 +82,21 @@ img {
   row-gap: 1.5rem;
 }
 
+.form__fields {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+}
+
+.form__fields input {
+  border-radius: var(--BORDER-RADIUS);
+  width: clamp(100px,25vw,400px);
+  height: clamp(15px, 5vh, 30px);
+
+  border: 1px solid var(--BORDER-COLOR);
+}
 
 /* for double-divided page */
 
@@ -109,6 +130,24 @@ img {
 .panel-wrapper__title {
   color: black;
   font-size: clamp(1rem, 5vw, 2.2rem);
+}
+
+.panel-wrapper__paragraph {
+  font-size: clamp(0.8rem, 2.5vw, 1.2rem); 
+}
+
+.panel-wrapper__paragraph--long-text {
+  padding: 0 1.5rem
+}
+
+.panel-wrapper__link {
+  text-decoration: none;
+  color: var(--LINK-COLOR);
+  font-weight: bolder;
+}
+
+.panel-wrapper__link:hover {
+  color: var(--HOVER-LINK-COLOR);
 }
 
 
@@ -250,51 +289,12 @@ img {
   grid-area: main-content;
 }
 
-.login-section__form {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1.5rem;
-}
-
-.login-section__form-fields {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1rem;
-}
-
-.login-section__form-fields input {
-  border-radius: var(--BORDER-RADIUS);
-  width: clamp(100px,25vw,400px);
-  height: clamp(15px, 5vh, 30px);
-
-  border: 1px solid var(--BORDER-COLOR);
-}
 
 .loginPage__register-text-section {
   grid-area: minor-content;
 
   font-size: 1rem;
 }
-
-.register-text-section__paragraph {
-  font-size: clamp(0.8rem, 2.5vw, 1.2rem);
-}
-
-.register-text-section__link {
-  text-decoration: none;
-  color: var(--LINK-COLOR);
-  font-weight: bolder;
-}
-
-.register-text-section__link:hover {
-  color: var(--HOVER-LINK-COLOR);
-}
-
-/* register page */
 
 .registerPage {
   grid-template-areas: 
@@ -308,3 +308,4 @@ img {
 .registerPage_welcome-section {
   grid-area: minor-content;
 }
+

@@ -26,7 +26,7 @@ const TypesSection = () => {
             <h4 className="filter__title">Types</h4>
             <ul>
                 { types.map( type => (
-                <p className="type" key={type.ID}>
+                <p className="type" key={type.id}>
                     <input type="checkbox" name={type.name} id={type.name} value={type.name} />
                     <label htmlFor={type.name}>{type.name}</label>
                 </p>

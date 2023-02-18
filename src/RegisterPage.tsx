@@ -19,16 +19,29 @@ const RegisterSection = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const registerData = { firstName, lastName, phone, email, password };
+        console.log("handle Submit")
+
+        fetch('http://localhost:8000/users', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(registerData)
+        })
+        .then( resp => { console.log(resp) });
+    }
 
     return (
         <section className="registerPage__register-section panel-wrapper__panel--no-image-background">
             <h2 className="panel-wrapper__title">Create Account</h2>
-            <form>
-                <p className="register-section__form-fields">
+            <form className="form" onSubmit={handleSubmit}>
+                <p className="form__fields">
                     <TextInput state={firstName} setState={setFirstName} isRequired={true} placeholder="First name"/>
                     <TextInput state={lastName} setState={setLastName} isRequired={true} placeholder="Last name"/>
+                    <TextInput state={email} setState={setEmail} isRequired={true} placeholder="Email"/>
                     <TextInput state={phone} setState={setPhone} isRequired={false} placeholder="Phone"/>
-                    <TextInput state={email} setState={setEmail} isRequired={false} placeholder="Email"/>
                     <PasswordInput state={password} setState={setPassword} isRequired={true} placeholder="Password"/>
                 </p>
                 <button className="btn btn--register">Sign In</button>
@@ -41,8 +54,8 @@ const WelcomeSection = () => {
     return (
         <section className="registerPage__welcome-section panel-wrapper__panel--image-background">
             <h2 className="panel-wrapper__title">Welcome!</h2>
-            <p className="welcom-section__paragraph">A trip to the bookstore is the ultimate exercise in empathy. Within it you will find endless opportunities to see and understand the world from someone else’s point of view.</p>
-            <Link to='/'>See Our Books</Link>
+            <p className="panel-wrapper__paragraph panel-wrapper__paragraph--long-text">A trip to the bookstore is the ultimate exercise in empathy. Within it you will find endless opportunities to see and understand the world from someone else’s point of view.</p>
+            <Link to='/' className="panel-wrapper__link">SEE OUR BOOKS</Link>
         </section>
     )
 }

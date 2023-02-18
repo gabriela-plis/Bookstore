@@ -1,7 +1,7 @@
 import DTO from "./DTO";
 
 interface Book extends DTO {
-    readonly ID: number,
+    readonly id: number,
     title: string,
     author: string,
     publishYear: number,
