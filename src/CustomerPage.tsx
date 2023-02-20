@@ -9,7 +9,7 @@ import detailsImage from './img/details1.jpg';
 
 
 type Props = {
-    setSessionIsActive: React.Dispatch<React.SetStateAction<boolean>>
+    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CustomerPage = (props: Props) => {
@@ -50,7 +50,7 @@ const CustomerPage = (props: Props) => {
 
     return ( 
     <main className="customerPage">
-        <CustomerSidebar setSessionIsActive={props.setSessionIsActive}/>
+        <CustomerSidebar setDisplayLogoutText={props.setDisplayLogoutText}/>
         {isBorrowsUrl && <section className="borrows"><BookList url='http://localhost:8000/books' isBorrowBtn={false} isReturnBtn={true}/></section>}
         {isDetailsUrl && <Details />}
         {isSettingsUrl && <Settings />}
@@ -79,7 +79,8 @@ const Details = () => {
 const Settings = () => {
     return (
         <section className="settings">
-            <p>settings</p>
+            <h2 className="settings__title">Account settings</h2>
+            
         </section>
     )
 }

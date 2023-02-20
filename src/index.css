@@ -67,6 +67,12 @@ img {
   background: var(--FCOLOR-LIGHT);
 }
 
+.btn--close {
+  border-radius: 15px;
+  margin:0 2rem;
+  font-weight: bolder;
+  cursor: pointer;
+}
 /* when something goes wrong */
 
 .incorrect-data-text {
@@ -414,12 +420,6 @@ img {
   grid-area: content;
 
   font-size: 1.3rem;
-  /* display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-  row-gap: 1rem; */
-
   display:grid;
   grid-template-areas: 
   "title img"

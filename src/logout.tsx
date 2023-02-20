@@ -1,7 +1,7 @@
 
-const logout = (setSessionIsActive: React.Dispatch<React.SetStateAction<boolean>>) => {
+const logout = (setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>) => {
         sessionStorage.clear()
-        setSessionIsActive(false);
+        setDisplayLogoutText(true);
 }
  
 export default logout;

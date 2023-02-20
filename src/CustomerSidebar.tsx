@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import logout from './logout';
 
 type Props = {
-    setSessionIsActive: React.Dispatch<React.SetStateAction<boolean>>
+    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CustomerSidebar = (props: Props) => {
@@ -27,7 +27,7 @@ const CustomerSidebar = (props: Props) => {
             </section>
             <section className="sidebar__element">
                 <img src={logoutIcon} alt="details icon" width="45" height="45" className='icon' />
-                <p><Link to='/' onClick={() => logout(props.setSessionIsActive)}>Log Out</Link></p>
+                <p><Link to='/' onClick={() => logout(props.setDisplayLogoutText)}>Log Out</Link></p>
             </section>
         </section>
      );

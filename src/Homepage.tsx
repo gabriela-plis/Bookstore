@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookList from "./BookList";
 import SearchFilter from "./SearchFilter";
 
 type Props = {
-    sessionIsActive: boolean;
+    displayLogoutText: boolean;
 }
 
 const Homepage = (props: Props) => {
+
+    const handleClose = () => {
+        const text = document.querySelector(".logout-text")!;
+        text.remove();
+    }
+
     return ( 
     <main className="homepage">
-        {!props.sessionIsActive && <p className="logout-text">You have successfully been logged out! Have a nice day</p>}
+        {props.displayLogoutText && <p className="logout-text" key={'logout-text'}>You have successfully been logged out! Have a nice day <button className="btn btn--close" onClick={() => handleClose()}>x</button></p>}
         <BookList url='http://localhost:8000/books' isBorrowBtn={true} isReturnBtn={false} />
         <SearchFilter />
     </main> 

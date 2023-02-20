@@ -6,7 +6,7 @@ import logout from "./logout";
 
 type HeaderProps = {
     sessionIsActive: boolean;
-    setSessionIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Header = (props: HeaderProps) => {
@@ -20,7 +20,7 @@ const Header = (props: HeaderProps) => {
                     {!props.sessionIsActive && <li><Link to="/logIn">Log In</Link></li>}
                     {!props.sessionIsActive && <li><Link to="/register">Register</Link></li>}
                     {props.sessionIsActive && <li><Link to="/customer/borrows">My Account</Link></li>}
-                    {props.sessionIsActive && <li><Link to="/" onClick={() => logout(props.setSessionIsActive)}>Log Out</Link></li>}   
+                    {props.sessionIsActive && <li><Link to="/" onClick={() => logout(props.setDisplayLogoutText)}>Log Out</Link></li>}   
                 </ul>
             </nav>
         </header>
