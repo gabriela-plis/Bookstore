@@ -23,7 +23,6 @@ const LogInSection = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-
                 //Send data to backend and get true or false answer
         // const customerLogInData = { email, password };
         // fetch('http://localhost:8000/login', {
@@ -32,13 +31,17 @@ const LogInSection = () => {
         //     body: JSON.stringify(customerLogInData)
         // })
         // .then( resp => { console.log(resp) });
+ 
+        //Temporarily I use GET METHOD
 
-                //Temporarily I use GET METHOD
-        fetch('http://localhost:8000/users/' + email)
+        const correctId = 1;
+        const incorrectId = 5;
+
+        fetch('http://localhost:8000/users/' + correctId)
         .then(resp => resp.json())
         .then(data => {
             console.log(data)
-            if (Object.keys(data).length === 0 || data.password !== password ) {
+            if (Object.keys(data).length === 0) {
                 setWrongData(true);
 
             } else {

@@ -1,10 +1,16 @@
+import { useState } from "react";
 import BookList from "./BookList";
 import SearchFilter from "./SearchFilter";
 
-const Homepage = () => {
+type Props = {
+    sessionIsActive: boolean;
+}
+
+const Homepage = (props: Props) => {
     return ( 
     <main className="homepage">
-        <BookList />
+        {!props.sessionIsActive && <p className="logout-text">You have successfully been logged out! Have a nice day</p>}
+        <BookList url='http://localhost:8000/books' isBorrowBtn={true} isReturnBtn={false} />
         <SearchFilter />
     </main> 
     );

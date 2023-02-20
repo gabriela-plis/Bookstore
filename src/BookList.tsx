@@ -1,9 +1,16 @@
+import { url } from "inspector";
 import { useEffect, useState } from "react";
 import Book from "./DTO/Book";
 import useFetch from "./useFetch";
 
-const BookList = () => {
-    const books: Book[] = useFetch(('http://localhost:8000/books')) as Book[];
+type Props = {
+    url: string
+    isBorrowBtn: boolean
+    isReturnBtn: boolean
+}
+
+const BookList = (props: Props) => {
+    const books: Book[] = useFetch(props.url) as Book[];
 
     return (
         <section className="books">
@@ -12,7 +19,8 @@ const BookList = () => {
                 <li className="book" key={book.id}>
                     <h2>{book.title}</h2>
                     <p>Author: {book.author}  Publish year: {book.publishYear}  Type: {book.type}</p>
-                    <button className="btn btn--borrow">borrow</button>
+                    {props.isBorrowBtn && <button className="btn btn--borrow">borrow</button>}
+                    {props.isReturnBtn && <button className="btn btn--borrow">return</button>}
                 </li>
                 ))}
             </ul>

@@ -47,7 +47,8 @@ img {
 
 .btn--borrow {
   grid-area: btn;
-  width: clamp(4rem, 40%, 6rem);
+  width: clamp(75px, 20vw, 100px);
+  max-height: 60px;
 
 }
 
@@ -66,10 +67,16 @@ img {
   background: var(--FCOLOR-LIGHT);
 }
 
-/* for incorrect data */
+/* when something goes wrong */
 
 .incorrect-data-text {
   font-size: 0.8rem;
+}
+
+.error-text {
+  font-size: 0.8rem;
+  color: red;
+  font-weight: bold;
 }
 
 /* for forms */
@@ -150,6 +157,56 @@ img {
   color: var(--HOVER-LINK-COLOR);
 }
 
+/* for books list */
+
+.books {
+  /* grid-area: books; */
+
+  /* display: flex;
+  flex-flow: column nowrap; */
+  padding-top: 1rem;
+}
+
+.book-list {
+  padding: 0;
+}
+
+.book {
+  list-style-type: none;
+  padding: 1rem;
+  border-bottom: 1px solid var(--BORDER-COLOR);
+
+  display: grid;
+  grid-template-areas: 
+  "title btn"
+  "descr btn";
+  grid-template-columns: 1fr 0.2fr;
+
+  margin: 0 3rem;
+
+  justify-items: left;  
+  /* justify-content: space-between; */
+}
+
+
+.book h2 {
+  grid-area: title;
+
+  color: #006ba6;
+  padding-bottom: 0.5rem;
+}
+
+.book p {
+  grid-area: descr;
+}
+
+/* for icons */
+
+.icon {
+  display: inline;
+  width: 20px;
+  height: 20px;
+}
 
 /* STYLE */
 
@@ -190,58 +247,48 @@ img {
 .header__navbar a {
   display: inline-block;
   text-decoration: none;
+  font-weight: 550;
 }
 
 .header__navbar a:hover {
   color: inherit;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* homepage */
 .homepage {
   display: grid;
   grid-template-areas: 
+  "filter logout-text"
   "filter books"
   "filter books";
   grid-template-columns: 1fr 4fr;
 }
 
+/* --logout sentence */
 
-/* book list */
-.books {
-  grid-area: books;
+.logout-text {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 80%;
+  margin: 0.4rem 3rem;
+  border-radius: 15px;
+  background-color: #99d98c;
 }
 
-.book-list {
-  padding: 0;
-}
-
-.book {
-  list-style-type: none;
-  padding: 1rem;
-  border-bottom: 1px solid var(--BORDER-COLOR);
-
-  display: grid;
-  grid-template-areas: 
-  "title btn"
-  "descr btn";
-}
-
-
-.book h2 {
-  grid-area: title;
-
-  color: #006ba6;
-}
-
-.book p {
-  grid-area: descr;
-}
-
-/* search filter */
+/* --search filter */
 
 .filter {
   grid-area: filter;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.2fr 1fr 1fr 0.3fr;
+  
+  padding: 0.5rem 0;
 
   border-right: 1px solid var(--BORDER-COLOR);
 }
@@ -309,3 +356,136 @@ img {
   grid-area: minor-content;
 }
 
+/* customer page  */
+
+.customerPage {
+  display: grid;
+  grid-template-areas: 
+  "sidebar content";
+  grid-template-columns: 1fr 4fr;
+}
+
+.sidebar {
+  grid-area: sidebar;
+
+  border-right: 1px solid var(--BORDER-COLOR);
+
+  display:grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(1fr, 4);
+
+  font-size: 1.3rem;
+}
+
+.sidebar__element {
+  border-bottom: 1px solid var(--BORDER-COLOR);
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content:left;
+  align-items: center;
+  gap:0.8rem;
+
+  padding: 1.5rem;
+
+  font-weight: 500;
+}
+
+.sidebar__element a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.sidebar__element img {
+  display: inline-block;
+  vertical-align:text-bottom;
+  margin-top: 0.2rem;
+}
+
+/* customerPage - borrows */
+
+.borrows {
+  grid-area: content;
+}
+
+/* customerPage - details */
+
+.details {
+  grid-area: content;
+
+  font-size: 1.3rem;
+  /* display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem; */
+
+  display:grid;
+  grid-template-areas: 
+  "title img"
+  "first-name img"
+  "last-name img"
+  "email img"
+  "phone img";
+  justify-content: left;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 0.5fr 1fr 1fr 1fr;
+  padding: 0 0 0 1.5rem;
+  /* column-gap: 2rem; */
+}
+
+.details__title {
+  grid-area: title;
+  display: flex;
+  justify-content: left;
+  align-items:center;
+  padding-top: 0.7rem;
+
+}
+
+.details__data {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.details__data--first-name {
+  grid-area: first-name;
+}
+
+.details__data--last-name {
+  grid-area: last-name;
+}
+
+.details__data--email {
+  grid-area: email;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.details__data--phone {
+  grid-area: phone;
+}
+
+.details__field {
+  display: block;
+  background-color: #ff7096;
+  border-radius: 15px;
+  margin: 0.5rem;
+  height: 6vh;
+  width: 20vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.details__image {
+  grid-area: img;
+  background-image: url('./img/details5.jpg');
+  background-size: cover;
+  background-position:center;
+}

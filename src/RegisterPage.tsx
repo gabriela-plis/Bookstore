@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TextInput from "./inputs/TextInput";
 import PasswordInput from "./inputs/PasswordInput";
 
@@ -19,18 +19,26 @@ const RegisterSection = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
 
+    const [wrongData, setWrongData] = useState(false);
+    const navigate = useNavigate();
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const registerData = { firstName, lastName, phone, email, password };
-        console.log("handle Submit")
 
         fetch('http://localhost:8000/users', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(registerData)
         })
-        .then( resp => { console.log(resp) });
+        .then( resp => {
+            if (resp.ok) {
+                navigate('/');
+            } else {
+                setWrongData(true);
+            }
+        });
     }
 
     return (
@@ -44,6 +52,7 @@ const RegisterSection = () => {
                     <TextInput state={phone} setState={setPhone} isRequired={false} placeholder="Phone"/>
                     <PasswordInput state={password} setState={setPassword} isRequired={true} placeholder="Password"/>
                 </p>
+                {wrongData && <div className="error-text">Something goes wrong, try again</div>}
                 <button className="btn btn--register">Sign In</button>
             </form>
         </section>
