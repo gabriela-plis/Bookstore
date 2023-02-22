@@ -77,7 +77,7 @@
   ],
   "customerToBooks": [
     {
-      "id": 1, 
+      "id": 1,
       "book-id": 1,
       "title": "The Grass is Always Greener",
       "author": "Jeffrey Archer",
@@ -87,7 +87,7 @@
       "type": "Humour and satire"
     },
     {
-      "id": 1, 
+      "id": 1,
       "book-id": 2,
       "title": "Dracula",
       "author": "Stoker Bram",

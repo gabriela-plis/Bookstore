@@ -1,7 +1,7 @@
 import DTO from "./DTO";
 
 export interface Customer extends DTO {
-    readonly id: number;
+    id: number;
     firstName: string,
     lastName: string,
     phone: string,

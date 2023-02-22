@@ -226,6 +226,7 @@ img {
   grid-template-rows: 1fr 5fr;
   row-gap:0;
 
+  position: relative;
 }
 
 
@@ -428,7 +429,7 @@ img {
   "email image"
   "phone image";
   justify-content: left;
-  grid-template-columns: 1fr 0.8fr;
+  grid-template-columns: 1.2fr 1fr;
   grid-template-rows: 0.5fr 1fr 1fr 1fr;
   padding: 0 0 0 1.5rem;
 }
@@ -511,8 +512,8 @@ img {
   "email image"
   "phone image"
   "password image";
-  justify-content: left;
-  grid-template-columns: 1fr 0.8fr;
+  /* justify-content: left; */
+  grid-template-columns: 1.2fr 1fr;
   grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr 1fr;
   padding: 0 0 0 1.5rem;
 
@@ -581,4 +582,73 @@ img {
   background-color: var(--FCOLOR-LIGHT);
   width: 80px;
   height: 30px;
+}
+
+/* edit content */
+
+.edit__container {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.61);
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit__content {
+  background-color: white;
+  width: 40%;
+  height: 50%;
+  border: 1px solid black;
+  padding: 2.5rem;
+
+  display: grid;
+  grid-template-areas: 
+  "title title"
+  "input-container input-container"
+  "cancel-btn save-btn";
+  grid-template-columns: repeat(2, 1fr);  
+  grid-template-rows: repeat(3, 1fr);
+  column-gap: 1rem;
+  row-gap: 1.8rem;
+}
+
+.edit__title {
+  grid-area: title;
+  text-align: left;
+}
+
+.edit__input-container {
+  grid-area: input-container;
+
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.edit__label {
+  text-align: left;
+  font-size: 1rem;
+  padding-bottom: 0.3rem;
+}
+
+.edit__content input {
+  border: 1px solid var(--BORDER-COLOR);
+  border-radius: 10px;
+  height: 6vh;
+  width: 100%;
+
+  font-family: inherit;
+}
+
+.btn--cancel {
+  grid-area: cancel-btn;
+}
+
+.btn--save {
+  grid-area: save-btn;
+  background-color: var(--FCOLOR-LIGHT);
 }

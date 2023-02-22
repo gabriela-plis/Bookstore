@@ -63,25 +63,36 @@ const CustomerPage = (props: Props) => {
 }
 
 const Details = () => {
-    const customerDetails: Customer = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as Customer;
+    const userDetails: Customer = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as Customer;
 
     return (
         <section className="details">
             <h2 className="details__title">Account details</h2>
-            <p className="details__data details__data--first-name">First name: <span className="details__field">{customerDetails.firstName}</span></p>
-            <p className="details__data details__data--last-name">Last name: <span className="details__field">{customerDetails.lastName}</span></p>
-            <p className="details__data details__data--email">Email: <span className="details__field">{customerDetails.email}</span></p>
+            <p className="details__data details__data--first-name">First name: <span className="details__field">{userDetails.firstName}</span></p>
+            <p className="details__data details__data--last-name">Last name: <span className="details__field">{userDetails.lastName}</span></p>
+            <p className="details__data details__data--email">Email: <span className="details__field">{userDetails.email}</span></p>
             <p className="details__data details__data--phone">Phone: 
-                {customerDetails.phone ? <span className="details__field">{customerDetails.phone}</span> : <span className="details__field">- - -</span>}
+                {userDetails.phone ? <span className="details__field">{userDetails.phone}</span> : <span className="details__field">- - -</span>}
             </p>
             <span className="details__image"><div></div></span>
         </section>
     )
 }
 
-const Settings = () => {
-    const customerDetails = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as Customer;
 
+
+const Settings = () => {
+    const userDetails = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as Customer;
+
+    // const [user, setUser] = useState<Customer>({
+    //     id: 0,
+    //     firstName: "",
+    //     lastName: "",
+    //     phone: "",
+    //     email: "",
+    //     password: ""
+    // });
+     
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
@@ -90,72 +101,151 @@ const Settings = () => {
 
     const [readyToRender, setReadyToRender] = useState(false);
 
+
     useEffect( () => {
 
-        if (Object.keys(customerDetails).length !== 0) {
+        if (Object.keys(userDetails).length !== 0) {
 
-        setFirstName(customerDetails.firstName);
-        setLastName(customerDetails.lastName);
-        setPhone(customerDetails.phone);
-        setEmail(customerDetails.email);
-        setPassword(customerDetails.password);
+        setFirstName(userDetails.firstName);
+        setLastName(userDetails.lastName);
+        setPhone(userDetails.phone);
+        setEmail(userDetails.email);
+        setPassword(userDetails.password);
 
+        // setUser(userDetails);
+        
         setReadyToRender(true);
-
         }
 
-    },[customerDetails])
+    },[userDetails])
 
-    const handleEdit = () => {
-        const page = document.querySelector(".App");
+
+    const handleEditData = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => {
+        e.preventDefault();
+
+        const user: Customer = {
+            id: sessionStorage.getItem('id') as unknown as number,
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone,
+            email: email,
+            password: password
+         }
+
+        fetch('http://localhost:8000/users/' + sessionStorage.getItem("id"), {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user)
+        })
+
+        setShowEditData(false);
     }
+
 
     return (
         <section className="settings">
             <h2 className="settings__title">Account settings</h2>
-            {readyToRender &&   
-            <div className="settings__content">
-                <p className = "settings__data settings__data--first-name">
-                    <label htmlFor="firstName"><span className="settings__label-description">First name:</span> {firstName} </label>
-                    <button className="btn btn--edit">Edit</button>
-                </p>
-                <p className = "settings__data settings__data--last-name">
-                    <label htmlFor="lastName"><span className="settings__label-description">Last name:</span> {lastName} </label>
-                    <button className="btn btn--edit">Edit</button>
-                </p>
-                <p className = "settings__data settings__data--email">
-                    <label htmlFor="email"><span className="settings__label-description">Email:</span> {email}</label>
-                    <button className="btn btn--edit">Edit</button>
-                </p>
-                <p className = "settings__data settings__data--phone">
-                    {customerDetails.phone ? <label htmlFor="phone"><span className="settings__label-description">Phone:</span> {phone}</label> : <label htmlFor="phone"><span className="settings__label-description">Phone:</span> - - - </label>}
-                    <button className="btn btn--edit">Edit</button>
-                </p>
-                <p className = "settings__data settings__data--password">
-                    <label htmlFor="password">Password</label>
-                    <button className="btn btn--edit">Change</button>
-                </p>
-            </div>
+            {readyToRender &&  
+                <div className="settings__content">
+                    <PersonalInformation data={firstName} setData={setFirstName} htmlName="first-name" displayName="First name" handleEditData={handleEditData}/>
+                    <PersonalInformation data={lastName} setData={setLastName} htmlName="last-name" displayName="Last name" handleEditData={handleEditData}/>
+                    <PersonalInformation data={email} setData={setEmail} htmlName="email" displayName="Email" handleEditData={handleEditData}/>
+                    <PersonalInformation data={phone} setData={setPhone} htmlName="phone" displayName="Phone" handleEditData={handleEditData}/>
+                    <PersonalInformation data={password} setData={setPassword} htmlName="password" displayName="Password" handleEditData={handleEditData} buttonName="Change"/>
+                </div>     
             }
             <span className="settings__image"><div></div></span>
         </section>
     )
 }
 
-type EditContentProps = {
-    state: string;
-    setState: React.Dispatch<React.SetStateAction<string>>;
+type PersonalInformation = {
+    data: string;
+    setData: React.Dispatch<React.SetStateAction<string>>;
+    htmlName: string;
+    displayName: string;
+    handleEditData: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => void;
+    buttonName?: string;
 }
 
-const EditContent = (props: EditContentProps) => {
+const PersonalInformation = (props: PersonalInformation) => {
+
+    const[showEditPanel, setShowEditPanel] = useState(false);
+
+    const handleClickEditBtn = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setShowEditPanel(true);
+    }
+
+    return (
+        <div className = {"settings__data settings__data--"+props.htmlName}>
+            <label htmlFor={props.htmlName}>
+                <span className="settings__label-description">{props.displayName}:</span>
+                {props.data ? (
+                    <span>{props.data}</span>
+                ) : (
+                    <span>- - -</span>
+                )} 
+            </label>
+            <button 
+                className="btn btn--edit" 
+                onClick={ (e) => {
+                    handleClickEditBtn(e)
+                }}
+            >
+               {props.buttonName ? (
+                    <span>{props.buttonName}</span>
+               ) : (
+                    <span>Edit</span>
+               )} 
+            </button>
+            {showEditPanel && (
+                    <EditPanel 
+                        data={props.data}
+                        setData={props.setData} 
+                        setShowEditPanel={setShowEditPanel} 
+                        displayName={props.displayName} 
+                        handleEditData={props.handleEditData} 
+                    />
+                )
+            }
+        </div>
+    )
+}
+
+type EditPanelProps = {
+    data: string;
+    setData: React.Dispatch<React.SetStateAction<string>>;
+    setShowEditPanel: React.Dispatch<React.SetStateAction<boolean>>;
+    displayName: string;
+    handleEditData: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => void;
+}
+
+const EditPanel = (props: EditPanelProps) => {
+    const [test, setTest] = useState('');
+
+    const handleCancelOperation = () => {
+        props.setShowEditPanel(false);
+    } 
+
     return ( 
-        <div className="edit__background">
+        <div className="edit__container">
             <section className="edit__content">
-                <h2 className="edit__title">Edit {props.state}</h2>
-                <label className="edit__label">{props.state}</label>
-                <TextInput state={props.state} setState={props.setState} isRequired={true} placeholder={props.state}/>
-                <button className="btn">Cancel</button>
-                <button className="btn">Save</button>
+                <h2 className="edit__title">Edit {props.displayName}</h2>
+                <div className="edit__input-container">
+                    <label className="edit__label">{props.displayName}</label>
+                    <TextInput 
+                        state={props.data} 
+                        setState={props.setData} 
+                        isRequired 
+                        placeholder={props.data}/>
+                </div>
+                <button className="btn btn--cancel" onClick={handleCancelOperation}>Cancel</button>
+                <button className="btn btn--save" 
+                    onClick={ (e) => {
+                        props.handleEditData(e, props.setShowEditPanel);
+                    }}
+                >Save</button>
             </section>
         </div>
      );
