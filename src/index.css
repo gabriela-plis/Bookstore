@@ -367,7 +367,7 @@ img {
 .customerPage {
   display: grid;
   grid-template-areas: 
-  "sidebar content";
+  "sidebar page-content";
   grid-template-columns: 1fr 4fr;
 }
 
@@ -411,27 +411,26 @@ img {
 /* customerPage - borrows */
 
 .borrows {
-  grid-area: content;
+  grid-area: page-content;
 }
 
 /* customerPage - details */
 
 .details {
-  grid-area: content;
+  grid-area: page-content;
 
   font-size: 1.3rem;
   display:grid;
   grid-template-areas: 
-  "title img"
-  "first-name img"
-  "last-name img"
-  "email img"
-  "phone img";
+  "title image"
+  "first-name image"
+  "last-name image"
+  "email image"
+  "phone image";
   justify-content: left;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 0.8fr;
   grid-template-rows: 0.5fr 1fr 1fr 1fr;
   padding: 0 0 0 1.5rem;
-  /* column-gap: 2rem; */
 }
 
 .details__title {
@@ -468,6 +467,7 @@ img {
 
 .details__data--phone {
   grid-area: phone;
+  margin-bottom: 1rem;
 }
 
 .details__field {
@@ -484,8 +484,101 @@ img {
 
 
 .details__image {
-  grid-area: img;
+  grid-area: image;
+  
   background-image: url('./img/details5.jpg');
   background-size: cover;
   background-position:center;
+}
+
+.details__image div {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.384);
+}
+
+/* customer page - settings */
+
+.settings {
+  grid-area: page-content;
+
+  font-size: 1.3rem;
+  display:grid;
+  grid-template-areas: 
+  "title image"
+  "first-name image"
+  "last-name image"
+  "email image"
+  "phone image"
+  "password image";
+  justify-content: left;
+  grid-template-columns: 1fr 0.8fr;
+  grid-template-rows: 0.5fr 1fr 1fr 1fr 1fr 1fr;
+  padding: 0 0 0 1.5rem;
+
+ 
+}
+
+.settings__title {
+  grid-area: title;
+  display: flex;
+  justify-content: left;
+  align-items:center;
+  padding: 0.7rem 0;
+}
+
+.settings__data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 4rem;
+  border-bottom: 1px solid var(--BORDER-COLOR);
+}
+
+.settings__label-description {
+  padding-right: 0.5rem;
+}
+
+.settings__data--first-name {
+  grid-area: first-name;
+}
+
+.settings__data--last-name {
+  grid-area: last-name;
+}
+
+.settings__data--email {
+  grid-area: email;
+}
+
+.settings__data--phone {
+  grid-area: phone;
+}
+
+.settings__data--password {
+  grid-area: password;
+}
+
+.settings__image {
+  grid-area: image;
+
+  background-image: url('./img/details3.jpg');
+  background-size: cover;
+  background-position:center;
+}
+
+.settings__image div {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.384);
+}
+
+.settings__content {
+  display: contents;
+}
+
+.btn--edit {
+  background-color: var(--FCOLOR-LIGHT);
+  width: 80px;
+  height: 30px;
 }

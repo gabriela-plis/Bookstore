@@ -11,23 +11,37 @@ type Props = {
 
 const CustomerSidebar = (props: Props) => {
 
+    const handleChangeStyle = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        const text = e.currentTarget;
+        text.style.fontWeight = '900';
+
+        const parent = document.querySelector(".sidebar")!;
+
+        parent.querySelectorAll('a').forEach(child => {
+            if (child !== text) {
+                child.style.fontWeight='500';
+            }
+        })
+
+    }
+
     return ( 
         <section className="sidebar">
             <section className="sidebar__element">
                 <img src={borrowsIcon} alt="details icon" width="45" height="45" className='icon' />
-                <p><Link to='/customer/borrows'>My Borrows</Link></p>
+                <Link className='link' to='/customer/borrows' onClick={(e) => {handleChangeStyle(e)}}>My Borrows</Link>
             </section>
             <section className="sidebar__element">
                 <img src={detailsIcon} alt="details icon" width="45" height="45" className='icon' />
-                <p><Link to='/customer/details'>Details</Link></p>
+                <Link className='link' to='/customer/details' onClick={(e) => {handleChangeStyle(e)}}>Details</Link>
             </section>
             <section className="sidebar__element">
                 <img src={settingsIcon} alt="settings icon" width="45" height="45" className='icon' />
-                <p><Link to='/customer/settings'>Settings</Link></p>
+                <Link className='link' to='/customer/settings' onClick={(e) => {handleChangeStyle(e)}}>Settings</Link>
             </section>
             <section className="sidebar__element">
                 <img src={logoutIcon} alt="details icon" width="45" height="45" className='icon' />
-                <p><Link to='/' onClick={() => logout(props.setDisplayLogoutText)}>Log Out</Link></p>
+                <Link className='link' to='/' onClick={() => logout(props.setDisplayLogoutText)}>Log Out</Link>
             </section>
         </section>
      );

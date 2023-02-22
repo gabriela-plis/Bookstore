@@ -10,9 +10,9 @@ const TextInput = (props: TextInputProps) => {
         <input 
             type="text"
             required={props.isRequired}
-            value={props.state} 
+            value={props.state ?? ''} 
             onChange={(e) => {props.setState(e.target.value)}}
-            placeholder={props.placeholder}
+            placeholder={props.placeholder?? ''}
         />
     )
 }
