@@ -1,7 +1,7 @@
 import { url } from "inspector";
 import { useEffect, useState } from "react";
-import Book from "./DTO/Book";
-import useFetch from "./useFetch";
+import Book from "../DTO/Book";
+import useFetch from "../functions/useFetch";
 
 type Props = {
     url: string

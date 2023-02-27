@@ -75,7 +75,7 @@
       "name": "Fairy tales"
     }
   ],
-  "customerToBooks": [
+  "userToBooks": [
     {
       "id": 1,
       "book-id": 1,

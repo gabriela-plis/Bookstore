@@ -1,6 +1,7 @@
 type TextInputProps = {
+    name: string;
     state: string;
-    setState: (val: string) => void;
+    setState: (e: React.ChangeEvent<HTMLInputElement>) => void;
     isRequired: boolean;
     placeholder: string;
   };
@@ -9,9 +10,10 @@ const TextInput = (props: TextInputProps) => {
     return (
         <input 
             type="text"
+            name={props.name}
             required={props.isRequired}
             value={props.state ?? ''} 
-            onChange={(e) => {props.setState(e.target.value)}}
+            onChange={(e) => {props.setState(e)}}
             placeholder={props.placeholder?? ''}
         />
     )

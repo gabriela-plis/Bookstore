@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Header from './Header';
+import Header from './components/Header';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import Homepage from './Homepage';
-import LogInPage from './LogInPage';
-import RegisterPage from './RegisterPage';
-import CustomerPage from './CustomerPage';
+import Homepage from './components/Homepage';
+import LogInPage from './components/LogInPage';
+import RegisterPage from './components/RegisterPage';
+import UserPage from './components/UserPage';
 
 function App() {
   const [sessionIsActive, setSessionIsActive] = useState(false);
@@ -32,9 +32,9 @@ function App() {
         <Route path="/" element={<Homepage displayLogoutText={displayLogoutText} />}></Route>
         <Route path="/logIn" element={<LogInPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
-        <Route path="/customer/borrows" element={<CustomerPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
-        <Route path="/customer/details" element={<CustomerPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
-        <Route path="/customer/settings" element={<CustomerPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
+        <Route path="/user/borrows" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
+        <Route path="/user/details" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
+        <Route path="/user/settings" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
       </Routes>
     </div>
   );

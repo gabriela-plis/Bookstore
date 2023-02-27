@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import BookList from "./BookList";
-import CustomerSidebar from "./CustomerSidebar";
+import BookList from "../reusable-components/BookList";
+import UserSidebar from "./UserSidebar";
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import useFetch from "./useFetch";
-import { Customer } from "./DTO/Customer";
+import useFetch from "../functions/useFetch";
+import { User } from "../DTO/User";
 import detailsImage from './img/details1.jpg';
-import TextInput from "./inputs/TextInput";
-import PasswordInput from "./inputs/PasswordInput";
-import DTO from "./DTO/DTO";
+import TextInput from "../reusable-components/TextInput";
+import PasswordInput from "../reusable-components/PasswordInput";
+import DTO from "../DTO/DTO";
 import { read } from "fs";
 
 
@@ -16,7 +16,7 @@ type Props = {
     setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CustomerPage = (props: Props) => {
+const UserPage = (props: Props) => {
     const [isBorrowsUrl, setIsBorrowsUrl] = useState(true);
     const [isDetailsUrl, setIsDetailsUrl] = useState(true);
     const [isSettingsUrl, setIsSettingsUrl] = useState(true);
@@ -27,21 +27,21 @@ const CustomerPage = (props: Props) => {
         const url = location.pathname;
         
         switch (url) {
-            case '/customer/borrows': {
+            case '/user/borrows': {
                 setIsBorrowsUrl(true);
                 setIsDetailsUrl(false);
                 setIsSettingsUrl(false);
 
                 break;
             }
-            case '/customer/details': {
+            case '/user/details': {
                 setIsDetailsUrl(true);
                 setIsBorrowsUrl(false);
                 setIsSettingsUrl(false);
 
                 break;
             }
-            case '/customer/settings': {
+            case '/user/settings': {
                 setIsSettingsUrl(true);
                 setIsBorrowsUrl(false);
                 setIsDetailsUrl(false);
@@ -53,8 +53,8 @@ const CustomerPage = (props: Props) => {
     }, [location])
 
     return ( 
-    <main className="customerPage">
-        <CustomerSidebar setDisplayLogoutText={props.setDisplayLogoutText}/>
+    <main className="UserPage">
+        <UserSidebar setDisplayLogoutText={props.setDisplayLogoutText}/>
         {isBorrowsUrl && <section className="borrows"><BookList url='http://localhost:8000/books' isBorrowBtn={false} isReturnBtn={true}/></section>}
         {isDetailsUrl && <Details />}
         {isSettingsUrl && <Settings />}
@@ -63,7 +63,7 @@ const CustomerPage = (props: Props) => {
 }
 
 const Details = () => {
-    const userDetails: Customer = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as Customer;
+    const userDetails: User = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
 
     return (
         <section className="details">
@@ -82,22 +82,22 @@ const Details = () => {
 
 
 const Settings = () => {
-    const userDetails = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as Customer;
+    const userDetails = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
 
-    // const [user, setUser] = useState<Customer>({
-    //     id: 0,
-    //     firstName: "",
-    //     lastName: "",
-    //     phone: "",
-    //     email: "",
-    //     password: ""
-    // });
+    const [user, setUser] = useState<User>({
+        id: 0,
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        password: ""
+    });
      
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    // const [firstName, setFirstName] = useState('');
+    // const [lastName, setLastName] = useState('');
+    // const [phone, setPhone] = useState('');
+    // const [email, setEmail] = useState('');
+    // const [password, setPassword] = useState('');
 
     const [readyToRender, setReadyToRender] = useState(false);
 
@@ -106,13 +106,13 @@ const Settings = () => {
 
         if (Object.keys(userDetails).length !== 0) {
 
-        setFirstName(userDetails.firstName);
-        setLastName(userDetails.lastName);
-        setPhone(userDetails.phone);
-        setEmail(userDetails.email);
-        setPassword(userDetails.password);
+        // setFirstName(userDetails.firstName);
+        // setLastName(userDetails.lastName);
+        // setPhone(userDetails.phone);
+        // setEmail(userDetails.email);
+        // setPassword(userDetails.password);
 
-        // setUser(userDetails);
+        setUser(userDetails);
         
         setReadyToRender(true);
         }
@@ -123,14 +123,14 @@ const Settings = () => {
     const handleEditData = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => {
         e.preventDefault();
 
-        const user: Customer = {
-            id: sessionStorage.getItem('id') as unknown as number,
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone,
-            email: email,
-            password: password
-         }
+        // const user: User = {
+        //     id: sessionStorage.getItem('id') as unknown as number,
+        //     firstName: firstName,
+        //     lastName: lastName,
+        //     phone: phone,
+        //     email: email,
+        //     password: password
+        //  }
 
         fetch('http://localhost:8000/users/' + sessionStorage.getItem("id"), {
             method: "PUT",
@@ -141,17 +141,25 @@ const Settings = () => {
         setShowEditData(false);
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUser(prevState => (
+            {
+                ...prevState,
+                [e.target.name]: e.target.value
+            }
+        )) 
+    }
 
     return (
         <section className="settings">
             <h2 className="settings__title">Account settings</h2>
             {readyToRender &&  
                 <div className="settings__content">
-                    <PersonalInformation data={firstName} setData={setFirstName} htmlName="first-name" displayName="First name" handleEditData={handleEditData}/>
-                    <PersonalInformation data={lastName} setData={setLastName} htmlName="last-name" displayName="Last name" handleEditData={handleEditData}/>
-                    <PersonalInformation data={email} setData={setEmail} htmlName="email" displayName="Email" handleEditData={handleEditData}/>
-                    <PersonalInformation data={phone} setData={setPhone} htmlName="phone" displayName="Phone" handleEditData={handleEditData}/>
-                    <PersonalInformation data={password} setData={setPassword} htmlName="password" displayName="Password" handleEditData={handleEditData} buttonName="Change"/>
+                    <PersonalInformation data={user.firstName} setData={handleChange} className="first-name" inputName="firstName" displayName="First name" handleEditData={handleEditData}/>
+                    <PersonalInformation data={user.lastName} setData={handleChange} className="last-name" inputName="lastName" displayName="Last name" handleEditData={handleEditData}/>
+                    <PersonalInformation data={user.email} setData={handleChange} className="email" displayName="Email" handleEditData={handleEditData}/>
+                    <PersonalInformation data={user.phone} setData={handleChange} className="phone" displayName="Phone" handleEditData={handleEditData}/>
+                    <PersonalInformation data={user.password} setData={handleChange} className="password" displayName="Password" handleEditData={handleEditData} buttonName="Change"/>
                 </div>     
             }
             <span className="settings__image"><div></div></span>
@@ -161,10 +169,11 @@ const Settings = () => {
 
 type PersonalInformation = {
     data: string;
-    setData: React.Dispatch<React.SetStateAction<string>>;
-    htmlName: string;
+    setData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    className: string;
     displayName: string;
     handleEditData: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => void;
+    inputName?: string;
     buttonName?: string;
 }
 
@@ -178,8 +187,8 @@ const PersonalInformation = (props: PersonalInformation) => {
     }
 
     return (
-        <div className = {"settings__data settings__data--"+props.htmlName}>
-            <label htmlFor={props.htmlName}>
+        <div className = {"settings__data settings__data--"+props.className}>
+            <label htmlFor={props.className}>
                 <span className="settings__label-description">{props.displayName}:</span>
                 {props.data ? (
                     <span>{props.data}</span>
@@ -206,6 +215,7 @@ const PersonalInformation = (props: PersonalInformation) => {
                         setShowEditPanel={setShowEditPanel} 
                         displayName={props.displayName} 
                         handleEditData={props.handleEditData} 
+                        inputName={props.inputName ? props.inputName : props.className}
                     />
                 )
             }
@@ -215,9 +225,10 @@ const PersonalInformation = (props: PersonalInformation) => {
 
 type EditPanelProps = {
     data: string;
-    setData: React.Dispatch<React.SetStateAction<string>>;
+    setData: (e: React.ChangeEvent<HTMLInputElement>) => void;
     setShowEditPanel: React.Dispatch<React.SetStateAction<boolean>>;
     displayName: string;
+    inputName: string;
     handleEditData: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => void;
 }
 
@@ -235,10 +246,13 @@ const EditPanel = (props: EditPanelProps) => {
                 <div className="edit__input-container">
                     <label className="edit__label">{props.displayName}</label>
                     <TextInput 
+                        name={props.inputName}
                         state={props.data} 
                         setState={props.setData} 
                         isRequired 
-                        placeholder={props.data}/>
+                        placeholder={props.data}
+
+                    />
                 </div>
                 <button className="btn btn--cancel" onClick={handleCancelOperation}>Cancel</button>
                 <button className="btn btn--save" 
@@ -252,4 +266,4 @@ const EditPanel = (props: EditPanelProps) => {
 }
  
 
-export default CustomerPage;
+export default UserPage;

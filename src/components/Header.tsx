@@ -2,7 +2,7 @@ import { Session } from "inspector";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
-import logout from "./logout";
+import logout from "../functions/logout";
 
 type HeaderProps = {
     sessionIsActive: boolean;
@@ -19,7 +19,7 @@ const Header = (props: HeaderProps) => {
                     <li><Link to="/">Home</Link></li>
                     {!props.sessionIsActive && <li><Link to="/logIn">Log In</Link></li>}
                     {!props.sessionIsActive && <li><Link to="/register">Register</Link></li>}
-                    {props.sessionIsActive && <li><Link to="/customer/borrows">My Account</Link></li>}
+                    {props.sessionIsActive && <li><Link to="/user/borrows">My Account</Link></li>}
                     {props.sessionIsActive && <li><Link to="/" onClick={() => logout(props.setDisplayLogoutText)}>Log Out</Link></li>}   
                 </ul>
             </nav>

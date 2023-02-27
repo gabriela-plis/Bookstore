@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PasswordInput from "./inputs/PasswordInput";
-import TextInput from "./inputs/TextInput";
+import PasswordInput from "../reusable-components/PasswordInput";
+import TextInput from "../reusable-components/TextInput";
 
 const LogInPage = () => {
     return ( 
@@ -14,8 +14,10 @@ const LogInPage = () => {
 
 
 const LogInSection = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [loginData, setLoginData] = useState({
+        email: '',
+        password: ''
+    });
 
     const [wrongData, setWrongData] = useState(false);
     const navigate = useNavigate();
@@ -24,11 +26,11 @@ const LogInSection = () => {
         e.preventDefault();
 
                 //Send data to backend and get true or false answer
-        // const customerLogInData = { email, password };
+        // const userLogInData = { email, password };
         // fetch('http://localhost:8000/login', {
         //     method: "POST",
         //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify(customerLogInData)
+        //     body: JSON.stringify(userLogInData)
         // })
         // .then( resp => { console.log(resp) });
  
@@ -53,13 +55,23 @@ const LogInSection = () => {
         })
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoginData(prevState => (
+            {
+                ...prevState,
+                [e.target.name]: e.target.value
+            }
+        )) 
+        
+    }
+
     return (
         <section className="loginPage__login-section panel-wrapper__panel--no-image-background">
             <h2 className="panel-wrapper__title">Log In to Your Account</h2>
             <form className="form" onSubmit={handleSubmit}>
                 <div className="form__fields">
-                    <TextInput state={email} setState={setEmail} isRequired={true} placeholder="Email"/>
-                    <PasswordInput state={password} setState={setPassword} isRequired={true} placeholder="Password" />
+                    <TextInput name="email" state={loginData.email} setState={handleChange} isRequired placeholder="Email"/>
+                    <PasswordInput name="password" state={loginData.password} setState={handleChange} placeholder="Password" />
                     {wrongData && <p className="incorrect-data-text">Incorrect email or password</p>}
                 </div>
                 <button className="btn btn--login">Log In</button>

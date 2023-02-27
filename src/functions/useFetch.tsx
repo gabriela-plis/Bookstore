@@ -1,6 +1,6 @@
 import { type } from "os";
 import { useEffect, useState } from "react";
-import DTO from "./DTO/DTO";
+import DTO from "../DTO/DTO";
 
 const useFetch = (url: string) => {
 
