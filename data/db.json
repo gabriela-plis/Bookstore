@@ -38,11 +38,12 @@
   "users": [
     {
       "id": 1,
-      "firstName": "Anne",
+      "firstName": "Ann",
       "lastName": "Smith",
       "phone": null,
       "email": "anne123@gmail.com",
-      "password": "anne123"
+      "password": "anne123",
+      "employee": false
     },
     {
       "id": 2,
@@ -50,7 +51,17 @@
       "lastName": "Yo",
       "phone": null,
       "email": "katrin123@gmail.com",
-      "password": "katrin123"
+      "password": "katrin123",
+      "employee": false
+    },
+    {
+      "id": 3,
+      "firstName": "George",
+      "lastName": "Weeks",
+      "phone": null,
+      "email": "georgeW@gmail.com",
+      "password": "george123",
+      "employee": true
     }
   ],
   "types": [

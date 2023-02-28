@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import PasswordInput from "../reusable-components/PasswordInput";
-import TextInput from "../reusable-components/TextInput";
+import PasswordInput from "../../reusable-components/PasswordInput";
+import TextInput from "../../reusable-components/TextInput";
+import LoginData from "../../DTO/LoginData";
+
 
 const LogInPage = () => {
     return ( 
@@ -14,10 +16,11 @@ const LogInPage = () => {
 
 
 const LogInSection = () => {
-    const [loginData, setLoginData] = useState({
-        email: '',
-        password: ''
-    });
+    const [loginData, setLoginData] = useState<LoginData>({
+        email: "",
+        password: "",
+        employee: false
+    })
 
     const [wrongData, setWrongData] = useState(false);
     const navigate = useNavigate();
@@ -42,7 +45,6 @@ const LogInSection = () => {
         fetch('http://localhost:8000/users/' + correctId)
         .then(resp => resp.json())
         .then(data => {
-            console.log(data)
             if (Object.keys(data).length === 0) {
                 setWrongData(true);
 
@@ -56,6 +58,7 @@ const LogInSection = () => {
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
         setLoginData(prevState => (
             {
                 ...prevState,
@@ -71,7 +74,7 @@ const LogInSection = () => {
             <form className="form" onSubmit={handleSubmit}>
                 <div className="form__fields">
                     <TextInput name="email" state={loginData.email} setState={handleChange} isRequired placeholder="Email"/>
-                    <PasswordInput name="password" state={loginData.password} setState={handleChange} placeholder="Password" />
+                    <PasswordInput name="password" state={loginData.password} setState={handleChange} placeholder="Password" />            
                     {wrongData && <p className="incorrect-data-text">Incorrect email or password</p>}
                 </div>
                 <button className="btn btn--login">Log In</button>
@@ -79,6 +82,7 @@ const LogInSection = () => {
         </section>
     )
 }
+
 
 const RegisterOptionSection = () => {
     return (

@@ -1,88 +1,12 @@
 import { useEffect, useState } from "react";
-import BookList from "../reusable-components/BookList";
-import UserSidebar from "./UserSidebar";
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import useFetch from "../functions/useFetch";
-import { User } from "../DTO/User";
-import detailsImage from './img/details1.jpg';
-import TextInput from "../reusable-components/TextInput";
-import PasswordInput from "../reusable-components/PasswordInput";
-import DTO from "../DTO/DTO";
-import { read } from "fs";
-
-
-
-type Props = {
-    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const UserPage = (props: Props) => {
-    const [isBorrowsUrl, setIsBorrowsUrl] = useState(true);
-    const [isDetailsUrl, setIsDetailsUrl] = useState(true);
-    const [isSettingsUrl, setIsSettingsUrl] = useState(true);
-
-    const location = useLocation();
-
-    useEffect( () => {
-        const url = location.pathname;
-        
-        switch (url) {
-            case '/user/borrows': {
-                setIsBorrowsUrl(true);
-                setIsDetailsUrl(false);
-                setIsSettingsUrl(false);
-
-                break;
-            }
-            case '/user/details': {
-                setIsDetailsUrl(true);
-                setIsBorrowsUrl(false);
-                setIsSettingsUrl(false);
-
-                break;
-            }
-            case '/user/settings': {
-                setIsSettingsUrl(true);
-                setIsBorrowsUrl(false);
-                setIsDetailsUrl(false);
-
-                break;
-            }
-        }
-
-    }, [location])
-
-    return ( 
-    <main className="UserPage">
-        <UserSidebar setDisplayLogoutText={props.setDisplayLogoutText}/>
-        {isBorrowsUrl && <section className="borrows"><BookList url='http://localhost:8000/books' isBorrowBtn={false} isReturnBtn={true}/></section>}
-        {isDetailsUrl && <Details />}
-        {isSettingsUrl && <Settings />}
-    </main> 
-    );
-}
-
-const Details = () => {
-    const userDetails: User = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
-
-    return (
-        <section className="details">
-            <h2 className="details__title">Account details</h2>
-            <p className="details__data details__data--first-name">First name: <span className="details__field">{userDetails.firstName}</span></p>
-            <p className="details__data details__data--last-name">Last name: <span className="details__field">{userDetails.lastName}</span></p>
-            <p className="details__data details__data--email">Email: <span className="details__field">{userDetails.email}</span></p>
-            <p className="details__data details__data--phone">Phone: 
-                {userDetails.phone ? <span className="details__field">{userDetails.phone}</span> : <span className="details__field">- - -</span>}
-            </p>
-            <span className="details__image"><div></div></span>
-        </section>
-    )
-}
+import User from "../../DTO/User";
+import useFetch from "../../functions/useFetch";
+import TextInput from "../../reusable-components/TextInput";
 
 
 
 const Settings = () => {
-    const userDetails = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
+    const userDTO = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
 
     const [user, setUser] = useState<User>({
         id: 0,
@@ -90,48 +14,29 @@ const Settings = () => {
         lastName: "",
         phone: "",
         email: "",
-        password: ""
+        password: "",
+        employee: false
     });
-     
-    // const [firstName, setFirstName] = useState('');
-    // const [lastName, setLastName] = useState('');
-    // const [phone, setPhone] = useState('');
-    // const [email, setEmail] = useState('');
-    // const [password, setPassword] = useState('');
-
+   
     const [readyToRender, setReadyToRender] = useState(false);
 
 
     useEffect( () => {
 
-        if (Object.keys(userDetails).length !== 0) {
+        if (Object.keys(userDTO).length !== 0) {
 
-        // setFirstName(userDetails.firstName);
-        // setLastName(userDetails.lastName);
-        // setPhone(userDetails.phone);
-        // setEmail(userDetails.email);
-        // setPassword(userDetails.password);
-
-        setUser(userDetails);
+        setUser(userDTO);
         
         setReadyToRender(true);
         }
 
-    },[userDetails])
+    },[userDTO])
 
 
     const handleEditData = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => {
         e.preventDefault();
 
-        // const user: User = {
-        //     id: sessionStorage.getItem('id') as unknown as number,
-        //     firstName: firstName,
-        //     lastName: lastName,
-        //     phone: phone,
-        //     email: email,
-        //     password: password
-        //  }
-
+       
         fetch('http://localhost:8000/users/' + sessionStorage.getItem("id"), {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -167,7 +72,7 @@ const Settings = () => {
     )
 }
 
-type PersonalInformation = {
+type PersonalInformationProps = {
     data: string;
     setData: (e: React.ChangeEvent<HTMLInputElement>) => void;
     className: string;
@@ -177,7 +82,7 @@ type PersonalInformation = {
     buttonName?: string;
 }
 
-const PersonalInformation = (props: PersonalInformation) => {
+const PersonalInformation = (props: PersonalInformationProps) => {
 
     const[showEditPanel, setShowEditPanel] = useState(false);
 
@@ -264,6 +169,5 @@ const EditPanel = (props: EditPanelProps) => {
         </div>
      );
 }
- 
 
-export default UserPage;
+export default Settings;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Type from "../DTO/Type";
-import useFetch from "../functions/useFetch";
+import Type from "../../DTO/Type";
+import useFetch from "../../functions/useFetch";
 
 const SearchFilter = () => {
     const types: Type[] = useFetch('http://localhost:8000/types') as Type[];

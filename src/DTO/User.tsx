@@ -6,5 +6,8 @@ export interface User extends DTO {
     lastName: string,
     phone: string,
     email: string,
-    password: string
+    password: string,
+    employee: boolean
 }
+
+export default User;

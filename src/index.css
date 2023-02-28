@@ -111,6 +111,22 @@ img {
   border: 1px solid var(--BORDER-COLOR);
 }
 
+.form__radios {
+  font-size: 0.8rem;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+}
+
+.radio-container {
+  display:inherit;
+  gap:0.3rem;
+}
+
+.radio-container input {
+  width: 15px;
+  height: 15px;
+}
 /* for double-divided page */
 
 .panel-wrapper {
@@ -350,6 +366,9 @@ img {
   font-size: 1rem;
 }
 
+
+/* register page */
+
 .registerPage {
   grid-template-areas: 
   "minor-content main-content";
@@ -379,8 +398,10 @@ img {
 
   display:grid;
   grid-template-columns: 1fr;
+  /* grid-template-rows: repeat(1fr, 6); */
   grid-template-rows: repeat(1fr, 4);
 
+  /* font-size: 1.2rem; */
   font-size: 1.3rem;
 }
 
@@ -393,7 +414,7 @@ img {
   align-items: center;
   gap:0.8rem;
 
-  padding: 1.5rem;
+  padding-left: 1.5rem;
 
   font-weight: 500;
 }
@@ -407,6 +428,10 @@ img {
   display: inline-block;
   vertical-align:text-bottom;
   margin-top: 0.2rem;
+}
+
+.marked {
+  font-weight: 900;
 }
 
 /* UserPage - borrows */

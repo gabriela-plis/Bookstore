@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import BookList from "../reusable-components/BookList";
+import BookList from "../../reusable-components/BookList";
 import SearchFilter from "./SearchFilter";
 
 type Props = {

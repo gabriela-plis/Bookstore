@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import TextInput from "../reusable-components/TextInput";
-import PasswordInput from "../reusable-components/PasswordInput";
-import { User } from "../DTO/User";
+import TextInput from "../../reusable-components/TextInput";
+import PasswordInput from "../../reusable-components/PasswordInput";
+import { User } from "../../DTO/User";
 
 const RegisterPage = () => {
     return ( 
@@ -21,22 +21,16 @@ const RegisterSection = () => {
         lastName: "",
         phone: "",
         email: "",
-        password: ""
+        password: "",
+        employee: false
     });
 
-    // const [firstName, setFirstName] = useState('');
-    // const [lastName, setLastName] = useState('');
-    // const [phone, setPhone] = useState('');
-    // const [email, setEmail] = useState('');
-    // const [password, setPassword] = useState('')
 
     const [wrongData, setWrongData] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        // const registerData = { firstName, lastName, phone, email, password };
 
         fetch('http://localhost:8000/users', {
             method: 'POST',
