@@ -2,9 +2,9 @@ import { type } from "os";
 import { useEffect, useState } from "react";
 import DTO from "../DTO/DTO";
 
-const useFetch = (url: string) => {
+function useFetch<Type>(url: string): Type[] {
 
-    const [data, setData] = useState<DTO[]>([]);
+    const [data, setData] = useState<Type[]>([]);
     
     useEffect ( () => {
         fetch(url)

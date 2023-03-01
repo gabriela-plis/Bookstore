@@ -1,8 +1,8 @@
 import DTO from "./DTO";
 
-interface Type extends DTO {
+interface BookType extends DTO {
     id: number,
     name: string
 }
 
-export default Type;
+export default BookType;

@@ -10,7 +10,7 @@ type Props = {
 }
 
 const BookList = (props: Props) => {
-    const books: Book[] = useFetch(props.url) as Book[];
+    const books: Book[] = useFetch(props.url);
 
     return (
         <section className="books">

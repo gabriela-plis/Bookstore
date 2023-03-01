@@ -5,15 +5,32 @@ import useFetch from "../../functions/useFetch";
 const Details = () => {
     const user: User = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
 
+    const userData = [
+        {title: "First name", className:"first-name", value: user.firstName},
+        {title: "Last name", className:"last-name", value: user.lastName},
+        {title: "Email", className:"email", value: user.email},
+        {title: "Phone", className:"phone", value: user.phone}
+    ]
+
+    const conditionalRender = (value: string, title: string) => {
+        if (value) {
+            return <span>{title}: <span className="details__field">{value}</span></span>
+        } else {
+            return <span>{title}: <span className="details__field">---</span></span>
+        }
+    }
+
     return (
         <section className="details">
             <h2 className="details__title">Account details</h2>
-            <p className="details__data details__data--first-name">First name: <span className="details__field">{user.firstName}</span></p>
-            <p className="details__data details__data--last-name">Last name: <span className="details__field">{user.lastName}</span></p>
-            <p className="details__data details__data--email">Email: <span className="details__field">{user.email}</span></p>
-            <p className="details__data details__data--phone">Phone: 
-                {user.phone ? <span className="details__field">{user.phone}</span> : <span className="details__field">- - -</span>}
-            </p>
+            {userData.map(data => (
+                <p
+                    key={data.className}
+                    className={`details__data details__data--${data.className}`}
+                >
+                    {conditionalRender(data.value, data.title)}
+                </p>
+            ))}
             <span className="details__image"><div></div></span>
         </section>
     )

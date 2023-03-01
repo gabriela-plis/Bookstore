@@ -3,7 +3,7 @@ type TextInputProps = {
     state: string;
     setState: (e: React.ChangeEvent<HTMLInputElement>) => void;
     isRequired: boolean;
-    placeholder: string;
+    placeholder?: string;
   };
 
 const TextInput = (props: TextInputProps) => {

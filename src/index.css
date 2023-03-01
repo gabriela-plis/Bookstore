@@ -111,6 +111,12 @@ img {
   border: 1px solid var(--BORDER-COLOR);
 }
 
+.form__fields select {
+  font-family: inherit;
+  border: 1px solid var(--BORDER-COLOR);
+  border-radius: var(--BORDER-RADIUS);
+}
+
 .form__radios {
   font-size: 0.8rem;
   display: flex;
@@ -239,10 +245,11 @@ img {
   height: 100vh;
 
   display: grid;
+  grid-template-columns: 1fr;
   grid-template-rows: 1fr 5fr;
   row-gap:0;
 
-  position: relative;
+  /* position: relative; */
 }
 
 
@@ -389,6 +396,7 @@ img {
   grid-template-areas: 
   "sidebar page-content";
   grid-template-columns: 1fr 4fr;
+  grid-template-rows: 1fr;
 }
 
 .sidebar {
@@ -676,4 +684,89 @@ img {
 .btn--save {
   grid-area: save-btn;
   background-color: var(--FCOLOR-LIGHT);
+}
+
+/* add book panel */
+
+.add-form {
+  grid-area: page-content;
+
+  display: grid;
+  grid-template-areas: 
+  "title image"
+  "form image";
+  grid-template-columns: 1.2fr 1fr;
+  grid-template-rows: 0.2fr 1fr;
+  padding-left: 1.5rem;
+
+  font-size: 1.3rem;
+  
+}
+
+.add-form__title {
+  grid-area: title;
+  text-align: left;
+  padding-top: 0.7rem;
+}
+
+.add-form .form {
+  grid-area: form;
+
+  display: grid;
+  justify-items: start;
+}
+
+.add-form__image {
+  grid-area: image;
+
+  background-image: url('./images/photo1.jpg');
+  background-size: cover;
+  background-position:center;
+
+}
+
+.add-form__image div {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.384);
+}
+
+.add-form .form__fields {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.add-form .form__fields input {
+  width: 15rem;
+  margin-left: 0.75rem;
+}
+
+.add-form .form__fields select {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-left: 0.75rem;
+
+  border-radius: var(--BORDER-RADIUS);
+  width: clamp(100px,25vw,400px);
+  height: clamp(15px, 5vh, 30px);
+
+  border: 1px solid var(--BORDER-COLOR);
+}
+
+.btn--add {
+  background-color: var(--FCOLOR-LIGHT);
+  width: 100px;
+  height: 35px;
+}
+
+.btn--reset {
+  width: 100px;
+  height: 35px;
+}
+
+.btns-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding-bottom: 1rem;
 }

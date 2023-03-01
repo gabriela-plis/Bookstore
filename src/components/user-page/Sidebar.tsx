@@ -5,9 +5,10 @@ import detailsIcon from '../../images/user -blue.png';
 import borrowsIcon from '../../images/book-color.png';
 import logoutIcon from '../../images/logout.png';
 
+
 import { Link } from 'react-router-dom';
 import logout from '../../functions/logout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type Props = {
     employee: boolean,

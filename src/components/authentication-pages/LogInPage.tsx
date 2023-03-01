@@ -39,7 +39,7 @@ const LogInSection = () => {
  
         //Temporarily I use GET METHOD
 
-        const correctId = 1;
+        const correctId = 3;
         const incorrectId = 5;
 
         fetch('http://localhost:8000/users/' + correctId)

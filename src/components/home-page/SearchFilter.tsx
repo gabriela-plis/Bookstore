@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Type from "../../DTO/Type";
+import BookType from "../../DTO/Type";
 import useFetch from "../../functions/useFetch";
 
 const SearchFilter = () => {
-    const types: Type[] = useFetch('http://localhost:8000/types') as Type[];
+    const types: BookType[] = useFetch('http://localhost:8000/types');
 
 
     return ( 
@@ -19,7 +19,7 @@ const SearchFilter = () => {
 
 // types checkbox
 const TypesSection = () => {
-    const types: Type[] = useFetch('http://localhost:8000/types') as Type[];
+    const types: BookType[] = useFetch('http://localhost:8000/types');
 
     return (
         <section className="filter__types">
