@@ -1,8 +1,8 @@
 import Book from "../DTO/Book";
 import User from "../DTO/User";
 
-function handleSubmit<Type>(DTO: Type, e: React.FormEvent<HTMLFormElement>, url: string): Type[] {
-    e.preventDefault();
+//arg for error
+function handleSubmit<Type>(DTO: Type, url: string, needObject: boolean): Type[] {
 
     fetch(url, {
         method: 'POST',
@@ -17,23 +17,7 @@ function handleSubmit<Type>(DTO: Type, e: React.FormEvent<HTMLFormElement>, url:
     });
 
     return [];
+
   }
-
-
-// const handleSubmit = (e: React.FormEvent<HTMLFormElement>, url: string, DTO: Book|User) => {
-//     e.preventDefault();
-
-//     fetch(url, {
-//         method: 'POST',
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(DTO)
-//     })
-//     .then( resp => {
-//         resp.json()
-//     })
-//     .then ( data => {
-//         return data;
-//     });
-// }
 
 export default handleSubmit;

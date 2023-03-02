@@ -8,6 +8,7 @@ import Details from "./Details";
 import Settings from "./Settings";
 import AddBookPanel from "./AddBookPanel";
 import RemoveBookPanel from "./RemoveBookPanel";
+import Borrows from "./Borrows";
 
 type Props = {
     setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
@@ -62,7 +63,7 @@ const UserPage = (props: Props) => {
     return ( 
     <main className="UserPage">
         <UserSidebar employee={user.employee} setDisplayLogoutText={props.setDisplayLogoutText}/>
-        {urlPrefixesPresence.borrows && <section className="borrows"><BookList url='http://localhost:8000/books' isBorrowBtn={false} isReturnBtn={true}/></section>}
+        {urlPrefixesPresence.borrows && <Borrows />}
         {urlPrefixesPresence.details && <Details />}
         {urlPrefixesPresence.settings && <Settings />}
         {urlPrefixesPresence["add-book"] && <AddBookPanel />}

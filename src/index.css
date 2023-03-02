@@ -45,7 +45,7 @@ img {
   font-weight: 700;
 }
 
-.btn--borrow {
+.btn--borrow, .btn--return, .btn--remove {
   grid-area: btn;
   width: clamp(75px, 20vw, 100px);
   max-height: 60px;
@@ -133,6 +133,51 @@ img {
   width: 15px;
   height: 15px;
 }
+
+/* for popup */
+
+.popup__background {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.301);
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup__container {
+  background-color: white;
+  width: 40%;
+  height: 50%;
+  border: 1px solid black;
+  padding: 2.5rem;
+
+  display: grid;
+  grid-template-areas: 
+  "title title"
+  "main-content main-content"
+  "cancel-btn save-btn";
+  grid-template-columns: repeat(2, 1fr);  
+  grid-template-rows: repeat(3, 1fr);
+  column-gap: 1rem;
+  row-gap: 1.8rem;
+}
+
+.popup__title {
+  grid-area: title;
+  text-align: left;
+}
+
+.popup__book {
+  grid-area: main-content;
+}
+
+
+
 /* for double-divided page */
 
 .panel-wrapper {
@@ -686,7 +731,7 @@ img {
   background-color: var(--FCOLOR-LIGHT);
 }
 
-/* add book panel */
+/* user page - add book panel */
 
 .add-form {
   grid-area: page-content;
