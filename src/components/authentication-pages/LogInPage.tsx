@@ -77,7 +77,7 @@ const LogInSection = () => {
                     <PasswordInput name="password" state={loginData.password} setState={handleChange} placeholder="Password" />            
                     {wrongData && <p className="incorrect-data-text">Incorrect email or password</p>}
                 </div>
-                <button className="btn btn--login">Log In</button>
+                <button className="btn btn--pink btn--greater btn--greater-border-radius">Log In</button>
             </form>
         </section>
     )

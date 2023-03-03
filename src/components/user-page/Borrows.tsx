@@ -9,6 +9,7 @@ const Borrows = () => {
 
     return ( 
         <section className="borrows">
+            <h2 className="borrows__title">My Borrows</h2>
             <BookList url='http://localhost:8000/books' operationType={OperationTypes.Return} handleOperation={handleReturn}/>
         </section>
      );

@@ -67,7 +67,7 @@ const RegisterSection = () => {
                     <PasswordInput name="password" state={user.password} setState={handleChange} placeholder="Password"/>
                 </p>
                 {wrongData && <div className="error-text">Something goes wrong, try again</div>}
-                <button className="btn btn--register">Sign In</button>
+                <button className="btn btn--pink btn--greater btn--greater-border-radius">Sign In</button>
             </form>
         </section>
     )

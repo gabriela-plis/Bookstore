@@ -146,7 +146,7 @@ const EditPanel = (props: EditPanelProps) => {
     } 
 
     return ( 
-        <div className="edit__container">
+        <div className="edit__background">
             <section className="edit__content">
                 <h2 className="edit__title">Edit {props.displayName}</h2>
                 <div className="edit__input-container">

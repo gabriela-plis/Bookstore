@@ -54,7 +54,7 @@ const PublishYearSection = () => {
 const Button = () => {
     // how to send data to backend - url/var1={type} var2={min} var3={max}
     return (
-        <button className="btn btn--search">Search</button>
+        <button className="btn btn--smaller">Search</button>
     )
 }
 

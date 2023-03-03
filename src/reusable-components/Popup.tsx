@@ -18,13 +18,19 @@ const Popup = (props: Props) => {
     return (  
         <div className="popup__background">
             <section className="popup__container">
-                <h2 className="popup__title">{title}</h2>
+                <h3 className="popup__title">{title.toUpperCase()} <span className="popup__paragraph"> - book of interest: </span></h3>
                 <div className="popup__book">
-                    <h3>{book.title}</h3>
-                    <p>Author: {book.author}  Publish year: {book.publishYear}  Type: {book.type}</p>
+                    <h4>{book.title}</h4>
+                    <div className="book-description">
+                        <p>Author: {book.author}</p>
+                        <p>Publish year: {book.publishYear}</p>  
+                        <p>Type: {book.type}</p>
+                    </div>
                 </div>
-                <button className="btn btn--cancel" onClick={handleOperation}>Cancel</button>
-                <button className="btn btn--save" onClick={handleCancelOperation}>{title}</button>
+                <div className="popup__buttons">
+                    <button className="btn btn--greater" onClick={handleCancelOperation}>Cancel</button>
+                    <button className="btn btn--greater btn--pink " onClick={handleOperation}>{title}</button>
+                </div>
             </section>
         </div>
     );

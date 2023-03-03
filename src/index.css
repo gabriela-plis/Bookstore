@@ -43,36 +43,36 @@ img {
   border-radius: var(--BORDER-RADIUS);
   font-family: inherit;
   font-weight: 700;
-}
-
-.btn--borrow, .btn--return, .btn--remove {
-  grid-area: btn;
   width: clamp(75px, 20vw, 100px);
   max-height: 60px;
-
+  cursor: pointer;
 }
 
-.btn--search {
-  margin: 0.7rem;
-  padding: 0.4rem 1rem;
+.btn--pink {
+  background-color: var(--FCOLOR-LIGHT);
 }
 
-.btn--login, .btn--register {
+.btn--greater {
   width: clamp(60px, 10vw, 120px);
   height: clamp(30px, 5vw, 40px);
   font-size:  clamp(0.8rem, 2.2vw, 1.1rem);
-  border-radius: 15px;
   font-weight: 600;
-
-  background: var(--FCOLOR-LIGHT);
 }
 
-.btn--close {
+.btn--smaller {
+  max-height: 30px;
+}
+
+.btn--greater-border-radius {
   border-radius: 15px;
-  margin:0 2rem;
-  font-weight: bolder;
-  cursor: pointer;
 }
+
+.btn--margin {
+  margin: 0 1.5rem;
+}
+
+
+
 /* when something goes wrong */
 
 .incorrect-data-text {
@@ -154,28 +154,31 @@ img {
   width: 40%;
   height: 50%;
   border: 1px solid black;
-  padding: 2.5rem;
-
-  display: grid;
-  grid-template-areas: 
-  "title title"
-  "main-content main-content"
-  "cancel-btn save-btn";
-  grid-template-columns: repeat(2, 1fr);  
-  grid-template-rows: repeat(3, 1fr);
-  column-gap: 1rem;
-  row-gap: 1.8rem;
+  padding: 0 2.5rem;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .popup__title {
-  grid-area: title;
-  text-align: left;
+  font-size: 2rem;
+}
+
+.popup__paragraph {
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 
 .popup__book {
-  grid-area: main-content;
+  font-size: 1.2rem;
 }
 
+.popup__buttons {
+  display: flex;
+  flex-flow: row wrap;
+  column-gap: 2rem;
+}
 
 
 /* for double-divided page */
@@ -233,10 +236,6 @@ img {
 /* for books list */
 
 .books {
-  /* grid-area: books; */
-
-  /* display: flex;
-  flex-flow: column nowrap; */
   padding-top: 1rem;
 }
 
@@ -258,7 +257,10 @@ img {
   margin: 0 3rem;
 
   justify-items: left;  
-  /* justify-content: space-between; */
+}
+
+.book .btn {
+  grid-area: btn;
 }
 
 
@@ -444,18 +446,17 @@ img {
   grid-template-rows: 1fr;
 }
 
+/* user page - sidebar */
+
 .sidebar {
   grid-area: sidebar;
 
   border-right: 1px solid var(--BORDER-COLOR);
+  font-size: 1.3rem;
 
   display:grid;
   grid-template-columns: 1fr;
-  /* grid-template-rows: repeat(1fr, 6); */
-  grid-template-rows: repeat(1fr, 4);
-
-  /* font-size: 1.2rem; */
-  font-size: 1.3rem;
+  grid-template-rows: repeat(4, 1fr);
 }
 
 .sidebar__element {
@@ -493,7 +494,13 @@ img {
   grid-area: page-content;
 }
 
-/* UserPage - details */
+.borrows__title {
+  text-align: left;
+  padding: 0.7rem 0 0 1.5rem;
+  font-size: 2rem;
+}
+
+/* user page - details */
 
 .details {
   grid-area: page-content;
@@ -662,9 +669,9 @@ img {
   height: 30px;
 }
 
-/* edit content */
+/* edit popup */
 
-.edit__container {
+.edit__background {
   position: fixed;
   left: 0;
   top: 0;
@@ -815,3 +822,5 @@ img {
   gap: 2rem;
   padding-bottom: 1rem;
 }
+
+/* user page - remove book panel */

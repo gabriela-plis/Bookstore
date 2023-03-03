@@ -27,7 +27,7 @@ const Homepage = (props: Props) => {
     <main className="homepage">
         {props.displayLogoutText && 
             <p className="logout-text" key={'logout-text'}>You have successfully been logged out! Have a nice day 
-                <button className="btn btn--close" onClick={handleClose}>x</button>
+                <button className="btn btn--smaller btn--greater-border-radius btn--margin" onClick={handleClose}>x</button>
             </p>
         }
         <BookList url='http://localhost:8000/books' operationType={OperationTypes.Borrow} handleOperation={handleBorrow} />

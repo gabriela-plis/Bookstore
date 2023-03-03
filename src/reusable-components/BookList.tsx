@@ -30,8 +30,8 @@ const BookList = (props: Props) => {
                 <li className="book" key={book.id}>
                     <h2>{book.title}</h2>
                     <p>Author: {book.author}  Publish year: {book.publishYear}  Type: {book.type}</p>
-                    <button className={`btn btn--${operationType}`} onClick={handleClick}>{capitalize(operationType)}</button>
-                    {isOperationActive && <Popup title="Borrow" book={book} handleOperation={handleOperation} setIsOperationActive={setIsOperationActive}/>}
+                    <button className="btn" onClick={handleClick}>{capitalize(operationType)}</button>
+                    {isOperationActive && <Popup title={operationType} book={book} handleOperation={handleOperation} setIsOperationActive={setIsOperationActive}/>}
                 </li>
                 ))}
             </ul>
