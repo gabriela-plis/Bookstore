@@ -39,14 +39,17 @@ const TypesSection = () => {
 
 // publish year from-to
 const PublishYearSection = () => {
-    // get date and determine restrictions min max
+    const currentYear = new Date().getFullYear()
+
     return (
         <section className="filter__publishyear">
             <h4 className="filter__title">Publish year</h4>
-            <label>From:</label>
-            <input type="number" min="1999" max="2023" placeholder="1999"/>
-            <label>To:</label>
-            <input type="number" min="1999" max="2023" placeholder="2023"/> 
+            <div className="filter__input-container">
+                <label>From:</label>
+                <input type="number" min="1999" max={currentYear} placeholder="1999"/>
+                <label>To:</label>
+                <input type="number" min="1999" max={currentYear} placeholder={currentYear.toString()}/> 
+            </div>
         </section>
     )
 }
@@ -54,7 +57,9 @@ const PublishYearSection = () => {
 const Button = () => {
     // how to send data to backend - url/var1={type} var2={min} var3={max}
     return (
-        <button className="btn btn--smaller">Search</button>
+        <section className="filter__button-container">
+            <button className="btn btn--smaller">Search</button>
+        </section>
     )
 }
 

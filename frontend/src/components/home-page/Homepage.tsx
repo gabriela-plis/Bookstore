@@ -11,6 +11,7 @@ type Props = {
 const Homepage = (props: Props) => {
 
     const [isOperationActive, setIsOperationActive] = useState(false);
+    const [bookId, setBookId] = useState(0);
 
     const handleClose = () => {
         const text = document.querySelector(".logout-text")!;
@@ -30,7 +31,7 @@ const Homepage = (props: Props) => {
                 <button className="btn btn--smaller btn--greater-border-radius btn--margin" onClick={handleClose}>x</button>
             </p>
         }
-        <BookList url='http://localhost:8000/books' operationType={OperationTypes.Borrow} handleOperation={handleBorrow} />
+        <BookList url='http://localhost:8000/books' operationType={OperationTypes.Borrow} setBookId={setBookId} handleOperation={handleBorrow} />
         <SearchFilter />
     </main> 
     );

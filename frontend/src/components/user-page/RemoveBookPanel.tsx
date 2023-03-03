@@ -1,16 +1,24 @@
 import OperationTypes from "../../OperationTypes";
 import Book from "../../DTO/Book";
-import useFetch from "../../functions/useFetch";
 import BookList from "../../reusable-components/BookList";
+import { useState } from "react";
 
 const RemoveBookPanel = () => {
-    const handleRemove = () => {
 
+    const [bookId, setBookId] = useState(0);
+
+    const handleRemove = () => {
+        fetch('http://localhost:8000/books/' + bookId, {
+            method: "DELETE"
+        })
+
+        //feedback
     }
 
     return ( 
         <section className="remove-panel">
-            <BookList url="http://localhost:8000/books" operationType={OperationTypes.Remove} handleOperation={handleRemove}/>
+            <h2 className="remove-panel__title">Remove Book</h2>
+            <BookList url="http://localhost:8000/books" operationType={OperationTypes.Remove} handleOperation={handleRemove} setBookId={setBookId}/>
         </section>
      );
 }
