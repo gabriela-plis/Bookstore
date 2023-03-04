@@ -11,6 +11,8 @@ const Popup = (props: Props) => {
 
     const {title, book, handleOperation, setIsOperationActive} = {...props};
 
+    console.log(book);
+
     const handleCancelOperation = () => {
         setIsOperationActive(false);
     }
@@ -28,7 +30,7 @@ const Popup = (props: Props) => {
                     </div>
                 </div>
                 <div className="popup__buttons">
-                    <button className="btn btn--greater" onClick={handleCancelOperation}>Cancel</button>
+                    <button className="btn btn--greater" onClick={handleCancelOperation}>cancel</button>
                     <button className="btn btn--greater btn--pink " onClick={handleOperation}>{title}</button>
                 </div>
             </section>

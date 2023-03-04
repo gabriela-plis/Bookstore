@@ -31,7 +31,7 @@ const Homepage = (props: Props) => {
                 <button className="btn btn--smaller btn--greater-border-radius btn--margin" onClick={handleClose}>x</button>
             </p>
         }
-        <BookList url='http://localhost:8000/books' operationType={OperationTypes.Borrow} setBookId={setBookId} handleOperation={handleBorrow} />
+        <BookList url='http://localhost:8000/books' operationType={OperationTypes.Borrow} bookId={bookId} setBookId={setBookId} handleOperation={handleBorrow} />
         <SearchFilter />
     </main> 
     );

@@ -9,23 +9,21 @@ import Popup from "./Popup";
 type Props = {
     url: string,
     operationType: OperationTypes,
+    bookId: number,
     setBookId: React.Dispatch<React.SetStateAction<number>>,
     handleOperation: () => void
   }
 
 const BookList = (props: Props) => {
-    const {url, operationType, setBookId, handleOperation} = {...props} 
-
+    const {url, operationType, bookId, setBookId, handleOperation} = {...props} 
     const [isOperationActive, setIsOperationActive] = useState(false);
 
     const books: Book[] = useFetch(url);
 
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
         e.preventDefault();
 
-        const bookId = Number(e.currentTarget.parentElement?.getAttribute('data-key'));
         setBookId(bookId);
-
         setIsOperationActive(true);
     }
 
@@ -40,8 +38,8 @@ const BookList = (props: Props) => {
                         <p>Publish year: {book.publishYear}</p>  
                         <p>Type: {book.type}</p>
                     </div>
-                    <button className="btn" onClick={(e) => handleClick(e)}>{capitalize(operationType)}</button>
-                    {isOperationActive && <Popup title={operationType} book={book} handleOperation={handleOperation} setIsOperationActive={setIsOperationActive}/>}
+                    <button className="btn" onClick={(e) => handleClick(e, book.id!)}>{capitalize(operationType)}</button>
+                    {isOperationActive && bookId === book.id && <Popup title={operationType} book={book} handleOperation={handleOperation} setIsOperationActive={setIsOperationActive}/>}
                 </li>
                 ))}
             </ul>

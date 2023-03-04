@@ -18,7 +18,7 @@ const RemoveBookPanel = () => {
     return ( 
         <section className="remove-panel">
             <h2 className="remove-panel__title">Remove Book</h2>
-            <BookList url="http://localhost:8000/books" operationType={OperationTypes.Remove} handleOperation={handleRemove} setBookId={setBookId}/>
+            <BookList url="http://localhost:8000/books" operationType={OperationTypes.Remove} handleOperation={handleRemove} bookId={bookId} setBookId={setBookId}/>
         </section>
      );
 }
