@@ -29,7 +29,7 @@ function App() {
     <div className="App">
       <Header sessionIsActive={sessionIsActive} setDisplayLogoutText={setDisplayLogoutText}/>
       <Routes>
-        <Route path="/" element={<Homepage displayLogoutText={displayLogoutText} />}></Route>
+        <Route path="/" element={<Homepage sessionIsActive={sessionIsActive} displayLogoutText={displayLogoutText} />}></Route>
         <Route path="/logIn" element={<LogInPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
         <Route path="/user/borrows" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>

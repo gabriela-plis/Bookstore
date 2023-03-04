@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import logout from "../functions/logout";
 
 type HeaderProps = {
-    sessionIsActive: boolean;
+    sessionIsActive: boolean,
     setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

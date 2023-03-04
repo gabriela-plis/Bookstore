@@ -363,6 +363,21 @@ img {
   background-color: #99d98c;
 }
 
+/* feedback */
+
+.feedback {
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+
+  width: 80%;
+  margin: 0.4rem 3rem;
+  border-radius: 15px;
+  background-color: #99d98c;
+}
+
 /* --search filter */
 
 .filter {

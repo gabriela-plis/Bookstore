@@ -11,8 +11,6 @@ const Popup = (props: Props) => {
 
     const {title, book, handleOperation, setIsOperationActive} = {...props};
 
-    console.log(book);
-
     const handleCancelOperation = () => {
         setIsOperationActive(false);
     }
