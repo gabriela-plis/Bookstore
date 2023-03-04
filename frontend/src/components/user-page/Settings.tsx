@@ -139,7 +139,6 @@ type EditPanelProps = {
 }
 
 const EditPanel = (props: EditPanelProps) => {
-    const [test, setTest] = useState('');
 
     const handleCancelOperation = () => {
         props.setShowEditPanel(false);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import ReactSelect from "react-select";
 import Book from "../../DTO/Book";
@@ -8,17 +8,43 @@ import TextInput from "../../reusable-components/TextInput";
 
 const AddBookPanel = () => {
 
-    const initialStateOfBook: Book = {
+    const types = useFetch<BookType>('http://localhost:8000/types');
+    const [initialType, setInitialType] = useState("");
+
+    const [initialBook, setInitialBook] = useState<Book>({
         title: "",
         author: "",
-        publishYear: 0,
-        availableAmount: 0,
+        publishYear: 1980,
+        availableAmount: 5,
         type: ""
-    }
+    });
+    const [book, setBook] =  useState<Book>(initialBook);
+    
+    useEffect(() => {
+        if (types.length !== 0) {
 
-    const [book, setBook] =  useState<Book>(initialStateOfBook)
+            setInitialType(types[0].name)
 
-    const types: BookType[] = useFetch('http://localhost:8000/types');
+
+
+        }
+        
+    },[types])
+
+    useEffect(() => {
+        if (initialType.length !== 0) {
+            setInitialBook(prevState => (
+                {
+                    ...prevState,
+                    type: types[0].name
+                }
+            ))
+
+            setBook(initialBook);
+
+        }
+
+    },[initialType])
 
 
     const bookFormTextInput = [
@@ -49,13 +75,17 @@ const AddBookPanel = () => {
 
 
     const handleSubmit = () => {
-        
+        fetch("http://localhost:8000/books", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(book)
+            })
     }
 
     const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        e.preventDefault();
 
-        setBook(initialStateOfBook);
+        setBook(initialBook);
+
     }
 
     return ( 
@@ -96,6 +126,8 @@ const AddBookPanel = () => {
                         <label htmlFor={attribute.className}>{attribute.title}</label>    
                         <input 
                             type="number"
+                            min={attribute.min}
+                            max={attribute.max}
                             name={attribute.variableName}
                             required
                             value={attribute.value} 
@@ -105,7 +137,7 @@ const AddBookPanel = () => {
                 ))} 
                 <p className="btns-container">
                 <button className="btn btn--add">Add</button> 
-                <button className="btn btn--reset" onClick={(e) => handleReset(e)}>Reset</button> 
+                <button className="btn btn--reset" onClick={(e) => handleReset(e)} type="reset">Reset</button>
                 </p>
             </form>
             <span className="add-form__image"><div></div></span>
