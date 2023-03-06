@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { cloneElement, useEffect, useState } from 'react';
 import './App.css';
 import Header from './components/Header';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
@@ -12,18 +12,23 @@ function App() {
   const [displayLogoutText, setDisplayLogoutText] = useState(false);
   const location = useLocation();
 
+
+  // const [isLogIn, setIsLogIn] = useState(false);
+
   useEffect(() => {
-    if (sessionStorage.getItem("id") === null) {
-        setSessionIsActive(false)
-    } else {
-        setSessionIsActive(true)
-    }
+      if (sessionStorage.getItem("id") === null) {
+          setSessionIsActive(false)
+      } else {
+          setSessionIsActive(true)
+      }
 
-    if (location.pathname !== '/') {
-      setDisplayLogoutText(false);
-    }
+      if (location.pathname !== '/') {
+        setDisplayLogoutText(false);
+      }
 
-},[location])
+  },[location])
+
+  const userPage = React.cloneElement(<UserPage setDisplayLogoutText={setDisplayLogoutText} />);
 
   return (
     <div className="App">
@@ -32,11 +37,11 @@ function App() {
         <Route path="/" element={<Homepage sessionIsActive={sessionIsActive} displayLogoutText={displayLogoutText} />}></Route>
         <Route path="/logIn" element={<LogInPage />}></Route>
         <Route path="/register" element={<RegisterPage />}></Route>
-        <Route path="/user/borrows" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
-        <Route path="/user/details" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
-        <Route path="/user/settings" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
-        <Route path="/user/add-book" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
-        <Route path="/user/remove-book" element={<UserPage setDisplayLogoutText={setDisplayLogoutText}/>}></Route>
+        <Route path="/user/borrows" element={userPage}></Route>
+        <Route path="/user/details" element={userPage}></Route>
+        <Route path="/user/settings" element={userPage}></Route>
+        <Route path="/user/add-book" element={userPage}></Route>
+        <Route path="/user/remove-book" element={userPage}></Route>
       </Routes>
     </div>
   );

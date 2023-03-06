@@ -1,6 +1,6 @@
 import OperationTypes from "../../OperationTypes";
 import Book from "../../DTO/Book";
-import BookList from "../../reusable-components/BookList";
+import BookList, { Operation } from "../../reusable-components/BookList";
 import { useState } from "react";
 
 const RemoveBookPanel = () => {
@@ -15,10 +15,15 @@ const RemoveBookPanel = () => {
         //feedback
     }
 
+    const operation: Operation = {
+        type: OperationTypes.Remove,
+        handle: handleRemove
+    }
+
     return ( 
         <section className="remove-panel">
             <h2 className="remove-panel__title">Remove Book</h2>
-            <BookList url="http://localhost:8000/books" operationType={OperationTypes.Remove} handleOperation={handleRemove} bookId={bookId} setBookId={setBookId}/>
+            <BookList url="http://localhost:8000/books" operation={operation} bookId={bookId} setBookId={setBookId}/>
         </section>
      );
 }

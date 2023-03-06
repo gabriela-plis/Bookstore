@@ -5,17 +5,20 @@ import Book from "../DTO/Book";
 import useFetch from "../functions/useFetch";
 import Popup from "./Popup";
 
+export type Operation = {
+    type: OperationTypes,
+    handle: () => void
+}
 
 type Props = {
     url: string,
-    operationType: OperationTypes,
+    operation?: Operation,
     bookId: number,
     setBookId: React.Dispatch<React.SetStateAction<number>>,
-    handleOperation: () => void
   }
 
 const BookList = (props: Props) => {
-    const {url, operationType, bookId, setBookId, handleOperation} = {...props} 
+    const {url, operation, bookId, setBookId} = {...props} 
     const [isOperationActive, setIsOperationActive] = useState(false);
 
     const books: Book[] = useFetch(url);
@@ -28,8 +31,8 @@ const BookList = (props: Props) => {
     }
 
     return (
-        <section className="books">
-            <ul className="book-list">
+        <section className="book-list__container">
+            <ul className="book-list__list">
                 {books.map( book => (
                 <li className="book" key={book.id} data-key={book.id}>
                     <h2>{book.title}</h2>
@@ -38,8 +41,13 @@ const BookList = (props: Props) => {
                         <p>Publish year: {book.publishYear}</p>  
                         <p>Type: {book.type}</p>
                     </div>
-                    <button className="btn" onClick={(e) => handleClick(e, book.id!)}>{capitalize(operationType)}</button>
-                    {isOperationActive && bookId === book.id && <Popup title={operationType} book={book} handleOperation={handleOperation} setIsOperationActive={setIsOperationActive}/>}
+                    {operation && 
+                    <>
+                    <button className="btn" onClick={(e) => handleClick(e, book.id!)}>{capitalize(operation.type)}</button>
+                    {isOperationActive && bookId === book.id && <Popup title={operation.type} book={book} handleOperation={operation.handle} setIsOperationActive={setIsOperationActive}/>}
+                    </>
+                    }
+                    
                 </li>
                 ))}
             </ul>

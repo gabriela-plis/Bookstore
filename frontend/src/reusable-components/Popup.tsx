@@ -15,6 +15,11 @@ const Popup = (props: Props) => {
         setIsOperationActive(false);
     }
 
+    const handleSubmit = () => {
+        handleOperation();
+        handleCancelOperation();
+    }
+
     return (  
         <div className="popup__background">
             <section className="popup__container">
@@ -29,7 +34,7 @@ const Popup = (props: Props) => {
                 </div>
                 <div className="popup__buttons">
                     <button className="btn btn--greater" onClick={handleCancelOperation}>cancel</button>
-                    <button className="btn btn--greater btn--pink " onClick={handleOperation}>{title}</button>
+                    <button className="btn btn--greater btn--pink " onClick={handleSubmit}>{title}</button>
                 </div>
             </section>
         </div>

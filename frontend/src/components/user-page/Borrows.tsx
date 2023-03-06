@@ -1,6 +1,6 @@
 import { useState } from "react";
 import OperationTypes from "../../OperationTypes";
-import BookList from "../../reusable-components/BookList";
+import BookList, { Operation } from "../../reusable-components/BookList";
 
 const Borrows = () => {
 
@@ -10,10 +10,15 @@ const Borrows = () => {
 
     }
 
+    const operation: Operation = {
+        type: OperationTypes.Return,
+        handle: handleReturn
+    }
+
     return ( 
         <section className="borrows">
             <h2 className="borrows__title">My Borrows</h2>
-            <BookList url='http://localhost:8000/books' operationType={OperationTypes.Return} bookId={bookId} setBookId={setBookId} handleOperation={handleReturn}/>
+            <BookList url='http://localhost:8000/books' operation={operation} bookId={bookId} setBookId={setBookId} />
         </section>
      );
 }

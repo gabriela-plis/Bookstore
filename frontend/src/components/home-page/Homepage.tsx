@@ -4,6 +4,7 @@ import BookList from "../../reusable-components/BookList";
 import Feedback from "../../reusable-components/Feedback";
 import Popup from "../../reusable-components/Popup";
 import SearchFilter from "./SearchFilter";
+import { Operation } from "../../reusable-components/BookList";
 
 type Props = {
     sessionIsActive: boolean,
@@ -12,40 +13,41 @@ type Props = {
 
 const Homepage = (props: Props) => {
     const {sessionIsActive, displayLogoutText} = {...props};
+    const [displayLogInText, setDisplayLogInText] = useState(false);
 
     // const [isOperationActive, setIsOperationActive] = useState(false);
     const [bookId, setBookId] = useState(0);
 
-    const handleClose = () => {
-        const text = document.querySelector(".logout-text")!;
-        text.remove();
-    }
-
     const handleBorrow = () => {
+        console.log(sessionIsActive)
         //not logged in
         if (!sessionIsActive) {
-            console.log("not logged in")
+            setDisplayLogInText(true);
         }
 
         //you already have this book borrowed
         //borrow
     }
 
+    const operation: Operation = {
+        type: OperationTypes.Borrow,
+        handle: handleBorrow
+    }
+
     return ( 
     <main className="homepage">
+        <h2 className="homepage__title">Book To Borrow:</h2>
         {displayLogoutText && 
-            <Feedback text="You have successfully been logged out! Have a nice day" />
+            <Feedback text="You have successfully been logged out! Have a nice day" button/>
         }
-        <BookList url='http://localhost:8000/books' operationType={OperationTypes.Borrow} bookId={bookId} setBookId={setBookId} handleOperation={handleBorrow} />
+        {!sessionIsActive &&
+            <Feedback text="Log In to borrow a book!" button={false}/>
+        }
+        <BookList url='http://localhost:8000/books'  bookId={bookId} setBookId={setBookId} />
+        {/* operation={operation} */}
         <SearchFilter />
     </main> 
     );
 }
 
-// {displayLogoutText && 
-//     <p className="logout-text" key={'logout-text'}>You have successfully been logged out! Have a nice day 
-//         <button className="btn btn--smaller btn--greater-border-radius btn--margin" onClick={handleClose}>x</button>
-//     </p>
-// }
- 
 export default Homepage;

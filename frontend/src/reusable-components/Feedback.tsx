@@ -2,10 +2,11 @@ import { useRef } from "react";
 
 type Props = {
     text: string,
+    button: boolean
 }
 
 const Feedback = (props: Props) => {
-    const {text} = {...props};
+    const {text, button} = {...props};
 
     const feedbackElement = useRef<HTMLDivElement>(null);
 
@@ -23,7 +24,7 @@ const Feedback = (props: Props) => {
         <p className="feedback__text">
             {text} 
         </p>
-        <button className="btn btn--smaller btn--greater-border-radius btn--margin" onClick={handleClose}>x</button>
+        {button && <button className="btn btn--smaller btn--greater-border-radius btn--margin" onClick={handleClose}>x</button>}
         </div>
      );
 }
