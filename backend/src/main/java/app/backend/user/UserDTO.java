@@ -2,7 +2,6 @@ package app.backend.user;
 
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record UserDTO(
@@ -14,9 +13,9 @@ public record UserDTO(
     @NotBlank
     String lastName,
 
-    @NotBlank
     String phone,
 
+    @NotBlank
     String email,
 
     @NotBlank

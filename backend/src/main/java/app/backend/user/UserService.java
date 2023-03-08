@@ -25,11 +25,15 @@ public class UserService {
         return mapper.toDTO(userEntity);
     }
 
-    public UserDTO update(UserDTO user) {
-        return save(user);
+    public UserDTO update(int id, UserDTO updatedUser) {
+        repository.findById(id)
+            .orElseThrow(EntityNotFoundException::new);
+
+        return save(updatedUser);
     }
 
     public UserDTO register(UserDTO user) {
+        //what if data are the same?
         return save(user);
     }
 
