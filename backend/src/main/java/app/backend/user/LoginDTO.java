@@ -14,7 +14,7 @@ public record LoginDTO(
         String password,
 
         @NotNull
-        Boolean isEmployee
+        Boolean employee
 
 ) {
 }

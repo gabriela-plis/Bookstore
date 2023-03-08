@@ -24,12 +24,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public UserDTO register(@RequestBody UserDTO newUser) {
+    public UserDTO register(@RequestBody @Valid UserDTO newUser) {
         return service.register(newUser);
     }
 
     @PutMapping
-    public UserDTO update(@RequestBody UserDTO updatedUser) {
+    public UserDTO update(@RequestBody @Valid UserDTO updatedUser) {
         return service.update(updatedUser);
     }
 
