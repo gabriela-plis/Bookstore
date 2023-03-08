@@ -1,6 +1,10 @@
 package app.backend.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.ListCrudRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity, Integer> {
+import java.util.Optional;
+
+public interface UserRepository extends ListCrudRepository<UserEntity, Integer> {
+
+    Optional<UserEntity> findByEmailAndPasswordAndEmployee(String email, String password, boolean employee);
 }

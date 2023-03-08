@@ -1,6 +1,9 @@
 package app.backend.user;
 
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public record UserDTO(
     Integer id,
     String firstName,
@@ -8,5 +11,5 @@ public record UserDTO(
     String phone,
     String email,
     String password,
-    boolean employee
+    Boolean employee
 ) { }

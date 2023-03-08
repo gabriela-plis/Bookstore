@@ -42,5 +42,5 @@ public class UserEntity {
 
     @NotNull
     @Column(name = "is_employee", columnDefinition = "boolean default false")
-    private boolean employee;
+    private Boolean employee;
 }
