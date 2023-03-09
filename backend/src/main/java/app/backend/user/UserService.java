@@ -3,6 +3,7 @@ package app.backend.user;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,19 +26,21 @@ public class UserService {
         return mapper.toDTO(userEntity);
     }
 
+    @Transactional
     public UserDTO update(int id, UserDTO updatedUser) {
-        repository.findById(id)
-            .orElseThrow(EntityNotFoundException::new);
+        UserEntity userEntity = repository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        return save(updatedUser);
+        mapper.updateEntity(userEntity, updatedUser);
+
+        return mapper.toDTO(userEntity);
     }
 
+    @Transactional
     public UserDTO register(UserDTO user) {
-        //what if data are the same?
-        return save(user);
-    }
+        if (user.id() != null) {
+            throw new IllegalArgumentException();
+        }
 
-    private UserDTO save(UserDTO user) {
         UserEntity userEntity = repository.save(mapper.toEntity(user));
 
         return mapper.toDTO(userEntity);

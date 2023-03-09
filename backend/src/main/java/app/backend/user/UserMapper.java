@@ -1,8 +1,7 @@
 package app.backend.user;
 
 import org.mapstruct.Mapper;
-
-import java.util.List;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -10,8 +9,5 @@ public interface UserMapper {
     UserDTO toDTO(UserEntity user);
 
     UserEntity toEntity(UserDTO user);
-
-    List<UserEntity> toEntities(List<UserDTO> userDTOs);
-
-    List<UserDTO> toDTOs(List<UserEntity> userDTOs);
+    void updateEntity(@MappingTarget UserEntity userEntity, UserDTO updatedUser);
 }
