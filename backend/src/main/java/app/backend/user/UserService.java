@@ -37,7 +37,7 @@ public class UserService {
 
     @Transactional
     public UserDTO register(UserDTO user) {
-        if (user.id() != null) {
+        if (user.id() != null && user.id() != 0) {
             throw new IllegalArgumentException();
         }
 

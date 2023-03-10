@@ -3,7 +3,6 @@ package app.backend.user
 import jakarta.persistence.EntityNotFoundException
 import org.mapstruct.factory.Mappers
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class UserServiceTest extends Specification {
 
@@ -11,7 +10,7 @@ class UserServiceTest extends Specification {
 
     UserMapper userMapper = Mappers.getMapper(UserMapper)
 
-    UserService userService;
+    UserService userService
 
     def setup() {
         userService = new UserService(userRepository, userMapper)
@@ -19,19 +18,19 @@ class UserServiceTest extends Specification {
 
     def "should find user by id"() {
         given:
-        int id = 1
-        1 * userRepository.findById(id) >> Optional.of(new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false))
+        Integer id = 1
+        1 * userRepository.findById(id) >> Optional.of(getUserEntity())
 
         when:
         UserDTO result = userService.findById(id)
 
         then:
-        result == new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+        result == getUserDTO()
     }
 
-    def "should throw EntityNotFoundException when user was not found by id" () {
+    def "should throw EntityNotFoundException when user was not found by id"() {
         given:
-        int id = 1
+        Integer id = 1
         1 * userRepository.findById(id) >> Optional.empty()
 
         when:
@@ -39,6 +38,98 @@ class UserServiceTest extends Specification {
 
         then:
         thrown(EntityNotFoundException)
+    }
+
+    def "should find user by login data"() {
+        given:
+        LoginDTO loginData = getLoginData()
+        1 * userRepository.findByEmailAndPasswordAndEmployee(loginData.email(), loginData.password(), loginData.employee()) >> Optional.of(getUserEntity())
+
+        when:
+        UserDTO result = userService.findByLoginData(loginData)
+
+        then:
+        result == getUserDTO()
+    }
+
+    def "should throw EntityNotFoundException when user was not found by login data"() {
+        given:
+        LoginDTO loginData = getLoginData()
+        1 * userRepository.findByEmailAndPasswordAndEmployee(loginData.email(), loginData.password(), loginData.employee()) >> Optional.empty()
+
+        when:
+        userService.findByLoginData(loginData)
+
+        then:
+        thrown(EntityNotFoundException)
+    }
+
+    def "should update user"() {
+        given:
+        Integer id = 1
+        UserDTO user = new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", false)
+
+        1 * userRepository.findById(id) >> Optional.of(getUserEntity())
+
+        when:
+        UserDTO result = userService.update(id, user)
+
+        then:
+
+        result == new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", false)
+    }
+
+    def "should throw EntityNotFoundException when updated user doesn't exist in database"() {
+        given:
+        int id = 1
+        UserDTO user = getUserDTO()
+        1 * userRepository.findById(id) >> Optional.empty()
+
+        when:
+        userService.update(id, user)
+
+        then:
+        thrown(EntityNotFoundException)
+
+    }
+
+    def "should register user"() {
+        given:
+        UserDTO user = new UserDTO(id, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+        userRepository.save(new UserEntity(id, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)) >> getUserEntity()
+
+        when:
+        UserDTO result = userService.register(user)
+
+        then:
+        result == getUserDTO()
+
+        where:
+        id << [0, null]
+    }
+
+    def "should throw IllegalArgumentException when user has id > 0"() {
+        given:
+        UserDTO user = getUserDTO()
+        userRepository.save(getUserEntity()) >> getUserEntity()
+
+        when:
+        userService.register(user)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    private UserDTO getUserDTO() {
+        return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+    }
+
+    private UserEntity getUserEntity() {
+        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+    }
+
+    private LoginDTO getLoginData() {
+        new LoginDTO("anne@gmail.com", "anne123", false)
     }
 
 //    @Unroll
