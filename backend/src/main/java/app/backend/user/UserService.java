@@ -36,10 +36,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO register(UserDTO user) {
-        if (user.id() != null && user.id() != 0) {
-            throw new IllegalArgumentException();
-        }
+    public UserDTO register(RegisteredUserDTO user) {
 
         UserEntity userEntity = repository.save(mapper.toEntity(user));
 

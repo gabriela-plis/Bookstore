@@ -95,29 +95,14 @@ class UserServiceTest extends Specification {
 
     def "should register user"() {
         given:
-        UserDTO user = new UserDTO(id, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
-        userRepository.save(new UserEntity(id, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)) >> getUserEntity()
+        RegisteredUserDTO user = new RegisteredUserDTO("Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+        1 * userRepository.save(new UserEntity(null, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)) >> getUserEntity()
 
         when:
         UserDTO result = userService.register(user)
 
         then:
         result == getUserDTO()
-
-        where:
-        id << [0, null]
-    }
-
-    def "should throw IllegalArgumentException when user has id > 0"() {
-        given:
-        UserDTO user = getUserDTO()
-        userRepository.save(getUserEntity()) >> getUserEntity()
-
-        when:
-        userService.register(user)
-
-        then:
-        thrown(IllegalArgumentException)
     }
 
     private UserDTO getUserDTO() {
