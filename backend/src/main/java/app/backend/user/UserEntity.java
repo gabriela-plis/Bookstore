@@ -1,10 +1,14 @@
 package app.backend.user;
 
+import app.backend.book.BookEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -42,4 +46,7 @@ public class UserEntity {
     @NotNull
     @Column(name = "is_employee", columnDefinition = "boolean default false")
     private Boolean employee;
+
+    @ManyToMany(mappedBy = "ownerUsers")
+    List<BookEntity> books;
 }

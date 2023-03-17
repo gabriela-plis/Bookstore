@@ -1,9 +1,13 @@
 package app.backend.book;
 
+import app.backend.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
@@ -16,21 +20,30 @@ public class BookEntity {
     @GeneratedValue(strategy = IDENTITY)
     @Id
     @Column(name = "id")
-    Integer id;
+    private Integer id;
 
     @Column(name = "title")
-    String title;
+    private String title;
 
     @Column(name = "author")
-    String author;
+    private String author;
 
     @Column(name = "publish_year")
-    Integer publishYear;
+    private Integer publishYear;
 
     @Column(name = "available_amount")
-    Integer availableAmount;
+    private Integer availableAmount;
 
-    @Column(name = "type")
-    String type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
+    private BookTypeEntity bookType;
+
+    //the owning side - responsible for managing the association? borrow/return here
+    @ManyToMany
+    @JoinTable(name = "users_to_books",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<UserEntity> ownerUsers;
 }
 
