@@ -1,7 +1,7 @@
 spring.datasource:
-  url: jdbc:postgresql://localhost:5432/bookstore
+  url: jdbc:postgresql://localhost:5431/bookstore
   username: postgres
-  password: percia123
+  password: password
   jpa:
     hibernate:
       ddl-auto: validate

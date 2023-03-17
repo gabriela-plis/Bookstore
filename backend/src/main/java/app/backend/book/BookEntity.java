@@ -30,7 +30,8 @@ public class BookEntity {
     @Column(name = "available_amount")
     Integer availableAmount;
 
-    @Column(name = "type")
-    String type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id")
+    BookTypeEntity bookType;
 }
 
