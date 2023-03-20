@@ -29,7 +29,6 @@ public class BookController {
 
     @GetMapping("/criteria")
     public List<BookDTO> getSortedBooks (BookSortingCriteria criteria) {
-        System.out.println(criteria);
        return service.findBySortingCriteria(criteria);
     }
 }

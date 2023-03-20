@@ -38,7 +38,6 @@ public class BookEntity {
     @JoinColumn(name = "type_id")
     private BookTypeEntity bookType;
 
-    //the owning side - responsible for managing the association? borrow/return here
     @ManyToMany
     @JoinTable(name = "users_to_books",
             joinColumns = @JoinColumn(name = "book_id"),

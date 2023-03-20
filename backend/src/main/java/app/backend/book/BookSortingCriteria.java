@@ -1,22 +1,16 @@
 package app.backend.book;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Objects;
 
 @Data
-@NoArgsConstructor
 public class BookSortingCriteria {
+    private final Integer minPublishYear;
+    private final Integer maxPublishYear;
+    private final String typeName;
 
-    private Integer minPublishYear;
-    private Integer maxPublishYear;
-    private String type;
-
-//    @JsonCreator
-//    public BookSortingCriteria(@JsonProperty("type") String type, @JsonProperty("min") Integer publishYearMin, @JsonProperty("max") Integer publishYearMax) {
-//        this.type = type;
-//        this.publishYearMin = publishYearMin;
-//        this.publishYearMax = publishYearMax;
-//    }
+    public BookSortingCriteria(String type, Integer min, Integer max) {
+        this.typeName = type;
+        this.minPublishYear = min;
+        this.maxPublishYear = max;
+    }
 }

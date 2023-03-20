@@ -9,7 +9,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookService {
-
     private final BookRepository repository;
     private final BookMapper mapper;
 
@@ -19,7 +18,7 @@ public class BookService {
     }
 
     public List<BookDTO> findByUserId(int id) {
-        List<BookEntity> books = repository.getByOwnerUsers_Id(id).orElseThrow(EntityNotFoundException::new);
+        List<BookEntity> books = repository.getByOwnerUsers_Id(id);
         return mapper.toDTOs(books);
     }
 
@@ -29,7 +28,7 @@ public class BookService {
     }
 
     public List<BookDTO> findBySortingCriteria(BookSortingCriteria criteria) {
-        List<BookEntity> books = repository.findByBookType_NameAndPublishYearBetween(criteria.getType(), criteria.getMinPublishYear(), criteria.getMaxPublishYear()).orElseThrow(EntityNotFoundException::new);
+        List<BookEntity> books = repository.findByPublishYearBetweenAndBookType_Name(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
         return mapper.toDTOs(books);
     }
 }
