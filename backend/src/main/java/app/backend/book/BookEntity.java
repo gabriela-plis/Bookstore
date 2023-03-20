@@ -1,5 +1,6 @@
 package app.backend.book;
 
+import app.backend.book.bookType.BookTypeEntity;
 import app.backend.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,9 @@ public class BookEntity {
 
     @Column(name = "publish_year")
     private Integer publishYear;
+
+    @Column(name = "can_be_borrow")
+    private Boolean canBeBorrow;
 
     @Column(name = "available_amount")
     private Integer availableAmount;

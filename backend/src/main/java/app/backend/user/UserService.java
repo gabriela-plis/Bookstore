@@ -37,7 +37,6 @@ public class UserService {
 
     @Transactional
     public UserDTO register(RegisteredUserDTO user) {
-
         UserEntity userEntity = repository.save(mapper.toEntity(user));
 
         return mapper.toDTO(userEntity);

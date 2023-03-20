@@ -1,5 +1,6 @@
-package app.backend.book;
+package app.backend.book.bookType;
 
+import app.backend.book.BookEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
