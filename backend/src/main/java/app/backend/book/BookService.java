@@ -1,6 +1,7 @@
 package app.backend.book;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,12 @@ public class BookService {
 
     public List<BookDTO> getAllBooks() {
         List<BookEntity> books = repository.findAll();
+
+        return mapper.toDTOs(books);
+    }
+
+    public List<BookDTO> getAllBooksToBorrow() {
+        List<BookEntity> books = repository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0);
 
         return mapper.toDTOs(books);
     }
@@ -32,7 +39,7 @@ public class BookService {
     }
 
     public List<BookDTO> findBySortingCriteria(BookSortingCriteria criteria) {
-        List<BookEntity> books = repository.findByPublishYearBetweenAndBookType_NameIgnoreCase(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
+        List<BookEntity> books = repository.findByPublishYearBetweenAndBookType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
 
         return mapper.toDTOs(books);
     }
@@ -41,6 +48,15 @@ public class BookService {
         BookEntity savedBook = repository.save(mapper.toEntity(bookToSave));
 
         return mapper.toDTO(savedBook);
+    }
+
+    @Transactional
+    public BookDTO update(BookDTO updatedBook) {
+        BookEntity bookEntity = repository.findById(updatedBook.id()).orElseThrow(EntityNotFoundException::new);
+
+        mapper.updateEntity(bookEntity, updatedBook);
+
+        return mapper.toDTO(bookEntity);
     }
 
     public void delete(int id) {

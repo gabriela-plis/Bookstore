@@ -3,6 +3,7 @@ package app.backend.book;
 import app.backend.book.bookType.BookTypeMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ public interface BookMapper {
     BookEntity toEntity(BookDTO book);
 
     List<BookDTO> toDTOs(List<BookEntity> books);
+
+    @Mapping(target = "ownerUsers", ignore = true)
+    void updateEntity(@MappingTarget BookEntity bookToUpdate, BookDTO updatedBook);
 }

@@ -14,5 +14,5 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     UserEntity toEntity(RegisteredUserDTO user);
 
-    void updateEntity(@MappingTarget UserEntity userEntity, UserDTO updatedUser);
+    void updateEntity(@MappingTarget UserEntity userToUpdate, UserDTO updatedUser);
 }

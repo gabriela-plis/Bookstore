@@ -15,9 +15,14 @@ public class BookController {
 
     private final BookService service;
 
-    @GetMapping()
+    @GetMapping
     public List<BookDTO> getAllBooks() {
         return service.getAllBooks();
+    }
+
+    @GetMapping("/to-borrow")
+    public List<BookDTO> getAllBooksToBorrow() {
+        return service.getAllBooksToBorrow();
     }
 
     @GetMapping("/{id}")
@@ -38,6 +43,11 @@ public class BookController {
     @PostMapping
     public BookDTO add(@RequestBody @Valid BookDTO book) {
         return service.save(book);
+    }
+
+    @PutMapping
+    public BookDTO update(@RequestBody @Valid BookDTO book) {
+        return service.update(book);
     }
 
     @DeleteMapping("/{id}")
