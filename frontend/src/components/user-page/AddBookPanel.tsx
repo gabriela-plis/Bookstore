@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import ReactSelect from "react-select";
-import Book from "../../DTO/Book";
-import BookType from "../../DTO/Type";
+import Book from "../../DTO/BookDTO";
+import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
 
 const AddBookPanel = () => {
 
-    const types = useFetch<BookType>('http://localhost:8000/types');
+    const types = useFetch<BookType>('http://localhost:8000/books/types');
     const [initialType, setInitialType] = useState("");
 
     const [initialBook, setInitialBook] = useState<Book>({

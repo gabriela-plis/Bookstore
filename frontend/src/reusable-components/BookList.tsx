@@ -1,7 +1,7 @@
 import { url } from "inspector";
 import { useEffect, useState } from "react";
 import OperationTypes from "../OperationTypes";
-import Book from "../DTO/Book";
+import Book from "../DTO/BookDTO";
 import useFetch from "../functions/useFetch";
 import Popup from "./Popup";
 
