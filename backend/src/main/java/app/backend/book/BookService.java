@@ -10,60 +10,78 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookService {
-    private final BookRepository repository;
-    private final BookMapper mapper;
+
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
+
+    private final BookTypeRepository bookTypeRepository;
+    private final BookTypeMapper bookTypeMapper;
+
 
     public List<BookDTO> getAllBooks() {
-        List<BookEntity> books = repository.findAll();
+        List<BookEntity> books = bookRepository.findAll();
 
-        return mapper.toDTOs(books);
+        return bookMapper.toDTOs(books);
     }
 
     public List<BookDTO> getAllBooksToBorrow() {
-        List<BookEntity> books = repository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0);
+        List<BookEntity> books = bookRepository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0);
 
-        return mapper.toDTOs(books);
+        return bookMapper.toDTOs(books);
     }
 
     public List<BookDTO> findByUserId(int id) {
-        List<BookEntity> books = repository.getByOwnerUsers_Id(id);
+        List<BookEntity> books = bookRepository.getByOwnerUsers_Id(id);
 
-        return mapper.toDTOs(books);
+        return bookMapper.toDTOs(books);
     }
 
     public BookDTO findById(int id) {
-        BookEntity book = repository.findById(id)
+        BookEntity book = bookRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        return mapper.toDTO(book);
+        return bookMapper.toDTO(book);
     }
 
-    public List<BookDTO> findBySortingCriteria(BookSortingCriteria criteria) {
-        List<BookEntity> books = repository.findByPublishYearBetweenAndBookType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
+    public List<BookDTO> getBySortingCriteria(BookSortingCriteriaDTO criteria) {
+        List<BookEntity> books = bookRepository.findByPublishYearBetweenAndBookType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
 
-        return mapper.toDTOs(books);
+        return bookMapper.toDTOs(books);
+    }
+
+    public List<BookDTO> getAllBooksToRemove() {
+        List<BookEntity> books = bookRepository.findAllWithNoOwnerUser();
+
+        return bookMapper.toDTOs(books);
+    }
+
+    public List<BookTypeDTO> getAllBookTypes() {
+        List<BookTypeEntity> bookTypes = bookTypeRepository.findAll();
+
+        return bookTypeMapper.toDTOs(bookTypes);
     }
 
     public BookDTO save(BookDTO bookToSave) {
-        BookEntity savedBook = repository.save(mapper.toEntity(bookToSave));
+        BookEntity savedBook = bookRepository.save(bookMapper.toEntity(bookToSave));
 
-        return mapper.toDTO(savedBook);
+        return bookMapper.toDTO(savedBook);
     }
 
     @Transactional
     public BookDTO update(BookDTO updatedBook) {
-        BookEntity bookEntity = repository.findById(updatedBook.id()).orElseThrow(EntityNotFoundException::new);
+        BookEntity bookEntity = bookRepository.findById(updatedBook.id())
+            .orElseThrow(EntityNotFoundException::new);
 
-        mapper.updateEntity(bookEntity, updatedBook);
+        bookMapper.updateEntity(bookEntity, updatedBook);
 
-        return mapper.toDTO(bookEntity);
+        return bookMapper.toDTO(bookEntity);
     }
 
     public void delete(int id) {
-        BookEntity bookToDelete = repository.findById(id)
+        BookEntity bookToDelete = bookRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        repository.delete(bookToDelete);
+        bookRepository.delete(bookToDelete);
     }
 
 

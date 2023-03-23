@@ -25,6 +25,11 @@ public class BookController {
         return service.getAllBooksToBorrow();
     }
 
+    @GetMapping("/to-remove")
+    public List<BookDTO> getAllBooksToRemove() {
+        return service.getAllBooksToRemove();
+    }
+
     @GetMapping("/{id}")
     public BookDTO getBook(@PathVariable int id) {
        return service.findById(id);
@@ -36,8 +41,13 @@ public class BookController {
     }
 
     @GetMapping("/criteria")
-    public List<BookDTO> getSortedBooks(BookSortingCriteria criteria) {
-       return service.findBySortingCriteria(criteria);
+    public List<BookDTO> getSortedBooks(BookSortingCriteriaDTO criteria) {
+       return service.getBySortingCriteria(criteria);
+    }
+
+    @GetMapping("/types")
+    public List<BookTypeDTO> getBookTypes() {
+        return service.getAllBookTypes();
     }
 
     @PostMapping

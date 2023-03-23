@@ -1,16 +1,14 @@
 package app.backend.book;
 
-import app.backend.book.bookType.BookTypeMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
-import static org.mapstruct.InjectionStrategy.CONSTRUCTOR;
 import static org.mapstruct.ReportingPolicy.ERROR;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR, uses = BookTypeMapper.class, injectionStrategy = CONSTRUCTOR)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ERROR, uses = BookTypeMapper.class)
 public interface BookMapper {
 
     BookDTO toDTO(BookEntity book);
