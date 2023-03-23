@@ -1,4 +1,4 @@
-package app.backend.book.bookType;
+package app.backend.book;
 
 public record BookTypeDTO(
     Integer id,

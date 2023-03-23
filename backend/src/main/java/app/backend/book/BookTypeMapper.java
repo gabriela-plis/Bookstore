@@ -1,7 +1,9 @@
-package app.backend.book.bookType;
+package app.backend.book;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 import static org.mapstruct.ReportingPolicy.ERROR;
 
@@ -12,4 +14,6 @@ public interface BookTypeMapper {
     BookTypeEntity toEntity(BookTypeDTO bookType);
 
     BookTypeDTO toDTO(BookTypeEntity bookType);
+
+    List<BookTypeDTO> toDTOs(List<BookTypeEntity> bookTypes);
 }
