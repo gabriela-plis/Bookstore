@@ -1,6 +1,5 @@
 package app.backend.book;
 
-import app.backend.book.bookType.BookTypeEntity;
 import app.backend.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

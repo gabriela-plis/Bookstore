@@ -1,6 +1,5 @@
 package app.backend.book;
 
-import app.backend.book.bookType.BookTypeDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,6 +11,7 @@ public record BookDTO(
 
     @NotBlank
     String author,
+
     Integer publishYear,
 
     @NotNull
@@ -19,7 +19,6 @@ public record BookDTO(
 
     Integer availableAmount,
 
-//        @NotBlank
     BookTypeDTO bookType
 ) {
 }
