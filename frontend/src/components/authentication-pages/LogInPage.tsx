@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import TextInput from "../../reusable-components/TextInput";
-import LoginData from "../../DTO/LoginData";
+import LoginData from "../../DTO/LoginDataDTO";
 
 
 const LogInPage = () => {
@@ -29,32 +29,31 @@ const LogInSection = () => {
         e.preventDefault();
 
                 //Send data to backend and get true or false answer
-        // const userLogInData = { email, password };
-        // fetch('http://localhost:8000/login', {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify(userLogInData)
-        // })
-        // .then( resp => { console.log(resp) });
+        fetch('http://localhost:8000/users/login', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(loginData)
+        })
+        .then( resp => { console.log(resp) });
  
         //Temporarily I use GET METHOD
 
         const correctId = 3;
         const incorrectId = 5;
 
-        fetch('http://localhost:8000/users/' + correctId)
-        .then(resp => resp.json())
-        .then(data => {
-            if (Object.keys(data).length === 0) {
-                setWrongData(true);
-
-            } else {
-                sessionStorage.setItem("id", data.id)
-                sessionStorage.setItem("name", data.firstName)
-
-                navigate('/')
-            }
-        })
+        // fetch('http://localhost:8000/users/' + correctId)
+        // .then(resp => resp.json())
+        // .then(data => {
+        //     if (Object.keys(data).length === 0) {
+        //         setWrongData(true);
+        //
+        //     } else {
+        //         sessionStorage.setItem("id", data.id)
+        //         sessionStorage.setItem("name", data.firstName)
+        //
+        //         navigate('/')
+        //     }
+        // })
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

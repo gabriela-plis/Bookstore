@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import User from "../../DTO/User";
+import User from "../../DTO/UserDTO";
 import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
 import Select from "react-select/dist/declarations/src/Select";

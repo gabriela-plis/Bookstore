@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../reusable-components/TextInput";
 import PasswordInput from "../../reusable-components/PasswordInput";
-import { User } from "../../DTO/User";
+import RegisteredUser from "../../DTO/RegisteredUserDTO"
 
 const RegisterPage = () => {
     return ( 
@@ -15,8 +15,7 @@ const RegisterPage = () => {
 
 const RegisterSection = () => {
 
-    const [user, setUser] = useState<User>({
-        id: 0,
+    const [user, setUser] = useState<RegisteredUser>({
         firstName: "",
         lastName: "",
         phone: "",
@@ -32,7 +31,7 @@ const RegisterSection = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        fetch('http://localhost:8000/users', {
+        fetch('http://localhost:8000/users/register', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user)

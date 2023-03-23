@@ -1,5 +1,5 @@
-import Book from "../DTO/Book";
-import User from "../DTO/User";
+import Book from "../DTO/BookDTO";
+import User from "../DTO/UserDTO";
 
 //arg for error
 function handleSubmit<Type>(DTO: Type, url: string, needObject: boolean): Type[] {

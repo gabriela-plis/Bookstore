@@ -3,7 +3,7 @@ import BookList from "../../reusable-components/BookList";
 import UserSidebar from "./Sidebar";
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import useFetch from "../../functions/useFetch";
-import { User } from "../../DTO/User";
+import User from "../../DTO/UserDTO";
 import Details from "./Details";
 import Settings from "./Settings";
 import AddBookPanel from "./AddBookPanel";

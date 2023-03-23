@@ -1,4 +1,4 @@
-import User from "../../DTO/User";
+import User from "../../DTO/UserDTO";
 import useFetch from "../../functions/useFetch";
 
 

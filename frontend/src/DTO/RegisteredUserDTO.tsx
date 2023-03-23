@@ -1,7 +1,6 @@
 import DTO from "./DTO";
 
-export interface User extends DTO {
-    id: number;
+interface RegisteredUserDTO extends DTO {
     firstName: string,
     lastName: string,
     phone: string,
@@ -10,4 +9,4 @@ export interface User extends DTO {
     employee: boolean
 }
 
-export default User;
+export default RegisteredUserDTO;

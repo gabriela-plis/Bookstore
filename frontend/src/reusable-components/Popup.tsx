@@ -1,4 +1,4 @@
-import Book from "../DTO/Book";
+import Book from "../DTO/BookDTO";
 
 type Props = {
     title: string;

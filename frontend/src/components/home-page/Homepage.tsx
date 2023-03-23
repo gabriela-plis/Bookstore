@@ -34,6 +34,8 @@ const Homepage = (props: Props) => {
         handle: handleBorrow
     }
 
+//  http://localhost:8000/books/to-borrow
+
     return ( 
     <main className="homepage">
         <h2 className="homepage__title">Book To Borrow:</h2>
@@ -43,7 +45,7 @@ const Homepage = (props: Props) => {
         {!sessionIsActive &&
             <Feedback text="Log In to borrow a book!" button={false}/>
         }
-        <BookList url='http://localhost:8000/books'  bookId={bookId} setBookId={setBookId} />
+        <BookList url='http://localhost:8000/books/to-borrow'  bookId={bookId} setBookId={setBookId} />
         {/* operation={operation} */}
         <SearchFilter />
     </main> 

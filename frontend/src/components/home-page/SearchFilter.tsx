@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import BookType from "../../DTO/Type";
+import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
 
 const SearchFilter = () => {
-    const types: BookType[] = useFetch('http://localhost:8000/types');
-
 
     return ( 
     <section className="filter">
@@ -19,7 +17,7 @@ const SearchFilter = () => {
 
 // types checkbox
 const TypesSection = () => {
-    const types: BookType[] = useFetch('http://localhost:8000/types');
+    const types: BookType[] = useFetch('http://localhost:8000/books/types');
 
     return (
         <section className="filter__types">
@@ -56,6 +54,7 @@ const PublishYearSection = () => {
 
 const Button = () => {
     // how to send data to backend - url/var1={type} var2={min} var3={max}
+
     return (
         <section className="filter__button-container">
             <button className="btn btn--smaller">Search</button>
