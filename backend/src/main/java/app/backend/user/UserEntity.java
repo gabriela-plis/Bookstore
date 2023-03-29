@@ -8,8 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
@@ -44,8 +44,13 @@ public class UserEntity {
     private String password;
 
     @NotNull
-    @Column(name = "is_employee", columnDefinition = "boolean default false")
-    private Boolean employee;
+    @ManyToMany(fetch = EAGER) // 3
+    @JoinTable(
+        name = "users_to_roles",
+        joinColumns = @JoinColumn(name ="user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<RoleEntity> roles;
 
     @ManyToMany(mappedBy = "ownerUsers")
     List<BookEntity> books;
