@@ -16,11 +16,6 @@ public class UserController {
         return service.findById(id);
     }
 
-    @PostMapping("/login")
-    public UserDTO login(@RequestBody @Valid LoginDTO loginData) {
-        return service.findByLoginData(loginData);
-    }
-
     @PostMapping("/register")
     public UserDTO register(@RequestBody @Valid RegisteredUserDTO newUser) {
         return service.register(newUser);
