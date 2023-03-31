@@ -4,6 +4,8 @@ package app.backend.user;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 public record UserDTO(
     Integer id,
 
@@ -22,5 +24,5 @@ public record UserDTO(
     String password,
 
     @NotNull
-    Boolean employee
+    List<String> roles
 ) { }
