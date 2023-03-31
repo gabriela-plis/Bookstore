@@ -32,12 +32,12 @@ public class BookController {
 
     @GetMapping("/{id}")
     public BookDTO getBook(@PathVariable int id) {
-       return service.findById(id);
+       return service.getById(id);
     }
 
     @GetMapping("/user/{userId}")
     public List<BookDTO> getUserBooks(@PathVariable int userId) {
-       return service.findByUserId(userId);
+       return service.getByOwnerUserId(userId);
     }
 
     @GetMapping("/criteria")
@@ -53,6 +53,16 @@ public class BookController {
     @PostMapping
     public BookDTO add(@RequestBody @Valid BookDTO book) {
         return service.save(book);
+    }
+
+    @PostMapping("/{bookId}/borrow")
+    public void borrowBook(@PathVariable int bookId) {
+        service.borrowBook(bookId);
+    }
+
+    @PostMapping("/{bookId}/return")
+    public void returnBook(@PathVariable int bookId) {
+        service.returnBook(bookId);
     }
 
     @PutMapping
