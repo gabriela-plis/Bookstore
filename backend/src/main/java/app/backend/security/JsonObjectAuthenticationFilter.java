@@ -41,6 +41,9 @@ public class JsonObjectAuthenticationFilter extends AbstractAuthenticationProces
         password = (password != null) ? password : "";
 
         UsernamePasswordAuthenticationToken authRequest = unauthenticated(username, password);
+
+        authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
+
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 

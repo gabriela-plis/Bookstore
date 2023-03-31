@@ -14,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -59,7 +62,8 @@ public class SecurityConfig {
             .cors().disable();
 
         http.authorizeHttpRequests()
-            .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole("CUSTOMER", "EMPLOYEE", "ADMIN")
+            .requestMatchers("/users").hasAnyRole("CUSTOMER", "EMPLOYEE")
+            .requestMatchers("/users/*").hasAnyRole("CUSTOMER", "EMPLOYEE")
             .requestMatchers("/books/*/borrow").hasAnyRole("CUSTOMER", "EMPLOYEE")
             .requestMatchers("/books/*/return").hasAnyRole("CUSTOMER", "EMPLOYEE")
             .requestMatchers("/books/user/*").hasAnyRole("CUSTOMER", "EMPLOYEE")
@@ -81,6 +85,10 @@ public class SecurityConfig {
 
     private JsonObjectAuthenticationFilter authenticationFilter(AuthenticationManager authenticationManager) {
         JsonObjectAuthenticationFilter authenticationFilter = new JsonObjectAuthenticationFilter(objectMapper);
+        authenticationFilter.setSecurityContextRepository(new DelegatingSecurityContextRepository(
+            new RequestAttributeSecurityContextRepository(),
+            new HttpSessionSecurityContextRepository()
+        ));
         authenticationFilter.setAuthenticationSuccessHandler(successHandler);
         authenticationFilter.setAuthenticationManager(authenticationManager);
         return authenticationFilter;
