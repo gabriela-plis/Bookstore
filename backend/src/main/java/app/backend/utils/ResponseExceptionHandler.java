@@ -1,4 +1,4 @@
-package app.backend;
+package app.backend.utils;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
