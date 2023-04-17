@@ -12,6 +12,8 @@ public interface UserMapper {
 
     UserDTO toDTO(UserEntity user);
 
+    List<UserDTO> toDTOs(List<UserEntity> userEntities);
+
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "books", ignore = true)
     UserEntity toEntity(UserDTO user);
