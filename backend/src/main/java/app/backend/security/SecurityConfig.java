@@ -53,7 +53,7 @@ public class SecurityConfig {
             .cors().disable();
 
         http.authorizeHttpRequests()
-            .requestMatchers("/users").hasAnyRole("CUSTOMER", "EMPLOYEE")
+            .requestMatchers("/users").hasAnyRole("EMPLOYEE")
             .requestMatchers("/users/*").hasAnyRole("CUSTOMER", "EMPLOYEE")
             .requestMatchers("/books/*/borrow").hasAnyRole("CUSTOMER", "EMPLOYEE")
             .requestMatchers("/books/*/return").hasAnyRole("CUSTOMER", "EMPLOYEE")

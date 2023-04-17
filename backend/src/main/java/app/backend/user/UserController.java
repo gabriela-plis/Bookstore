@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -11,9 +14,19 @@ public class UserController {
 
     private final UserService service;
 
+    @GetMapping()
+    public List<UserDTO> getUsers() {
+        return service.getAllUsers();
+    }
+
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable int id) {
-        return service.findById(id);
+        return service.getById(id);
+    }
+
+    @GetMapping("/this")
+    public UserDTO getUser(Principal principal) {
+        return service.getByEmail(principal.getName());
     }
 
     @PostMapping("/register")

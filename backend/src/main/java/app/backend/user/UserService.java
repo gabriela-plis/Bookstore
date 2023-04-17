@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -12,11 +14,24 @@ public class UserService {
     private final UserRepository repository;
     private final UserMapper mapper;
 
-    public UserDTO findById(int id) {
+    public UserDTO getByEmail(String email) {
+        UserEntity userEntity = repository.findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
+
+        return mapper.toDTO(userEntity);
+    }
+
+    public UserDTO getById(int id) {
         UserEntity userEntity = repository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
         return mapper.toDTO(userEntity);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        List<UserEntity> userEntities = repository.findAll();
+
+        return mapper.toDTOs(userEntities);
     }
 
     @Transactional
