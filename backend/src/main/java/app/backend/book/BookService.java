@@ -75,7 +75,7 @@ public class BookService {
     }
 
     @Transactional
-    public void borrowBook(Integer bookId) {
+    public void borrowBook(int bookId) {
         BookEntity book = bookRepository.findById(bookId)
             .orElseThrow(EntityNotFoundException::new);
 
@@ -88,7 +88,7 @@ public class BookService {
     }
 
     @Transactional
-    public void returnBook(Integer bookId) {
+    public void returnBook(int bookId) {
         BookEntity book = bookRepository.findById(bookId)
             .orElseThrow(EntityNotFoundException::new);
 
