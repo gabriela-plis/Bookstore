@@ -1,5 +1,6 @@
 package app.backend.user
 
+import app.backend.book.BookEntity
 import jakarta.persistence.EntityNotFoundException
 import org.mapstruct.factory.Mappers
 import spock.lang.Specification
@@ -10,19 +11,48 @@ class UserServiceTest extends Specification {
 
     UserMapper userMapper = Mappers.getMapper(UserMapper)
 
+    RoleRepository roleRepository = Mock()
+
     UserService userService
 
     def setup() {
-        userService = new UserService(userRepository, userMapper)
+        userService = new UserService(userRepository, roleRepository, userMapper)
     }
 
-    def "should find user by id"() {
+    def "should get user by email"() {
+        given:
+        String email = "anne@gmail.com"
+
+        1 * userRepository.findByEmail(email) >> Optional.of(getUserEntity())
+
+        when:
+        UserDTO result = userService.getByEmail(email)
+
+        then:
+        result == getUserDTO()
+
+    }
+
+    def "should throw EntityNotFoundException when user was not found by email"() {
+        given:
+        String email = "anne@gmail.com"
+
+        1 * userRepository.findByEmail(email) >> Optional.empty()
+
+        when:
+        userService.getByEmail(email)
+
+        then:
+        thrown(EntityNotFoundException)
+    }
+
+    def "should get user by id"() {
         given:
         Integer id = 1
         1 * userRepository.findById(id) >> Optional.of(getUserEntity())
 
         when:
-        UserDTO result = userService.findById(id)
+        UserDTO result = userService.getById(id)
 
         then:
         result == getUserDTO()
@@ -34,31 +64,7 @@ class UserServiceTest extends Specification {
         1 * userRepository.findById(id) >> Optional.empty()
 
         when:
-        userService.findById(id)
-
-        then:
-        thrown(EntityNotFoundException)
-    }
-
-    def "should find user by login data"() {
-        given:
-        LoginDTO loginData = getLoginData()
-        1 * userRepository.findByEmailAndPasswordAndEmployee(loginData.email(), loginData.password(), loginData.employee()) >> Optional.of(getUserEntity())
-
-        when:
-        UserDTO result = userService.findByLoginData(loginData)
-
-        then:
-        result == getUserDTO()
-    }
-
-    def "should throw EntityNotFoundException when user was not found by login data"() {
-        given:
-        LoginDTO loginData = getLoginData()
-        1 * userRepository.findByEmailAndPasswordAndEmployee(loginData.email(), loginData.password(), loginData.employee()) >> Optional.empty()
-
-        when:
-        userService.findByLoginData(loginData)
+        userService.getById(id)
 
         then:
         thrown(EntityNotFoundException)
@@ -67,7 +73,7 @@ class UserServiceTest extends Specification {
     def "should update user"() {
         given:
         Integer id = 1
-        UserDTO user = new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", false)
+        UserDTO user = new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", List.of("CUSTOMER"))
 
         1 * userRepository.findById(id) >> Optional.of(getUserEntity())
 
@@ -76,10 +82,10 @@ class UserServiceTest extends Specification {
 
         then:
 
-        result == new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", false)
+        result == new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", List.of("CUSTOMER"))
     }
 
-    def "should throw EntityNotFoundException when updated user doesn't exist in database"() {
+    def "should throw EntityNotFoundException when updated user doesn't exists"() {
         given:
         int id = 1
         UserDTO user = getUserDTO()
@@ -95,8 +101,11 @@ class UserServiceTest extends Specification {
 
     def "should register user"() {
         given:
-        RegisteredUserDTO user = new RegisteredUserDTO("Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
-        1 * userRepository.save(new UserEntity(null, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)) >> getUserEntity()
+        RegisteredUserDTO user = getRegisteredUser()
+
+        1 * userRepository.save(_ as UserEntity) >> getUserEntityWithoutRoles()
+
+        1 * roleRepository.findByName(_) >> Optional.of(new RoleEntity(1, "CUSTOMER", new ArrayList<UserEntity>()))
 
         when:
         UserDTO result = userService.register(user)
@@ -105,42 +114,43 @@ class UserServiceTest extends Specification {
         result == getUserDTO()
     }
 
+    def "should throw EntityNotFound while register when role was not found"() {
+        given:
+        RegisteredUserDTO user = getRegisteredUser()
+
+        1 * userRepository.save(_ as UserEntity) >> getUserEntityWithoutRoles()
+
+        1 * roleRepository.findByName(_) >> Optional.empty()
+
+        when:
+        userService.register(user)
+
+        then:
+        thrown(EntityNotFoundException)
+    }
+
     private UserDTO getUserDTO() {
-        return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+        List<String> roles = List.of(
+                "CUSTOMER"
+        )
+
+
+        return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", roles)
     }
 
     private UserEntity getUserEntity() {
-        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", false)
+        List <RoleEntity> roles = new ArrayList<>()
+        roles.add(new RoleEntity(1, "CUSTOMER", new ArrayList<UserEntity>()))
+
+        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", roles, new ArrayList<BookEntity>())
     }
 
-    private LoginDTO getLoginData() {
-        new LoginDTO("anne@gmail.com", "anne123", false)
+    private UserEntity getUserEntityWithoutRoles() {
+        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", new ArrayList<RoleEntity>(), new ArrayList<BookEntity>())
     }
 
-//    @Unroll
-//    def "should find user by id #description"() {
-//        when:
-//            def result = userService.findById(userId)
-//
-//        then:
-//            1 * userRepository.findById(userId) >> Optional.of(new UserEntity(id: userId))
-//
-//        and:
-//            with(result) {
-//                id == userId
-//                firstName == null
-//                lastName == null
-//                phone == null
-//                email == null
-//                password == null
-//                employee == null
-//            }
-//
-//        where:
-//            userId | description
-//            1      | "where user id is 1"
-//            2      | "where user id is 2"
-//            3      | "where user id is 3"
-//            4      | "where user id is 4"
-//    }
+    private RegisteredUserDTO getRegisteredUser() {
+        return new RegisteredUserDTO("Anne", "Smith", "123456789", "anne@gmail.com", "anne123")
+    }
+
 }
