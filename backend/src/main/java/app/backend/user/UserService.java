@@ -11,32 +11,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserMapper mapper;
 
     public UserDTO getByEmail(String email) {
-        UserEntity userEntity = repository.findByEmail(email)
+        UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
 
         return mapper.toDTO(userEntity);
     }
 
     public UserDTO getById(int id) {
-        UserEntity userEntity = repository.findById(id)
+        UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
         return mapper.toDTO(userEntity);
     }
 
     public List<UserDTO> getAllUsers() {
-        List<UserEntity> userEntities = repository.findAll();
+        List<UserEntity> userEntities = userRepository.findAll();
 
         return mapper.toDTOs(userEntities);
     }
 
     @Transactional
     public UserDTO update(int id, UserDTO updatedUser) {
-        UserEntity userEntity = repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         mapper.updateEntity(userEntity, updatedUser);
 
@@ -45,7 +46,10 @@ public class UserService {
 
     @Transactional
     public UserDTO register(RegisteredUserDTO user) {
-        UserEntity userEntity = repository.save(mapper.toEntity(user));
+        UserEntity userEntity = userRepository.save(mapper.toEntity(user));
+
+        RoleEntity role = roleRepository.findByName("CUSTOMER").orElseThrow(EntityNotFoundException::new);
+        userEntity.getRoles().add(role);
 
         return mapper.toDTO(userEntity);
     }
