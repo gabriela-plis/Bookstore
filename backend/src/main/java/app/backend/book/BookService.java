@@ -1,7 +1,6 @@
 package app.backend.book;
 
 import app.backend.user.UserEntity;
-import app.backend.user.UserRepository;
 import app.backend.utils.SecurityContextAccessor;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -21,9 +20,6 @@ public class BookService {
 
     private final BookTypeRepository bookTypeRepository;
     private final BookTypeMapper bookTypeMapper;
-
-    private final UserRepository userRepository;
-
 
     public List<BookDTO> getAllBooks() {
         List<BookEntity> books = bookRepository.findAll();
@@ -81,7 +77,9 @@ public class BookService {
 
         String username = securityContextAccessor.getAuthentication().getName();
 
-        UserEntity user = userRepository.findByEmail(username)
+        UserEntity user = book.getOwnerUsers().stream()
+            .filter(u -> u.getEmail().equals(username))
+            .findAny()
             .orElseThrow(EntityNotFoundException::new);
 
         book.getOwnerUsers().add(user);

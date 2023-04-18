@@ -1,28 +1,35 @@
 package app.backend.book
 
+import app.backend.user.RoleEntity
 import app.backend.user.UserEntity
+import app.backend.user.UserRepository
+import app.backend.user.UserService
+import app.backend.utils.SecurityContextAccessor
 import jakarta.persistence.EntityNotFoundException
-import org.mapstruct.Mapper
-import org.mapstruct.factory.Mappers
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import spock.lang.Specification
 
 import static org.mapstruct.factory.Mappers.getMapper
 
-class BookServiceTest extends Specification{
-
-    BookRepository bookRepository = Mock()
+class BookServiceTest extends Specification {
 
     BookTypeMapper bookTypeMapper = getMapper(BookTypeMapper)
     BookMapper bookMapper = getMapper(BookMapper).tap {
         bookMapper -> bookMapper.bookTypeMapper = this.bookTypeMapper
     }
 
+    BookRepository bookRepository = Mock()
     BookTypeRepository bookTypeRepository = Mock()
+
+    SecurityContextAccessor securityContextAccessor = Mock()
 
     BookService bookService
 
     def setup() {
-        bookService = new BookService(bookRepository, bookMapper, bookTypeRepository, bookTypeMapper)
+        bookService = new BookService(securityContextAccessor, bookRepository, bookMapper, bookTypeRepository, bookTypeMapper)
     }
 
     def "should get all books"() {
@@ -55,7 +62,7 @@ class BookServiceTest extends Specification{
         1 * bookRepository.getByOwnerUsers_Id(id) >> getBookEntityList()
 
         when:
-        List<BookDTO> result = bookService.findByUserId(id)
+        List<BookDTO> result = bookService.getByOwnerUserId(id)
 
         then:
         result == getBookDTOList()
@@ -68,7 +75,7 @@ class BookServiceTest extends Specification{
         1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
 
         when:
-        BookDTO result = bookService.findById(id)
+        BookDTO result = bookService.getById(id)
 
         then:
         result == getBookDTO()
@@ -80,7 +87,7 @@ class BookServiceTest extends Specification{
         1 * bookRepository.findById(id) >> Optional.empty()
 
         when:
-        bookService.findById(id)
+        bookService.getById(id)
 
         then:
         thrown(EntityNotFoundException)
@@ -180,7 +187,7 @@ class BookServiceTest extends Specification{
         1 * bookRepository.delete(getBookEntity())
     }
 
-    def "should throw EntityNotFoundException when book to delete doesn't exists in database"() {
+    def "should throw EntityNotFoundException when book to delete doesn't exists"() {
         given:
         int id = 1
         1 * bookRepository.findById(id) >> Optional.empty()
@@ -192,7 +199,89 @@ class BookServiceTest extends Specification{
         thrown(EntityNotFoundException)
     }
 
+    def "should borrow book"() {
+        given:
+        int id = 1
 
+        when:
+        bookService.borrowBook(id)
+
+        then:
+        1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
+        1 * securityContextAccessor.getAuthentication() >> getAuthentication()
+
+    }
+
+    def  "should throw EntityNotFoundException when book to borrow doesn't exists"() {
+        given:
+        int id = 1
+        bookRepository.findById(id) >> Optional.empty()
+
+        when:
+        bookService.borrowBook(id)
+
+        then:
+        thrown(EntityNotFoundException)
+
+    }
+
+    def "should throw EntityNotFoundException when user that want borrow book doesn't exists"() {
+        given:
+        int id = 1
+
+         1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
+
+        1 * securityContextAccessor.getAuthentication() >> getNonExistentUserAuthentication()
+
+        when:
+        bookService.borrowBook(id)
+
+        then:
+        thrown(EntityNotFoundException)
+
+    }
+
+    def "should return book" () {
+        given:
+        int id = 1
+
+        when:
+        bookService.returnBook(id)
+
+        then:
+        1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
+        1 * securityContextAccessor.getAuthentication() >> getAuthentication()
+
+    }
+
+    def "should throw EntityNotFoundException when book to return doesn't exists"() {
+        given:
+        int id = 1
+
+        1 * bookRepository.findById(id) >> Optional.empty()
+
+        when:
+        bookService.returnBook(id)
+
+        then:
+        thrown(EntityNotFoundException)
+    }
+
+    def "should throw EntityNotFound when user that want return book doesn't exists" () {
+        given:
+        int id = 1
+
+        1 * bookRepository.findById(id) >> Optional.of(getBookEntityWithNoOwners())
+
+        1 * securityContextAccessor.getAuthentication() >> getAuthentication()
+
+        when:
+        bookService.returnBook(id)
+
+        then:
+        thrown(EntityNotFoundException)
+
+    }
 
     private List<BookEntity> getBookEntityList() {
         List<UserEntity> ownerUsers = new ArrayList<>()
@@ -218,16 +307,39 @@ class BookServiceTest extends Specification{
     }
 
     private BookEntity getBookEntity() {
+
         List<UserEntity> ownerUsers = new ArrayList<>()
+        ownerUsers.add(getUserEntity())
 
         BookTypeEntity bookType = new BookTypeEntity(1, "Type", new ArrayList<BookEntity>())
 
         return new BookEntity(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType, ownerUsers)
     }
 
+    private BookEntity getBookEntityWithNoOwners() {
+
+        BookTypeEntity bookType = new BookTypeEntity(1, "Type", new ArrayList<BookEntity>())
+
+        return new BookEntity(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType, new ArrayList<UserEntity>())
+    }
+
     private BookDTO getBookDTO() {
         BookTypeDTO bookType = new BookTypeDTO(1, "Type")
 
         return new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType)
+    }
+
+    private UserEntity getUserEntity() {
+        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", new ArrayList<RoleEntity>(), new ArrayList<BookEntity>())
+    }
+
+    private Authentication getAuthentication () {
+        UserDetails principal = new User("anne@gmail.com", "anne123", [])
+        return new UsernamePasswordAuthenticationToken(principal, null)
+    }
+
+    private Authentication getNonExistentUserAuthentication () {
+        UserDetails principal = new User("non-existent@gmail.com", "anne123", [])
+        return new UsernamePasswordAuthenticationToken(principal, null)
     }
 }
