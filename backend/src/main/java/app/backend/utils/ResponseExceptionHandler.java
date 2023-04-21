@@ -1,6 +1,7 @@
 package app.backend.utils;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,6 +25,11 @@ public class ResponseExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException() {
+        return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
+    }
+
+        @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException() {
         return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
     }
 }

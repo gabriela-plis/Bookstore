@@ -53,11 +53,12 @@ public class SecurityConfig {
             .cors().disable();
 
         http.authorizeHttpRequests()
-            .requestMatchers("/users").hasAnyRole("EMPLOYEE")
-            .requestMatchers("/users/*").hasAnyRole("CUSTOMER", "EMPLOYEE")
-            .requestMatchers("/books/*/borrow").hasAnyRole("CUSTOMER", "EMPLOYEE")
-            .requestMatchers("/books/*/return").hasAnyRole("CUSTOMER", "EMPLOYEE")
-            .requestMatchers("/books/user/*").hasAnyRole("CUSTOMER", "EMPLOYEE")
+            .requestMatchers("/users/register").permitAll()
+            .requestMatchers("/users/*").authenticated()
+            .requestMatchers("/users").authenticated()
+            .requestMatchers("/books/*/borrow").authenticated()
+            .requestMatchers("/books/*/return").authenticated()
+            .requestMatchers("/books/user/*").authenticated()
             .requestMatchers("/books/to-remove").hasRole("EMPLOYEE")
             .requestMatchers(HttpMethod.POST, "/books").hasRole("EMPLOYEE")
             .requestMatchers(HttpMethod.PUT, "/books").hasRole("EMPLOYEE")
