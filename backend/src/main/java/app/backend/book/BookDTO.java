@@ -1,9 +1,11 @@
 package app.backend.book;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import app.backend.utils.annotations.ValidYear;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 public record BookDTO(
+    @Min(1)
     Integer id,
 
     @NotBlank
@@ -12,13 +14,18 @@ public record BookDTO(
     @NotBlank
     String author,
 
+    @ValidYear
     Integer publishYear,
 
     @NotNull
     Boolean canBeBorrow,
 
+    @Min(0)
+    @Max(100)
+    @NotNull
     Integer availableAmount,
 
+    @Valid
     BookTypeDTO bookType
 ) {
 }

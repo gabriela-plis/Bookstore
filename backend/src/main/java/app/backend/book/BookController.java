@@ -1,7 +1,10 @@
 package app.backend.book;
 
+import app.backend.utils.annotations.ValidIdAbsence;
+import app.backend.utils.annotations.ValidIdPresence;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +14,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/books")
+@Validated
 public class BookController {
 
     private final BookService service;
@@ -36,12 +40,12 @@ public class BookController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<BookDTO> getUserBooks(@PathVariable int userId) {
+    public List<BookDTO> getUserBooksById(@PathVariable int userId) {
        return service.getByOwnerUserId(userId);
     }
 
     @GetMapping("/criteria")
-    public List<BookDTO> getSortedBooks(BookSortingCriteriaDTO criteria) {
+    public List<BookDTO> getSortedBooks(@Valid BookSortingCriteriaDTO criteria) {
        return service.getBySortingCriteria(criteria);
     }
 
@@ -51,7 +55,7 @@ public class BookController {
     }
 
     @PostMapping
-    public BookDTO add(@RequestBody @Valid BookDTO book) {
+    public BookDTO add(@RequestBody @Valid @ValidIdAbsence BookDTO book) {
         return service.save(book);
     }
 
@@ -66,7 +70,7 @@ public class BookController {
     }
 
     @PutMapping
-    public BookDTO update(@RequestBody @Valid BookDTO book) {
+    public BookDTO update(@RequestBody @Valid @ValidIdPresence BookDTO book) {
         return service.update(book);
     }
 
