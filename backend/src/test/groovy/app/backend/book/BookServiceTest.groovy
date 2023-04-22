@@ -2,8 +2,6 @@ package app.backend.book
 
 import app.backend.user.RoleEntity
 import app.backend.user.UserEntity
-import app.backend.user.UserRepository
-import app.backend.user.UserService
 import app.backend.utils.SecurityContextAccessor
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
