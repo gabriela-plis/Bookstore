@@ -46,10 +46,12 @@ public class UserService {
 
     @Transactional
     public UserDTO register(RegisteredUserDTO user) {
-        UserEntity userEntity = userRepository.save(mapper.toEntity(user));
+        UserEntity userEntity = mapper.toEntity(user);
 
         RoleEntity role = roleRepository.findByName("CUSTOMER").orElseThrow(EntityNotFoundException::new);
         userEntity.getRoles().add(role);
+
+        userRepository.save(userEntity);
 
         return mapper.toDTO(userEntity);
     }
