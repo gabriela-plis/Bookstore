@@ -70,6 +70,18 @@ class UserServiceTest extends Specification {
         thrown(EntityNotFoundException)
     }
 
+    def "should get all users"() {
+        given:
+        1 * userRepository.findAll() >> getUserEntities()
+
+        when:
+        List<UserDTO> result = userService.getAllUsers()
+
+        then:
+        result == getUserDTOs()
+
+    }
+
     def "should update user"() {
         given:
         Integer id = 1
@@ -103,7 +115,7 @@ class UserServiceTest extends Specification {
         given:
         RegisteredUserDTO user = getRegisteredUser()
 
-        1 * userRepository.save(_ as UserEntity) >> getUserEntityWithoutRoles()
+        1 * userRepository.save(_ as UserEntity) >> getUserEntity()
 
         1 * roleRepository.findByName(_) >> Optional.of(new RoleEntity(1, "CUSTOMER", new ArrayList<UserEntity>()))
 
@@ -117,8 +129,7 @@ class UserServiceTest extends Specification {
     def "should throw EntityNotFound while register when role was not found"() {
         given:
         RegisteredUserDTO user = getRegisteredUser()
-
-        1 * userRepository.save(_ as UserEntity) >> getUserEntityWithoutRoles()
+        getUserEntity().setRoles(new ArrayList<RoleEntity>())
 
         1 * roleRepository.findByName(_) >> Optional.empty()
 
@@ -130,12 +141,17 @@ class UserServiceTest extends Specification {
     }
 
     private UserDTO getUserDTO() {
-        List<String> roles = List.of(
-                "CUSTOMER"
-        )
-
+        List<String> roles = new ArrayList<>()
+        roles.add("CUSTOMER")
 
         return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", roles)
+    }
+
+    private List<UserDTO> getUserDTOs() {
+        return List.of(
+                new UserDTO(1, "Anne", "Smith", "123456789", "anneS@gmail.com", "anne123", List.of("CUSTOMER", "EMPLOYEE")),
+                new UserDTO(2, "Ann", "Johnson", "987654321", "annJ@gmail.com", "anne321", List.of("CUSTOMER"))
+        )
     }
 
     private UserEntity getUserEntity() {
@@ -145,9 +161,22 @@ class UserServiceTest extends Specification {
         return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", roles, new ArrayList<BookEntity>())
     }
 
-    private UserEntity getUserEntityWithoutRoles() {
-        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", new ArrayList<RoleEntity>(), new ArrayList<BookEntity>())
+    private List<UserEntity> getUserEntities() {
+        List<RoleEntity> anneRoles = List.of(
+                new RoleEntity(1, "CUSTOMER", null),
+                new RoleEntity(1, "EMPLOYEE", null),
+        )
+
+        List<RoleEntity> annRoles = List.of(
+                new RoleEntity(1, "CUSTOMER", null),
+        )
+
+        return List.of(
+                new UserEntity(1, "Anne", "Smith", "123456789", "anneS@gmail.com", "anne123",anneRoles ,new ArrayList<BookEntity>()),
+                new UserEntity(2, "Ann", "Johnson", "987654321", "annJ@gmail.com", "anne321",annRoles ,new ArrayList<BookEntity>())
+        )
     }
+
 
     private RegisteredUserDTO getRegisteredUser() {
         return new RegisteredUserDTO("Anne", "Smith", "123456789", "anne@gmail.com", "anne123")
