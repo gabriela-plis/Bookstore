@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 public record UserDTO(
+
     Integer id,
 
     @NotBlank
@@ -19,9 +20,6 @@ public record UserDTO(
 
     @NotBlank
     String email,
-
-    @NotBlank
-    String password,
 
     @NotNull
     List<String> roles

@@ -36,7 +36,7 @@ public class UserEntity {
     private String phone;
 
     @NotNull
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull
