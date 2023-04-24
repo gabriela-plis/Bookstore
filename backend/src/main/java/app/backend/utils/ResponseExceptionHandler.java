@@ -1,5 +1,6 @@
 package app.backend.utils;
 
+import app.backend.utils.exceptions.WrongPasswordException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class ResponseExceptionHandler {
@@ -28,8 +28,13 @@ public class ResponseExceptionHandler {
         return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
     }
 
-        @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException() {
         return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<Object> handleWrongPasswordException() {
+        return new ResponseEntity<>(BAD_REQUEST);
     }
 }

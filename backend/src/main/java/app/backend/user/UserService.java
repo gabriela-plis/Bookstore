@@ -1,7 +1,9 @@
 package app.backend.user;
 
+import app.backend.utils.exceptions.WrongPasswordException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper mapper;
+    private final BCryptPasswordEncoder encoder;
 
     public UserDTO getByEmail(String email) {
         UserEntity userEntity = userRepository.findByEmail(email)
@@ -36,24 +39,42 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(int id, UserDTO updatedUser) {
-        UserEntity userEntity = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public UserDTO update(UserDTO updatedUser, String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
 
+        //czy password się nie zatraci
         mapper.updateEntity(userEntity, updatedUser);
 
         return mapper.toDTO(userEntity);
     }
 
     @Transactional
+    public void resetPassword(ResetPasswordDTO passwords, String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(EntityNotFoundException::new);
+
+        if (encoder.matches(passwords.oldPassword(), userEntity.getPassword())) {
+            userEntity.setPassword(encoder.encode(passwords.newPassword()));
+        } else {
+            throw new WrongPasswordException();
+        }
+
+    }
+
+    @Transactional
     public UserDTO register(RegisteredUserDTO user) {
         UserEntity userEntity = mapper.toEntity(user);
 
-        RoleEntity role = roleRepository.findByName("CUSTOMER").orElseThrow(EntityNotFoundException::new);
+        userEntity.setPassword(encoder.encode(user.password()));
+
+        RoleEntity role = roleRepository.findByName("CUSTOMER")
+                .orElseThrow(EntityNotFoundException::new);
         userEntity.getRoles().add(role);
 
-        userRepository.save(userEntity);
+        UserEntity savedUser = userRepository.save(userEntity);
 
-        return mapper.toDTO(userEntity);
+        return mapper.toDTO(savedUser);
     }
 
 }

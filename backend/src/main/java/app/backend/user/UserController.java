@@ -34,9 +34,14 @@ public class UserController {
         return service.register(newUser);
     }
 
-    @PutMapping("/{id}")
-    public UserDTO update(@PathVariable int id, @RequestBody @Valid UserDTO updatedUser) {
-        return service.update(id, updatedUser);
+    @PutMapping
+    public UserDTO update(@RequestBody @Valid UserDTO updatedUser, Principal principal) {
+        return service.update(updatedUser, principal.getName());
+    }
+
+    @PutMapping("/password")
+    public void resetPassword(@RequestBody @Valid ResetPasswordDTO passwords, Principal principal) {
+        service.resetPassword(passwords, principal.getName());
     }
 
 }
