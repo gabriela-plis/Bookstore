@@ -33,8 +33,8 @@ public class BookService {
         return bookMapper.toDTOs(books);
     }
 
-    public List<BookDTO> getByOwnerUserId(int id) {
-        List<BookEntity> books = bookRepository.getByOwnerUsers_Id(id);
+    public List<BookDTO> getByOwnerUser(String email) {
+        List<BookEntity> books = bookRepository.getByOwnerUsers_Email(email);
 
         return bookMapper.toDTOs(books);
     }

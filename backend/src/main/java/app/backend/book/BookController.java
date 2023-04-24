@@ -39,9 +39,9 @@ public class BookController {
        return service.getById(id);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<BookDTO> getUserBooksById(@PathVariable int userId) {
-       return service.getByOwnerUserId(userId);
+    @GetMapping("/user/{userEmail}")
+    public List<BookDTO> getUserBooks(@PathVariable String userEmail) {
+       return service.getByOwnerUser(userEmail);
     }
 
     @GetMapping("/criteria")
