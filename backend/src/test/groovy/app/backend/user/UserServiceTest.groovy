@@ -1,8 +1,10 @@
 package app.backend.user
 
 import app.backend.book.BookEntity
+import app.backend.utils.exceptions.WrongPasswordException
 import jakarta.persistence.EntityNotFoundException
 import org.mapstruct.factory.Mappers
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import spock.lang.Specification
 
 class UserServiceTest extends Specification {
@@ -13,10 +15,12 @@ class UserServiceTest extends Specification {
 
     RoleRepository roleRepository = Mock()
 
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder()
+
     UserService userService
 
     def setup() {
-        userService = new UserService(userRepository, roleRepository, userMapper)
+        userService = new UserService(userRepository, roleRepository, userMapper, encoder)
     }
 
     def "should get user by email"() {
@@ -84,30 +88,73 @@ class UserServiceTest extends Specification {
 
     def "should update user"() {
         given:
-        Integer id = 1
-        UserDTO user = new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", List.of("CUSTOMER"))
+        String email = "anne@gmail.com"
+        UserDTO user = new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", List.of("CUSTOMER"))
 
-        1 * userRepository.findById(id) >> Optional.of(getUserEntity())
+        1 * userRepository.findByEmail(email) >> Optional.of(getUserEntity())
 
         when:
-        UserDTO result = userService.update(id, user)
+        UserDTO result = userService.update(user, email)
 
         then:
 
-        result == new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", "anne123", List.of("CUSTOMER"))
+        result == new UserDTO(1, "Anne", "Bellatrix", "123456789", "anne@gmail.com", List.of("CUSTOMER"))
     }
 
     def "should throw EntityNotFoundException when updated user doesn't exists"() {
         given:
-        int id = 1
+        String email = "anne@gmail.com"
         UserDTO user = getUserDTO()
-        1 * userRepository.findById(id) >> Optional.empty()
+        1 * userRepository.findByEmail(email) >> Optional.empty()
 
         when:
-        userService.update(id, user)
+        userService.update(user, email)
 
         then:
         thrown(EntityNotFoundException)
+
+    }
+
+    def "should reset password"() {
+        given:
+        String email = "anne@gmail.com"
+        ResetPasswordDTO passwords = new ResetPasswordDTO("anne123", "anne321")
+
+        when:
+        userService.resetPassword(passwords, email)
+
+        then:
+        1 * userRepository.findByEmail(email) >> Optional.of(getUserEntity())
+
+    }
+
+    def "should thrown EntityNotFoundException when user trying to reset password doesn't exists"() {
+        given:
+        String email = "anne@gmail.com"
+        ResetPasswordDTO passwords = new ResetPasswordDTO("anne123", "anne321")
+
+        1 * userRepository.findByEmail(email) >> Optional.empty()
+
+        when:
+        userService.resetPassword(passwords, email)
+
+        then:
+        thrown(EntityNotFoundException)
+
+    }
+
+    def "should thrown EntityNotFoundException when given password and password in database doesn't match"() {
+        given:
+        String email = "anne@gmail.com"
+        ResetPasswordDTO passwords = new ResetPasswordDTO("anne333", "anne321")
+
+        1 * userRepository.findByEmail(email) >> Optional.of(getUserEntity())
+
+        when:
+        userService.resetPassword(passwords, email)
+
+        then:
+        thrown(WrongPasswordException)
 
     }
 
@@ -144,13 +191,13 @@ class UserServiceTest extends Specification {
         List<String> roles = new ArrayList<>()
         roles.add("CUSTOMER")
 
-        return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", roles)
+        return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", roles)
     }
 
     private List<UserDTO> getUserDTOs() {
         return List.of(
-                new UserDTO(1, "Anne", "Smith", "123456789", "anneS@gmail.com", "anne123", List.of("CUSTOMER", "EMPLOYEE")),
-                new UserDTO(2, "Ann", "Johnson", "987654321", "annJ@gmail.com", "anne321", List.of("CUSTOMER"))
+                new UserDTO(1, "Anne", "Smith", "123456789", "anneS@gmail.com", List.of("CUSTOMER", "EMPLOYEE")),
+                new UserDTO(2, "Ann", "Johnson", "987654321", "annJ@gmail.com", List.of("CUSTOMER"))
         )
     }
 
@@ -158,7 +205,7 @@ class UserServiceTest extends Specification {
         List <RoleEntity> roles = new ArrayList<>()
         roles.add(new RoleEntity(1, "CUSTOMER", new ArrayList<UserEntity>()))
 
-        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "anne123", roles, new ArrayList<BookEntity>())
+        return new UserEntity(1, "Anne", "Smith", "123456789", "anne@gmail.com", "\$2a\$10\$RH3zmSYJx.oebodivDoFV.O./KOjxtVK9uzmjSC4ubeNJZk.hfpfC", roles, new ArrayList<BookEntity>())
     }
 
     private List<UserEntity> getUserEntities() {
