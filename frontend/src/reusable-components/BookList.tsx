@@ -20,8 +20,8 @@ type Props = {
 const BookList = (props: Props) => {
     const {url, operation, bookId, setBookId} = {...props} 
     const [isOperationActive, setIsOperationActive] = useState(false);
-
     const books: Book[] = useFetch(url);
+
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
         e.preventDefault();
@@ -31,6 +31,7 @@ const BookList = (props: Props) => {
     }
 
     return (
+       
         <section className="book-list__container">
             <ul className="book-list__list">
                 {books.map( book => (
@@ -39,7 +40,7 @@ const BookList = (props: Props) => {
                     <div className="book__details">
                         <p>Author: {book.author}</p>
                         <p>Publish year: {book.publishYear}</p>  
-                        <p>Type: {book.type}</p>
+                        <p>Type: {book.type.name}</p>
                     </div>
                     {operation && 
                     <>
@@ -47,7 +48,6 @@ const BookList = (props: Props) => {
                     {isOperationActive && bookId === book.id && <Popup title={operation.type} book={book} handleOperation={operation.handle} setIsOperationActive={setIsOperationActive}/>}
                     </>
                     }
-                    
                 </li>
                 ))}
             </ul>

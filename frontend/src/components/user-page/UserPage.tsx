@@ -15,7 +15,6 @@ type Props = {
 }
 
 const UserPage = (props: Props) => {
-    const user: User = useFetch('http://localhost:8000/users/' + sessionStorage.getItem("id")) as unknown as User;
 
     type userUrlPrefixIsPresent = {
         "borrows": boolean,
@@ -60,9 +59,21 @@ const UserPage = (props: Props) => {
 
     }, [location])
 
+    const user: User = useFetch('http://localhost:8080/users/this') as unknown as User;
+    const [render, setRender] = useState(false)
+    let isEmployee = false;
+
+    useEffect( () => {
+        if (!Array.isArray(user)) {
+            isEmployee = user.roles.includes("EMPLOYEE")
+            setRender(true)
+        }
+    },[user])
+
+
     return ( 
     <main className="UserPage">
-        <UserSidebar employee={user.employee} setDisplayLogoutText={props.setDisplayLogoutText}/>
+        {render && <UserSidebar employee={user.roles.includes("EMPLOYEE")} setDisplayLogoutText={props.setDisplayLogoutText}/>}
         {urlPrefixesPresence.borrows && <Borrows />}
         {urlPrefixesPresence.details && <Details />}
         {urlPrefixesPresence.settings && <Settings />}

@@ -29,7 +29,7 @@ const Popup = (props: Props) => {
                     <div className="book-description">
                         <p>Author: {book.author}</p>
                         <p>Publish year: {book.publishYear}</p>  
-                        <p>Type: {book.type}</p>
+                        <p>Type: {book.type.name}</p>
                     </div>
                 </div>
                 <div className="popup__buttons">

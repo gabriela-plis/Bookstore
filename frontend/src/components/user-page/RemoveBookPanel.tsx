@@ -8,8 +8,9 @@ const RemoveBookPanel = () => {
     const [bookId, setBookId] = useState(0);
 
     const handleRemove = () => {
-        fetch('http://localhost:8000/books/' + bookId, {
-            method: "DELETE"
+        fetch('http://localhost:8080/books/' + bookId, {
+            method: "DELETE",
+            credentials: "include"
         })
 
         //feedback
@@ -23,7 +24,7 @@ const RemoveBookPanel = () => {
     return ( 
         <section className="remove-panel">
             <h2 className="remove-panel__title">Remove Book</h2>
-            <BookList url="http://localhost:8000/books/to-remove" operation={operation} bookId={bookId} setBookId={setBookId}/>
+            <BookList url="http://localhost:8080/books/to-remove" operation={operation} bookId={bookId} setBookId={setBookId}/>
         </section>
      );
 }

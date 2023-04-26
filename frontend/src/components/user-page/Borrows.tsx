@@ -18,7 +18,7 @@ const Borrows = () => {
     return (
         <section className="borrows">
             <h2 className="borrows__title">My Borrows</h2>
-            <BookList url={'http://localhost:8000/books/user/' + sessionStorage.getItem("id")} operation={operation} bookId={bookId} setBookId={setBookId} />
+            <BookList url={'http://localhost:8080/books/user/' + sessionStorage.getItem("email")} operation={operation} bookId={bookId} setBookId={setBookId} />
         </section>
      );
 }

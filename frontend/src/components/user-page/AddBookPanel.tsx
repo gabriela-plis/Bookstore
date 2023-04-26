@@ -8,7 +8,7 @@ import TextInput from "../../reusable-components/TextInput";
 
 const AddBookPanel = () => {
 
-    const types = useFetch<BookType>('http://localhost:8000/books/types');
+    const types = useFetch<BookType>('http://localhost:8080/books/types');
     const [initialType, setInitialType] = useState("");
 
     const [initialBook, setInitialBook] = useState<Book>({
@@ -16,7 +16,10 @@ const AddBookPanel = () => {
         author: "",
         publishYear: 1980,
         availableAmount: 5,
-        type: ""
+        type: {
+            id: 0,
+            name: ""
+        }
     });
     const [book, setBook] =  useState<Book>(initialBook);
     
@@ -36,7 +39,7 @@ const AddBookPanel = () => {
             setInitialBook(prevState => (
                 {
                     ...prevState,
-                    type: types[0].name
+                    type: types[0]
                 }
             ))
 
@@ -75,9 +78,10 @@ const AddBookPanel = () => {
 
 
     const handleSubmit = () => {
-        fetch("http://localhost:8000/books", {
+        fetch("http://localhost:8080/books", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(book)
             })
     }

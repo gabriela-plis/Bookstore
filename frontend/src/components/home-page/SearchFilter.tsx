@@ -17,7 +17,7 @@ const SearchFilter = () => {
 
 // types checkbox
 const TypesSection = () => {
-    const types: BookType[] = useFetch('http://localhost:8000/books/types');
+    const types: BookType[] = useFetch('http://localhost:8080/books/types');
 
     return (
         <section className="filter__types">

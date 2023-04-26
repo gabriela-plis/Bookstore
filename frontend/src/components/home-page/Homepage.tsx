@@ -7,21 +7,20 @@ import SearchFilter from "./SearchFilter";
 import { Operation } from "../../reusable-components/BookList";
 
 type Props = {
-    sessionIsActive: boolean,
+    isAuthenticated: boolean,
     displayLogoutText: boolean;
 }
 
 const Homepage = (props: Props) => {
-    const {sessionIsActive, displayLogoutText} = {...props};
+    const {isAuthenticated, displayLogoutText} = {...props};
     const [displayLogInText, setDisplayLogInText] = useState(false);
 
-    // const [isOperationActive, setIsOperationActive] = useState(false);
     const [bookId, setBookId] = useState(0);
 
     const handleBorrow = () => {
-        console.log(sessionIsActive)
+        console.log(isAuthenticated)
         //not logged in
-        if (!sessionIsActive) {
+        if (!isAuthenticated) {
             setDisplayLogInText(true);
         }
 
@@ -34,7 +33,7 @@ const Homepage = (props: Props) => {
         handle: handleBorrow
     }
 
-//  http://localhost:8000/books/to-borrow
+//  http://localhost:8080/books/to-borrow
 
     return ( 
     <main className="homepage">
@@ -42,11 +41,10 @@ const Homepage = (props: Props) => {
         {displayLogoutText && 
             <Feedback text="You have successfully been logged out! Have a nice day" button/>
         }
-        {!sessionIsActive &&
+        {!isAuthenticated &&
             <Feedback text="Log In to borrow a book!" button={false}/>
         }
-        <BookList url='http://localhost:8000/books/to-borrow'  bookId={bookId} setBookId={setBookId} />
-        {/* operation={operation} */}
+        <BookList url='http://localhost:8080/books/to-borrow'  bookId={bookId} setBookId={setBookId} />
         <SearchFilter />
     </main> 
     );

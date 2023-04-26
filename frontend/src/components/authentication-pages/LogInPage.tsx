@@ -5,17 +5,21 @@ import TextInput from "../../reusable-components/TextInput";
 import LoginData from "../../DTO/LoginDataDTO";
 
 
-const LogInPage = () => {
+type Props = {
+    setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const LogInPage = (props: Props) => {
     return ( 
         <main className="loginPage panel-wrapper">
-            <LogInSection />
+            <LogInSection setIsAuthenticated={props.setIsAuthenticated}/>
             <RegisterOptionSection />
         </main>
      );
 }
 
 
-const LogInSection = () => {
+const LogInSection = (props: Props) => {
     const [loginData, setLoginData] = useState<LoginData>({
         email: "",
         password: "",
@@ -28,32 +32,22 @@ const LogInSection = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-                //Send data to backend and get true or false answer
-        fetch('http://localhost:8000/users/login', {
+        fetch('http://localhost:8080/login', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(loginData)
+            body: JSON.stringify(loginData),
+            credentials: "include"
         })
-        .then( resp => { console.log(resp) });
- 
-        //Temporarily I use GET METHOD
+        .then( resp => {
+            if (resp.status === 200) {
+                sessionStorage.setItem("email", loginData.email)
+                props.setIsAuthenticated(true)                
 
-        const correctId = 3;
-        const incorrectId = 5;
-
-        // fetch('http://localhost:8000/users/' + correctId)
-        // .then(resp => resp.json())
-        // .then(data => {
-        //     if (Object.keys(data).length === 0) {
-        //         setWrongData(true);
-        //
-        //     } else {
-        //         sessionStorage.setItem("id", data.id)
-        //         sessionStorage.setItem("name", data.firstName)
-        //
-        //         navigate('/')
-        //     }
-        // })
+                navigate('/')
+            } else {
+                setWrongData(true)
+            }
+        })
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,8 +66,19 @@ const LogInSection = () => {
             <h2 className="panel-wrapper__title">Log In to Your Account</h2>
             <form className="form" onSubmit={handleSubmit}>
                 <div className="form__fields">
-                    <TextInput name="email" state={loginData.email} setState={handleChange} isRequired placeholder="Email"/>
-                    <PasswordInput name="password" state={loginData.password} setState={handleChange} placeholder="Password" />            
+                    <TextInput 
+                        name="email" 
+                        state={loginData.email} 
+                        setState={handleChange} 
+                        isRequired 
+                        placeholder="Email"
+                    />
+                    <PasswordInput
+                        name="password" 
+                        state={loginData.password} 
+                        setState={handleChange} 
+                        placeholder="Password" 
+                     />            
                     {wrongData && <p className="incorrect-data-text">Incorrect email or password</p>}
                 </div>
                 <button className="btn btn--pink btn--greater btn--greater-border-radius">Log In</button>
