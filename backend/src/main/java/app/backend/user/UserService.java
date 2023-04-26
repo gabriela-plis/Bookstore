@@ -54,7 +54,7 @@ public class UserService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (encoder.matches(passwords.oldPassword(), userEntity.getPassword())) {
+        if (encoder.matches(passwords.currentPassword(), userEntity.getPassword())) {
             userEntity.setPassword(encoder.encode(passwords.newPassword()));
         } else {
             throw new WrongPasswordException();

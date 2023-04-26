@@ -349,7 +349,7 @@ class UserControllerTest extends MvcSpecification {
     def "should reset password and return 200 status code"() {
         given:
         def request = [
-                oldPassword: "anne123",
+                currentPassword: "anne123",
                 newPassword: "anne321"
         ]
 
