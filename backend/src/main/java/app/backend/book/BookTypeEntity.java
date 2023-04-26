@@ -23,6 +23,6 @@ public class BookTypeEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "bookType")
+    @OneToMany(mappedBy = "type")
     private List<BookEntity> books;
 }

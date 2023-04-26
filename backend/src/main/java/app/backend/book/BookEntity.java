@@ -39,7 +39,7 @@ public class BookEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id")
-    private BookTypeEntity bookType;
+    private BookTypeEntity type;
 
     @ManyToMany
     @JoinTable(name = "users_to_books",

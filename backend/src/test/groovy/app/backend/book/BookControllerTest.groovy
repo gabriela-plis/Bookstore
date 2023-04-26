@@ -43,8 +43,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
         result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true))) //poszukaj ladniejszego rozwiazania xd
         result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].bookType.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].bookType.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -65,8 +65,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
         result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
         result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].bookType.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].bookType.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -88,8 +88,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
         result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
         result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].bookType.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].bookType.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -135,22 +135,22 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$.publishYear').value(2019))
         result.andExpect(jsonPath('$.canBeBorrow').value(true))
         result.andExpect(jsonPath('$.availableAmount').value(10))
-        result.andExpect(jsonPath('$.bookType.id').value(1))
-        result.andExpect(jsonPath('$.bookType.name').value("Type"))
+        result.andExpect(jsonPath('$.type.id').value(1))
+        result.andExpect(jsonPath('$.type.name').value("Type"))
     }
 
-    def "should get all book by user id and return 200 status code"() {
+    @WithMockUser
+    def "should get all book by user email and return 200 status code"() {
         given:
-        int id = 1
+        String email = "anne@gmail.com"
 
         when:
         def result = mvc
-                .perform(get("/books/user/$id")
-                        .with(user("user").roles(role)))
+                .perform(get("/books/user/$email"))
                 .andDo(print())
 
         then:
-        1 * bookService.getByOwnerUserId(id) >> getBookDTOs()
+        1 * bookService.getByOwnerUser(email) >> getBookDTOs()
 
         and:
         result.andExpect(status().isOk())
@@ -160,11 +160,9 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
         result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
         result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].bookType.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].bookType.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
 
-        where:
-        role << ["CUSTOMER", "EMPLOYEE"]
     }
 
     @WithAnonymousUser
@@ -204,8 +202,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
         result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
         result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].bookType.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].bookType.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -277,8 +275,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$.publishYear').value(2019))
         result.andExpect(jsonPath('$.canBeBorrow').value(true))
         result.andExpect(jsonPath('$.availableAmount').value(10))
-        result.andExpect(jsonPath('$.bookType.id').value(1))
-        result.andExpect(jsonPath('$.bookType.name').value("Type"))
+        result.andExpect(jsonPath('$.type.id').value(1))
+        result.andExpect(jsonPath('$.type.name').value("Type"))
 
     }
 
@@ -292,7 +290,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : publishYear,
                 canBeBorrow    : canBeBorrow,
                 availableAmount: availableAmount,
-                bookType       : [
+                type       : [
                         id  : typeId,
                         name: typeName
                 ]
@@ -447,8 +445,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$.publishYear').value(2019))
         result.andExpect(jsonPath('$.canBeBorrow').value(true))
         result.andExpect(jsonPath('$.availableAmount').value(10))
-        result.andExpect(jsonPath('$.bookType.id').value(1))
-        result.andExpect(jsonPath('$.bookType.name').value("Type"))
+        result.andExpect(jsonPath('$.type.id').value(1))
+        result.andExpect(jsonPath('$.type.name').value("Type"))
     }
 
     @WithMockUser(roles = "EMPLOYEE")
@@ -461,7 +459,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : publishYear,
                 canBeBorrow    : canBeBorrow,
                 availableAmount: availableAmount,
-                bookType       : [
+                type       : [
                         id  : typeId,
                         name: typeName
                 ]
@@ -585,7 +583,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : 2019,
                 canBeBorrow    : true,
                 availableAmount: 10,
-                bookType       : [
+                type       : [
                         id  : 1,
                         name: "Type"
                 ]
@@ -599,7 +597,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : 2019,
                 canBeBorrow    : true,
                 availableAmount: 10,
-                bookType       : [
+                type       : [
                         id  : 1,
                         name: "Type"
                 ]
@@ -607,18 +605,18 @@ class BookControllerTest extends MvcSpecification {
     }
 
     private BookDTO getBookDTO() {
-        BookTypeDTO bookType = new BookTypeDTO(1, "Type")
+        BookTypeDTO type = new BookTypeDTO(1, "Type")
 
-        return new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType)
+        return new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, type)
     }
 
     private List<BookDTO> getBookDTOs() {
 
-        BookTypeDTO bookType = new BookTypeDTO(1, "Type")
+        BookTypeDTO type = new BookTypeDTO(1, "Type")
 
         return List.of(
-                new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType),
-                new BookDTO(2, "The Higgler", "A.E. Coppard", 2016, true, 5, bookType),
+                new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, type),
+                new BookDTO(2, "The Higgler", "A.E. Coppard", 2016, true, 5, type),
         )
     }
 

@@ -26,6 +26,6 @@ public record BookDTO(
     Integer availableAmount,
 
     @Valid
-    BookTypeDTO bookType
+    BookTypeDTO type
 ) {
 }

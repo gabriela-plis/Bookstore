@@ -47,7 +47,7 @@ public class BookService {
     }
 
     public List<BookDTO> getBySortingCriteria(BookSortingCriteriaDTO criteria) {
-        List<BookEntity> books = bookRepository.findByPublishYearBetweenAndBookType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
+        List<BookEntity> books = bookRepository.findByPublishYearBetweenAndType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypeName());
 
         return bookMapper.toDTOs(books);
     }

@@ -54,13 +54,13 @@ class BookServiceTest extends Specification {
 
     }
 
-    def "should get all books by user id"() {
+    def "should get all books by user email"() {
         given:
-        int id = 1
-        1 * bookRepository.getByOwnerUsers_Id(id) >> getBookEntityList()
+        String email = "anne@gmail.com"
+        1 * bookRepository.getByOwnerUsers_Email(email) >> getBookEntityList()
 
         when:
-        List<BookDTO> result = bookService.getByOwnerUserId(id)
+        List<BookDTO> result = bookService.getByOwnerUser(email)
 
         then:
         result == getBookDTOList()
@@ -94,7 +94,7 @@ class BookServiceTest extends Specification {
     def "should get books by sorting criteria"() {
         given:
         BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO("Type", 1999, 2020)
-        1 * bookRepository.findByPublishYearBetweenAndBookType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.minPublishYear, criteria.maxPublishYear, criteria.typeName) >> getBookEntityList()
+        1 * bookRepository.findByPublishYearBetweenAndType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.minPublishYear, criteria.maxPublishYear, criteria.typeName) >> getBookEntityList()
 
         when:
         List<BookDTO> result = bookService.getBySortingCriteria(criteria)

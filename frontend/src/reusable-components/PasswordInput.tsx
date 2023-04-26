@@ -2,7 +2,7 @@ type PasswordInputProps = {
     name: string;
     state: string;
     setState: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    placeholder: string;
+    placeholder?: string;
   };
 
 
