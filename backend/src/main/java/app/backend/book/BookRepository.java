@@ -13,7 +13,7 @@ public interface BookRepository extends ListCrudRepository<BookEntity, Integer> 
 
     List<BookEntity> getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(Integer availableAmount);
 
-    List<BookEntity> getByOwnerUsers_Email(String email);
+    List<BookEntity> getByOwnerUsers_Id(int id);
 
     List<BookEntity> findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(Integer publishYearMin, Integer publishYearMax, Set<String>typeName, Integer availableAmountGreaterThan);
 

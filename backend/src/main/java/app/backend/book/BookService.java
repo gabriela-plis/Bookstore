@@ -1,6 +1,7 @@
 package app.backend.book;
 
 import app.backend.user.UserEntity;
+import app.backend.user.UserRepository;
 import app.backend.utils.SecurityContextAccessor;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final UserRepository userRepository;
 
     private final BookTypeRepository bookTypeRepository;
     private final BookTypeMapper bookTypeMapper;
@@ -33,8 +35,8 @@ public class BookService {
         return bookMapper.toDTOs(books);
     }
 
-    public List<BookDTO> getByOwnerUser(String email) {
-        List<BookEntity> books = bookRepository.getByOwnerUsers_Email(email);
+    public List<BookDTO> getByOwnerUser(int id) {
+        List<BookEntity> books = bookRepository.getByOwnerUsers_Id(id);
 
         return bookMapper.toDTOs(books);
     }
@@ -77,12 +79,12 @@ public class BookService {
 
         String username = securityContextAccessor.getAuthentication().getName();
 
-        UserEntity user = book.getOwnerUsers().stream()
-            .filter(u -> u.getEmail().equals(username))
-            .findAny()
-            .orElseThrow(EntityNotFoundException::new);
+        boolean isAlreadyBorrowed = book.getOwnerUsers().stream().anyMatch(user -> user.getEmail().equals(username));
+        if(isAlreadyBorrowed) {
+            return;
+        }
 
-        book.getOwnerUsers().add(user);
+        book.getOwnerUsers().add(userRepository.findByEmail(username).orElseThrow(IllegalStateException::new));
     }
 
     @Transactional

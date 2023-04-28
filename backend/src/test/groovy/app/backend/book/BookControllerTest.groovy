@@ -139,17 +139,17 @@ class BookControllerTest extends MvcSpecification {
     }
 
     @WithMockUser
-    def "should get all book by user email and return 200 status code"() {
+    def "should get all book by user id and return 200 status code"() {
         given:
-        String email = "anne@gmail.com"
+        int id = 1
 
         when:
         def result = mvc
-                .perform(get("/books/user/$email"))
+                .perform(get("/books/user/$id"))
                 .andDo(print())
 
         then:
-        1 * bookService.getByOwnerUser(email) >> getBookDTOs()
+        1 * bookService.getByOwnerUser(id) >> getBookDTOs()
 
         and:
         result.andExpect(status().isOk())

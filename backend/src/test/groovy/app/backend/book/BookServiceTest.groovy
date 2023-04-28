@@ -2,6 +2,7 @@ package app.backend.book
 
 import app.backend.user.RoleEntity
 import app.backend.user.UserEntity
+import app.backend.user.UserRepository
 import app.backend.utils.SecurityContextAccessor
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -22,12 +23,14 @@ class BookServiceTest extends Specification {
     BookRepository bookRepository = Mock()
     BookTypeRepository bookTypeRepository = Mock()
 
+    UserRepository userRepository = Mock()
+
     SecurityContextAccessor securityContextAccessor = Mock()
 
     BookService bookService
 
     def setup() {
-        bookService = new BookService(securityContextAccessor, bookRepository, bookMapper, bookTypeRepository, bookTypeMapper)
+        bookService = new BookService(securityContextAccessor, bookRepository, bookMapper, userRepository, bookTypeRepository, bookTypeMapper)
     }
 
     def "should get all books"() {
@@ -54,13 +57,13 @@ class BookServiceTest extends Specification {
 
     }
 
-    def "should get all books by user email"() {
+    def "should get all books by user id"() {
         given:
-        String email = "anne@gmail.com"
-        1 * bookRepository.getByOwnerUsers_Email(email) >> getBookEntityList()
+        int id = 1
+        1 * bookRepository.getByOwnerUsers_Id(id) >> getBookEntityList()
 
         when:
-        List<BookDTO> result = bookService.getByOwnerUser(email)
+        List<BookDTO> result = bookService.getByOwnerUser(id)
 
         then:
         result == getBookDTOList()
@@ -79,7 +82,7 @@ class BookServiceTest extends Specification {
         result == getBookDTO()
     }
 
-    def "should  throw EntityNotFoundException when book was not found by id"() {
+    def "should throw EntityNotFoundException when book was not found by id"() {
         given:
         int id = 1
         1 * bookRepository.findById(id) >> Optional.empty()
@@ -205,8 +208,9 @@ class BookServiceTest extends Specification {
         bookService.borrowBook(id)
 
         then:
-        1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
+        1 * bookRepository.findById(id) >> Optional.of(getBookEntityWithNoOwners())
         1 * securityContextAccessor.getAuthentication() >> getAuthentication()
+        1 * userRepository.findByEmail(getAuthentication().getName()) >> Optional.of(getUserEntity())
 
     }
 
@@ -223,19 +227,21 @@ class BookServiceTest extends Specification {
 
     }
 
-    def "should throw EntityNotFoundException when user that want borrow book doesn't exists"() {
+    def "should throw IllegalStateException when user that want borrow book doesn't exists"() {
         given:
         int id = 1
 
-         1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
+        1 * bookRepository.findById(id) >> Optional.of(getBookEntityWithNoOwners())
 
-        1 * securityContextAccessor.getAuthentication() >> getNonExistentUserAuthentication()
+        1 * securityContextAccessor.getAuthentication() >> getAuthentication()
+
+        1 * userRepository.findByEmail(getAuthentication().getName()) >> Optional.empty()
 
         when:
         bookService.borrowBook(id)
 
         then:
-        thrown(EntityNotFoundException)
+        thrown(IllegalStateException)
 
     }
 
