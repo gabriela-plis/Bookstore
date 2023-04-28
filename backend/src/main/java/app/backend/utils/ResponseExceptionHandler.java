@@ -28,6 +28,11 @@ public class ResponseExceptionHandler {
         return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Object> handleIllegalStateException() {
+        return new ResponseEntity<>(INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException() {
         return new ResponseEntity<>(UNPROCESSABLE_ENTITY);
