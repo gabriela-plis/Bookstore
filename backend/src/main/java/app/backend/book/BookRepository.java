@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public interface BookRepository extends ListCrudRepository<BookEntity, Integer> {
 
@@ -14,7 +15,7 @@ public interface BookRepository extends ListCrudRepository<BookEntity, Integer> 
 
     List<BookEntity> getByOwnerUsers_Email(String email);
 
-    List<BookEntity> findByPublishYearBetweenAndType_NameIgnoreCaseAndCanBeBorrowIsTrue(Integer publishYearMin, Integer publishYearMax, String typeName);
+    List<BookEntity> findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(Integer publishYearMin, Integer publishYearMax, Set<String>typeName, Integer availableAmountGreaterThan);
 
     @Query(
         value = """

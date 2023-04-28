@@ -11,7 +11,6 @@ import static app.backend.book.ConstraintViolationVariables.*
 import static groovy.json.JsonOutput.*
 import static org.hamcrest.Matchers.*
 import static org.springframework.http.MediaType.*
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -181,12 +180,12 @@ class BookControllerTest extends MvcSpecification {
 
     def "should get all book by sorting criteria and return 200 status code"() {
         given:
-        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO("Type", 2016, 2019)
+        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 2016, 2019)
 
         when:
         def result = mvc
                 .perform(get("/books/criteria")
-                        .param("type", "Type")
+                        .param("types", "Type")
                         .param("min", "2016")
                         .param("max", "2019"))
                 .andDo(print())
@@ -212,7 +211,7 @@ class BookControllerTest extends MvcSpecification {
         when:
         def result = mvc
                 .perform(get("/books/criteria")
-                        .param("type", type)
+                        .param("types", type)
                         .param("min", minYear as String)
                         .param("max", maxYear as String))
                 .andDo(print())
@@ -222,10 +221,9 @@ class BookControllerTest extends MvcSpecification {
 
         where:
         type              | minYear               | maxYear               | invalidData
-        WHITESPACE_STRING | 2010                  | 2015                  | "empty type"
-        "romance"         | null                  | 2015                  | "missing type"
         "romance"         | YEAR_LESS_THAN_MIN    | 2015                  | "date < min"
         "romance"         | YEAR_GREATER_THAN_MAX | 2015                  | "date > max"
+        "romance"         | null                  | 2015                  | "missing date"
         "romance"         | 2010                  | null                  | "missing max date"
         "romance"         | 2010                  | YEAR_LESS_THAN_MIN    | "date < min"
         "romance"         | 2010                  | YEAR_GREATER_THAN_MAX | "date > max"
@@ -290,7 +288,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : publishYear,
                 canBeBorrow    : canBeBorrow,
                 availableAmount: availableAmount,
-                type       : [
+                type           : [
                         id  : typeId,
                         name: typeName
                 ]
@@ -459,7 +457,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : publishYear,
                 canBeBorrow    : canBeBorrow,
                 availableAmount: availableAmount,
-                type       : [
+                type           : [
                         id  : typeId,
                         name: typeName
                 ]
@@ -583,7 +581,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : 2019,
                 canBeBorrow    : true,
                 availableAmount: 10,
-                type       : [
+                type           : [
                         id  : 1,
                         name: "Type"
                 ]
@@ -597,7 +595,7 @@ class BookControllerTest extends MvcSpecification {
                 publishYear    : 2019,
                 canBeBorrow    : true,
                 availableAmount: 10,
-                type       : [
+                type           : [
                         id  : 1,
                         name: "Type"
                 ]

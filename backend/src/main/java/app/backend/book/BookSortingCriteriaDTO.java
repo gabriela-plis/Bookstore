@@ -1,8 +1,9 @@
 package app.backend.book;
 
 import app.backend.utils.annotations.ValidYear;
-import jakarta.validation.constraints.*;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class BookSortingCriteriaDTO {
@@ -13,11 +14,10 @@ public class BookSortingCriteriaDTO {
     @ValidYear
     private final Integer maxPublishYear;
 
-    @NotBlank
-    private final String typeName;
+    private final Set<String> types;
 
-    public BookSortingCriteriaDTO(String type, Integer min, Integer max) {
-        this.typeName = type;
+    public BookSortingCriteriaDTO(Set<String> types, Integer min, Integer max) {
+        this.types = types;
         this.minPublishYear = min;
         this.maxPublishYear = max;
     }

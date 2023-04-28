@@ -93,8 +93,8 @@ class BookServiceTest extends Specification {
 
     def "should get books by sorting criteria"() {
         given:
-        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO("Type", 1999, 2020)
-        1 * bookRepository.findByPublishYearBetweenAndType_NameIgnoreCaseAndCanBeBorrowIsTrue(criteria.minPublishYear, criteria.maxPublishYear, criteria.typeName) >> getBookEntityList()
+        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 1999, 2020)
+        1 * bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.minPublishYear, criteria.maxPublishYear, criteria.types, 0) >> getBookEntityList()
 
         when:
         List<BookDTO> result = bookService.getBySortingCriteria(criteria)

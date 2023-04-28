@@ -46,6 +46,7 @@ public class BookController {
 
     @GetMapping("/criteria")
     public List<BookDTO> getSortedBooks(@Valid BookSortingCriteriaDTO criteria) {
+        System.out.println(criteria);
        return service.getBySortingCriteria(criteria);
     }
 
