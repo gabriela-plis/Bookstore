@@ -1,5 +1,4 @@
-import { url } from "inspector";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import OperationTypes from "../OperationTypes";
 import Book from "../DTO/BookDTO";
 import useFetch from "../functions/useFetch";
@@ -10,18 +9,24 @@ export type Operation = {
     handle: () => void
 }
 
+export type FeedbackPopup = {
+    render: boolean,
+    text: string
+}
+
 type Props = {
     url: string,
-    operation?: Operation,
+    operation: Operation,
     bookId: number,
     setBookId: React.Dispatch<React.SetStateAction<number>>,
+    feedback?: FeedbackPopup
+    forceUpdate?: any
   }
 
 const BookList = (props: Props) => {
-    const {url, operation, bookId, setBookId} = {...props} 
+    const {url, operation, bookId, setBookId, feedback, forceUpdate} = {...props} 
     const [isOperationActive, setIsOperationActive] = useState(false);
-    const books: Book[] = useFetch(url);
-
+    const books: Book[] = useFetch(url, forceUpdate);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
         e.preventDefault();
@@ -30,6 +35,14 @@ const BookList = (props: Props) => {
         setIsOperationActive(true);
     }
 
+    if (books.length === 0) {
+        return (
+            <section className="book-list__container">
+                <p>No books for display</p>
+            </section>
+        )
+    }
+   
     return (
        
         <section className="book-list__container">
@@ -42,11 +55,14 @@ const BookList = (props: Props) => {
                         <p>Publish year: {book.publishYear}</p>  
                         <p>Type: {book.type.name}</p>
                     </div>
-                    {operation && 
-                    <>
                     <button className="btn" onClick={(e) => handleClick(e, book.id!)}>{capitalize(operation.type)}</button>
                     {isOperationActive && bookId === book.id && <Popup title={operation.type} book={book} handleOperation={operation.handle} setIsOperationActive={setIsOperationActive}/>}
-                    </>
+                    {feedback?.render &&  
+                    <div className="popup__background">
+                        <section className="popup__container">
+                            <p>{feedback.text}</p>
+                        </section>
+                    </div>
                     }
                 </li>
                 ))}
