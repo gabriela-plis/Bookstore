@@ -1,8 +1,6 @@
-import { type } from "os";
 import { useEffect, useState } from "react";
-import DTO from "../DTO/DTO";
 
-function useFetch<Type>(url: string): Type[] {
+function useFetch<Type>(url: string, forceUpdate?: any): Type[] {
 
     const [data, setData] = useState<Type[]>([]);
     
@@ -14,7 +12,7 @@ function useFetch<Type>(url: string): Type[] {
         .then ( data => {
             setData(data);
         })
-    },[]);
+    },[url, forceUpdate]);
 
     return data;
 }
