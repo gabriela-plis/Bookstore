@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import User from "../../DTO/UserDTO";
 import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
-import Select from "react-select/dist/declarations/src/Select";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import ResetPassword from "../../DTO/ResetPasswordDTO";
 
@@ -22,51 +21,24 @@ const Settings = () => {
    
     const [readyToRender, setReadyToRender] = useState(false);
 
-
     useEffect( () => {
-
         if (Object.keys(userDTO).length !== 0) {
-
         setUser(userDTO);
-        
         setReadyToRender(true);
         }
 
     },[userDTO])
-
-
-    const handleEditData = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => {
-        e.preventDefault();
-
-       
-        fetch('http://localhost:8080/users', {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify(user)
-            })
-
-        setShowEditData(false);
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUser(prevState => (
-            {
-                ...prevState,
-                [e.target.name]: e.target.value
-            }
-        )) 
-    }
+    
 
     return (
         <section className="settings">
             <h2 className="settings__title">Account settings</h2>
             {readyToRender &&  
                 <div className="settings__content">
-                    <DataArea data={user.firstName} setData={handleChange} className="first-name" inputName="firstName" displayName="First name" handleEditData={handleEditData}/>
-                    <DataArea data={user.lastName} setData={handleChange} className="last-name" inputName="lastName" displayName="Last name" handleEditData={handleEditData}/>
-                    <DataArea data={user.email} setData={handleChange} className="email" displayName="Email" handleEditData={handleEditData}/>
-                    <DataArea data={user.phone} setData={handleChange} className="phone" displayName="Phone" handleEditData={handleEditData}/>
+                    <DataArea initialData={user.firstName} user={user} setUser={setUser} className="first-name" inputName="firstName" displayName="First name" />
+                    <DataArea initialData={user.lastName} user={user} setUser={setUser} className="last-name" inputName="lastName" displayName="Last name" />
+                    <DataArea initialData={user.email} user={user} setUser={setUser} className="email" displayName="Email" />
+                    <DataArea initialData={user.phone} user={user} setUser={setUser} className="phone" displayName="Phone" />
                     <ResetPasswordArea />
                 </div>     
             }
@@ -76,16 +48,17 @@ const Settings = () => {
 }
 
 type DataAreaProps = {
-    data: string;
-    setData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    initialData: string;
+    user: User;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
     className: string;
     displayName: string;
-    handleEditData: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => void;
     inputName?: string;
     buttonName?: string;
 }
 
 const DataArea = (props: DataAreaProps) => {
+    const {initialData, user, setUser, className, displayName, inputName, buttonName} = {...props}
 
     const[showEditPanel, setShowEditPanel] = useState(false);
 
@@ -95,11 +68,11 @@ const DataArea = (props: DataAreaProps) => {
     }
 
     return (
-        <div className = {"settings__data settings__data--"+props.className}>
-            <label htmlFor={props.className}>
-                <span className="settings__label-description">{props.displayName}:</span>
-                {props.data ? (
-                    <span>{props.data}</span>
+        <div className = {"settings__data settings__data--"+className}>
+            <label htmlFor={className}>
+                <span className="settings__label-description">{displayName}:</span>
+                {initialData ? (
+                    <span>{initialData}</span>
                 ) : (
                     <span>- - -</span>
                 )} 
@@ -110,20 +83,20 @@ const DataArea = (props: DataAreaProps) => {
                     handleClickEditBtn(e)
                 }}
             >
-               {props.buttonName ? (
-                    <span>{props.buttonName}</span>
+               {buttonName ? (
+                    <span>{buttonName}</span>
                ) : (
                     <span>Edit</span>
                )} 
             </button>
             {showEditPanel && (
                     <EditDataPanel 
-                        data={props.data}
-                        setData={props.setData} 
-                        setShowEditPanel={setShowEditPanel} 
-                        displayName={props.displayName} 
-                        handleEditData={props.handleEditData} 
-                        inputName={props.inputName ? props.inputName : props.className}
+                        initialData={initialData}
+                        setShowEditPanel={setShowEditPanel}
+                        user={user} 
+                        setUser={setUser}
+                        displayName={displayName} 
+                        inputName={inputName ? inputName : className}
                     />
                 )
             }
@@ -132,18 +105,56 @@ const DataArea = (props: DataAreaProps) => {
 }
 
 type EditDataPanelProps = {
-    data: string;
-    setData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    initialData: string;
     setShowEditPanel: React.Dispatch<React.SetStateAction<boolean>>;
+    user: User;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
     displayName: string;
     inputName: string;
-    handleEditData: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => void;
 }
 
 const EditDataPanel = (props: EditDataPanelProps) => {
-    const {data, setData, setShowEditPanel, displayName, inputName, handleEditData} = {...props}
+    const {initialData, setShowEditPanel, user, setUser, displayName, inputName} = {...props}
+
+    const [updatedData, setUpdatedData] = useState("")
+    const [userToSend, setUserToSend] = useState<User>(user);
+
+    const [error, setError] = useState(false);
+
+    const handleEditData = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>, dataName: string) => {
+        e.preventDefault();
+
+        fetch('http://localhost:8080/users', {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(userToSend)
+            })
+            .then(resp => {
+                if (resp.status === 200) {
+                    setError(false)
+                    setUser(userToSend)
+                    setShowEditData(false)
+                }
+            })
+            .catch( error => {
+                setError(true) 
+            })
+
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUpdatedData(e.target.value)
+        setUserToSend(prevState => (
+                    {
+                        ...prevState,
+                        [inputName]: e.target.value
+                    }
+                ))  
+    }
 
     const handleCancelOperation = () => {
+        setUpdatedData("")
         props.setShowEditPanel(false);
     } 
 
@@ -155,17 +166,18 @@ const EditDataPanel = (props: EditDataPanelProps) => {
                     <label className="edit__label">{displayName}</label>
                     <TextInput 
                         name={inputName}
-                        state={data} 
-                        setState={setData} 
+                        state={updatedData}
+                        setState={handleChange} 
                         isRequired 
-                        placeholder={data}
+                        placeholder={initialData}
 
                     />
                 </div>
+                {error && <p className="incorrect-data-text">Something goes wrong, try again</p>}
                 <button className="btn btn--cancel" onClick={handleCancelOperation}>Cancel</button>
                 <button className="btn btn--save" 
                     onClick={ (e) => {
-                        handleEditData(e, setShowEditPanel);
+                        handleEditData(e, setShowEditPanel, inputName)                    
                     }}
                 >Save</button>
             </section>
@@ -215,6 +227,7 @@ const ResetPasswordPanel = (props: ResetPasswordPanelProps) => {
                 [e.target.name]: e.target.value
             }
         )) 
+
     }
 
     const handleResetPassword = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -224,6 +237,7 @@ const ResetPasswordPanel = (props: ResetPasswordPanelProps) => {
         fetch('http://localhost:8080/users/password', {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify(passwords)
         })
 
@@ -241,21 +255,21 @@ const ResetPasswordPanel = (props: ResetPasswordPanelProps) => {
                 <div className="edit__input-container">
                     <label className="edit__label">Current Password</label>
                     <PasswordInput 
-                        name="current-password"
+                        name="currentPassword"
                         state={passwords.currentPassword} 
-                        setState={handleChange} 
+                        setState={(e) => handleChange(e)} 
                     />
                     <label className="edit__label">New Password</label>
                     <PasswordInput
-                        name="new-password"
+                        name="newPassword"
                         state={passwords.newPassword} 
-                        setState={handleChange} 
+                        setState={(e) => handleChange(e)} 
                     />
                 </div>
                 <button className="btn btn--cancel" onClick={handleCancelOperation}>Cancel</button>
                 <button className="btn btn--save" 
                     onClick={ (e) => {
-                        handleResetPassword(e, props.setShowEditPanel);
+                        handleResetPassword(e, setShowEditPanel);
                     }}
                 >Save</button>
             </section>
