@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import OperationTypes from "../../OperationTypes";
-import BookList from "../../reusable-components/BookList";
+import BookList, { FeedbackPopup } from "../../reusable-components/BookList";
 import Feedback from "../../reusable-components/Feedback";
-import Popup from "../../reusable-components/Popup";
 import SearchFilter from "./SearchFilter";
-import { Operation } from "../../reusable-components/BookList";
+import { Operation } from "../../reusable-components/BookList"; 
+import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
 
 type Props = {
     isAuthenticated: boolean,
@@ -17,23 +17,75 @@ const Homepage = (props: Props) => {
 
     const [bookId, setBookId] = useState(0);
 
+    const currentYear = new Date().getFullYear()
+    const initialSearchingCriteria: BookSortingCriteria = {
+        minPublishYear: 1950, 
+        maxPublishYear: currentYear,
+        types: new Set<string>()
+    }
+
+    const [searchingCriteria, setSearchingCriteria] = useState<BookSortingCriteria>(initialSearchingCriteria)
+
+    const [url, setUrl] = useState("http://localhost:8080/books/to-borrow")
+
+    const replaceSpaces = function(word: string){
+        return word.replace(/\s+/g, "+")
+      }
+
+
+    const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+
+        if(searchingCriteria.types?.size === 0) {
+            setUrl("http://localhost:8080/books/to-borrow")
+        } else {
+            setUrl("http://localhost:8080/books/criteria".concat('?', "types=", Array.from(searchingCriteria.types!).map(replaceSpaces).join(","), "&", "min=", searchingCriteria.minPublishYear!.toString(), "&", "max=", searchingCriteria.maxPublishYear!.toString()))
+        }
+    }
+    
+    const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+        setUrl("http://localhost:8080/books/to-borrow")
+    }
+
+    const [renderFeedback, setRenderFeedback] = useState(false)
+
     const handleBorrow = () => {
-        console.log(isAuthenticated)
-        //not logged in
         if (!isAuthenticated) {
             setDisplayLogInText(true);
+        } else {
+            fetch(`http://localhost:8080/books/${bookId}/borrow`, {
+                method: "POST",
+                credentials: "include"
+            })
+            .then(resp => {
+                if (resp.status === 200) {
+                    setRenderFeedback(true)
+
+                    setTimeout(function () {
+                        setRenderFeedback(false)
+                    },1500);
+    
+                }
+            })
+            
         }
 
         //you already have this book borrowed
         //borrow
     }
 
+
     const operation: Operation = {
         type: OperationTypes.Borrow,
         handle: handleBorrow
     }
 
-//  http://localhost:8080/books/to-borrow
+    const feedback: FeedbackPopup = {
+        render: renderFeedback,
+        text: "Thank you for borrow this book!"
+    }
+
 
     return ( 
     <main className="homepage">
@@ -44,8 +96,8 @@ const Homepage = (props: Props) => {
         {!isAuthenticated &&
             <Feedback text="Log In to borrow a book!" button={false}/>
         }
-        <BookList url='http://localhost:8080/books/to-borrow'  bookId={bookId} setBookId={setBookId} />
-        <SearchFilter />
+        <BookList url={url} bookId={bookId} setBookId={setBookId} operation={operation} feedback={feedback}/>
+        <SearchFilter setSearchingCriteria={setSearchingCriteria} handleReset={handleReset} handleSearch={handleSearch} />
     </main> 
     );
 }
