@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import TextInput from "../../reusable-components/TextInput";
 import LoginData from "../../DTO/LoginDataDTO";
+import User from "../../DTO/UserDTO";
 
 
 type Props = {
@@ -18,16 +19,16 @@ const LogInPage = (props: Props) => {
      );
 }
 
-
 const LogInSection = (props: Props) => {
     const [loginData, setLoginData] = useState<LoginData>({
         email: "",
-        password: "",
-        employee: false
+        password: ""
     })
 
     const [wrongData, setWrongData] = useState(false);
     const navigate = useNavigate();
+
+    const [user, setUser] = useState<User>();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,17 +39,31 @@ const LogInSection = (props: Props) => {
             body: JSON.stringify(loginData),
             credentials: "include"
         })
-        .then( resp => {
+        .then ( resp => {
             if (resp.status === 200) {
-                sessionStorage.setItem("email", loginData.email)
-                props.setIsAuthenticated(true)                
+                return resp.json()
+            } 
 
-                navigate('/')
-            } else {
-                setWrongData(true)
-            }
+            setWrongData(true) 
+            return     
+        })
+        .then ( data => {
+            setUser(data)
+        })
+        .catch( error => {
+            setWrongData(true) 
         })
     }
+
+    useEffect(() => {
+        if (user !== undefined) {
+            sessionStorage.setItem("id", user.id.toString())
+            props.setIsAuthenticated(true)                
+
+            navigate('/')
+        }
+    },[user])
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -64,24 +79,24 @@ const LogInSection = (props: Props) => {
     return (
         <section className="loginPage__login-section panel-wrapper__panel--no-image-background">
             <h2 className="panel-wrapper__title">Log In to Your Account</h2>
-            <form className="form" onSubmit={handleSubmit}>
+            <form className="form" onSubmit={(e) => handleSubmit(e)}>
                 <div className="form__fields">
                     <TextInput 
                         name="email" 
                         state={loginData.email} 
-                        setState={handleChange} 
+                        setState={(e) => handleChange(e)} 
                         isRequired 
                         placeholder="Email"
                     />
                     <PasswordInput
                         name="password" 
                         state={loginData.password} 
-                        setState={handleChange} 
+                        setState={(e) => handleChange(e)} 
                         placeholder="Password" 
                      />            
                     {wrongData && <p className="incorrect-data-text">Incorrect email or password</p>}
                 </div>
-                <button className="btn btn--pink btn--greater btn--greater-border-radius">Log In</button>
+                <button className="btn btn--pink btn--greater btn--greater-border-radius" type="submit">Log In</button>
             </form>
         </section>
     )

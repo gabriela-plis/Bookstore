@@ -14,7 +14,7 @@ function App() {
 
   useEffect(() => {
 
-      if (sessionStorage.getItem("email") !== null) {
+      if (sessionStorage.getItem("id") !== null) {
           setIsAuthenticated(true)
       } 
 
