@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { LegacyRef, useEffect } from "react";
 import { useState } from "react";
-import ReactSelect from "react-select";
 import Book from "../../DTO/BookDTO";
 import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
@@ -9,46 +8,34 @@ import TextInput from "../../reusable-components/TextInput";
 const AddBookPanel = () => {
 
     const types = useFetch<BookType>('http://localhost:8080/books/types');
-    const [initialType, setInitialType] = useState("");
 
     const [initialBook, setInitialBook] = useState<Book>({
         title: "",
         author: "",
         publishYear: 1980,
+        canBeBorrow: true,
         availableAmount: 5,
         type: {
             id: 0,
             name: ""
         }
     });
+
     const [book, setBook] =  useState<Book>(initialBook);
     
     useEffect(() => {
         if (types.length !== 0) {
 
-            setInitialType(types[0].name)
-
-
-
-        }
-        
-    },[types])
-
-    useEffect(() => {
-        if (initialType.length !== 0) {
-            setInitialBook(prevState => (
+            setBook(prevState => (
                 {
                     ...prevState,
                     type: types[0]
                 }
             ))
 
-            setBook(initialBook);
-
         }
-
-    },[initialType])
-
+        
+    },[types])
 
     const bookFormTextInput = [
         {title: "Title", value:book.title, variableName: "title", className: "title"},
@@ -56,7 +43,7 @@ const AddBookPanel = () => {
     ]
 
     const bookFormSelectInput = [
-        {title: "Type", value:book.title, variableName: "type", className: "type", options: types}
+        {title: "Type", variableName: "type", className: "type", options: types}
     ]
 
     const bookFormNumberInput = [
@@ -75,15 +62,43 @@ const AddBookPanel = () => {
         )) 
 
     }
+    
+    const handleTypeChange = (e: eParameterType) => {
+        const index = types.findLastIndex(type => type.name === e.target.value)!
+    
+        setBook(prevState => (
+            {
+                ...prevState,
+                type: types[index]
+            }
+        )) 
 
+    }
 
-    const handleSubmit = () => {
+    const formRef: LegacyRef<HTMLFormElement> = React.createRef();
+
+    const [error, setError] = useState(false);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
         fetch("http://localhost:8080/books", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify(book)
             })
+            .then(resp => {
+                if (resp.status === 200) {
+                    setError(false)
+                    setBook(initialBook)
+                    formRef.current?.reset()
+                } 
+            })
+            .catch( error => {
+                setError(true) 
+            })
+
     }
 
     const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -95,14 +110,14 @@ const AddBookPanel = () => {
     return ( 
         <section className="add-form">
             <h2 className="add-form__title">Add Book</h2>
-            <form className="form" onSubmit={handleSubmit}>
+            <form className="form" ref={formRef} onSubmit={(e) => handleSubmit(e)}>
                 {bookFormTextInput.map(attribute => (
                     <p key={attribute.className} className="form__fields">
                         <label htmlFor={attribute.className}>{attribute.title}</label>
                         <TextInput 
                             name={attribute.variableName} 
                             state={attribute.value} 
-                            setState={handleChange} 
+                            setState={(e) => handleChange(e)} 
                             isRequired 
                         />
                     </p>
@@ -112,7 +127,7 @@ const AddBookPanel = () => {
                         <label htmlFor={attribute.className}>{attribute.title}</label>
                         <select 
                             name={attribute.variableName}
-                            onChange={(e) => handleChange(e)}
+                            onChange={(e) => handleTypeChange(e)}
                         >
                             {attribute.options.map(option => (
                                 <option 
@@ -135,12 +150,33 @@ const AddBookPanel = () => {
                             name={attribute.variableName}
                             required
                             value={attribute.value} 
-                            onChange={(e) => {handleChange(e)}}
+                            onChange={(e) => handleChange(e)}
                         />   
                     </p>                 
-                ))} 
+                ))}             
+                <div>
+                    <p>Should be borrow from now: </p>
+                    <input 
+                        type="radio" 
+                        name="canBeBorrow" 
+                        value="true"
+                        id="yes"
+                        defaultChecked
+                        onChange={(e) => handleChange(e)} 
+                    />
+                    <label htmlFor="yes">Yes</label>
+                    <input 
+                        type="radio" 
+                        name="canBeBorrow" 
+                        value="false"
+                        id="no" 
+                        onChange={(e) => handleChange(e)}
+                    />
+                    <label htmlFor="no">No</label>
+                </div>
+                {error && <p className="incorrect-data-text">Something goes wrong, try again</p>}
                 <p className="btns-container">
-                <button className="btn btn--add">Add</button> 
+                <button className="btn btn--add" >Add</button> 
                 <button className="btn btn--reset" onClick={(e) => handleReset(e)} type="reset">Reset</button>
                 </p>
             </form>
