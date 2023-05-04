@@ -13,15 +13,17 @@ const SearchFilter = (props: SearchFilterProps) => {
 
     return ( 
         <section className="filter">
-        <h3>FILTER</h3>
-        <form>
-            <TypesSection setSearchingCriteria={setSearchingCriteria}/>
-            <PublishYearSection setSearchingCriteria={setSearchingCriteria}/>
-            <section className="filter__button-container">
-                <button className="btn btn--smaller" onClick={(e) => handleSearch(e)}>Search</button>
-                <button className="btn btn--smaller" onClick={(e) => handleReset(e)} type="reset">Reset</button>
-            </section>
-        </form>
+            <div className="filter__wrapper">
+            <h3 className="filter__title">FILTER</h3>
+            <form>
+                <TypesSection setSearchingCriteria={setSearchingCriteria}/>
+                <PublishYearSection setSearchingCriteria={setSearchingCriteria}/>
+                <section className="filter__button-container">
+                    <button className="btn btn--smaller" onClick={(e) => handleSearch(e)}>Search</button>
+                    <button className="btn btn--smaller" onClick={(e) => handleReset(e)} type="reset">Reset</button>
+                </section>
+            </form>
+            </div>
         </section> 
     );
 }

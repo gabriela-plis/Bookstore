@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState } from "react";
 import OperationTypes from "../../OperationTypes";
 import BookList, { FeedbackPopup } from "../../reusable-components/BookList";
 import Feedback from "../../reusable-components/Feedback";
@@ -8,13 +8,15 @@ import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
 
 type Props = {
     isAuthenticated: boolean,
-    displayLogoutText: boolean;
+    renderLogoutText: boolean,
+    setRenderLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Homepage = (props: Props) => {
-    const {isAuthenticated, displayLogoutText} = {...props};
-    const [displayLogInText, setDisplayLogInText] = useState(false);
+    const {isAuthenticated, renderLogoutText, setRenderLogoutText} = {...props};
 
+    const [renderLogInText, setRenderLogInText] = useState(!isAuthenticated);
+    
     const [bookId, setBookId] = useState(0);
 
     const currentYear = new Date().getFullYear()
@@ -28,7 +30,7 @@ const Homepage = (props: Props) => {
 
     const [url, setUrl] = useState("http://localhost:8080/books/to-borrow")
 
-    const replaceSpaces = function(word: string){
+    const replaceSpaces = function(word: string) {
         return word.replace(/\s+/g, "+")
       }
 
@@ -52,7 +54,7 @@ const Homepage = (props: Props) => {
 
     const handleBorrow = () => {
         if (!isAuthenticated) {
-            setDisplayLogInText(true);
+            setRenderLogInText(true);
         } else {
             fetch(`http://localhost:8080/books/${bookId}/borrow`, {
                 method: "POST",
@@ -75,6 +77,11 @@ const Homepage = (props: Props) => {
         //borrow
     }
 
+    const handleCloseFeedback = () => {
+        setRenderLogoutText(false)
+        setRenderLogInText(true)
+    }
+
 
     const operation: Operation = {
         type: OperationTypes.Borrow,
@@ -90,11 +97,11 @@ const Homepage = (props: Props) => {
     return ( 
     <main className="homepage">
         <h2 className="homepage__title">Book To Borrow:</h2>
-        {displayLogoutText && 
-            <Feedback text="You have successfully been logged out! Have a nice day" button/>
+        {renderLogoutText && 
+            <Feedback text="You have successfully been logged out! Have a nice day" button handleClick={handleCloseFeedback}/>
         }
-        {!isAuthenticated &&
-            <Feedback text="Log In to borrow a book!" button={false}/>
+        {renderLogInText && !renderLogoutText &&
+            <Feedback text="Log In to borrow a book!" button={false} />
         }
         <BookList url={url} bookId={bookId} setBookId={setBookId} operation={operation} feedback={feedback}/>
         <SearchFilter setSearchingCriteria={setSearchingCriteria} handleReset={handleReset} handleSearch={handleSearch} />

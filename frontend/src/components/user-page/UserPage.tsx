@@ -11,7 +11,7 @@ import RemoveBookPanel from "./RemoveBookPanel";
 import Borrows from "./Borrows";
 
 type Props = {
-    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
+    setRenderLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const UserPage = (props: Props) => {
@@ -73,7 +73,7 @@ const UserPage = (props: Props) => {
 
     return ( 
     <main className="UserPage">
-        {render && <UserSidebar employee={user.roles.includes("EMPLOYEE")} setDisplayLogoutText={props.setDisplayLogoutText}/>}
+        {render && <UserSidebar employee={user.roles.includes("EMPLOYEE")} setRenderLogoutText={props.setRenderLogoutText}/>}
         {urlPrefixesPresence.borrows && <Borrows />}
         {urlPrefixesPresence.details && <Details />}
         {urlPrefixesPresence.settings && <Settings />}

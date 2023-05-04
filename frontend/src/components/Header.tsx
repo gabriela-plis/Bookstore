@@ -8,12 +8,12 @@ import logout from "../functions/logout";
 type HeaderProps = {
     isAuthenticated: boolean,
     setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>,
-    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
+    setRenderLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Header = (props: HeaderProps) => {
 
-    const {isAuthenticated, setIsAuthenticated, setDisplayLogoutText} = {...props} 
+    const {isAuthenticated, setIsAuthenticated, setRenderLogoutText} = {...props} 
 
     const handleLogout = () => {
         fetch('http://localhost:8080/logout', {
@@ -26,7 +26,7 @@ const Header = (props: HeaderProps) => {
         
 
         setIsAuthenticated(false);
-        setDisplayLogoutText(true);
+        setRenderLogoutText(true);
     }
 
     return ( 

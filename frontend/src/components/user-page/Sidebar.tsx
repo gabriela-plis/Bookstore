@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 type Props = {
     employee: boolean,
-    setDisplayLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
+    setRenderLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface LinkData {
@@ -42,7 +42,7 @@ const UserSidebar = (props: Props) => {
         {title: 'Remove Book', to: '/user/remove-book', icon: removeIcon, onClick: handleClick, forEmployee: true},
         {title: 'Details', to: '/user/details', icon: detailsIcon, onClick: handleClick, forEmployee: false},
         {title: 'Settings', to: '/user/settings', icon: settingsIcon, onClick: handleClick, forEmployee: false},
-        {title: 'Log Out', to: '/', icon: logoutIcon, onClick: (e) => logout(props.setDisplayLogoutText), forEmployee: false}
+        {title: 'Log Out', to: '/', icon: logoutIcon, onClick: (e) => logout(props.setRenderLogoutText), forEmployee: false}
     ]
 
     const filteredLinks: LinkData[] = links.filter(link => {
