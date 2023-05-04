@@ -85,6 +85,8 @@ public class BookService {
         }
 
         book.getOwnerUsers().add(userRepository.findByEmail(username).orElseThrow(IllegalStateException::new));
+
+        book.setAvailableAmount(book.getAvailableAmount()-1);
     }
 
     @Transactional
@@ -100,6 +102,8 @@ public class BookService {
             .orElseThrow(EntityNotFoundException::new);
 
         book.getOwnerUsers().remove(user);
+
+        book.setAvailableAmount(book.getAvailableAmount()+1);
     }
 
     @Transactional

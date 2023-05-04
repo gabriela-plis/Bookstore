@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 public record BookDTO(
-    @Min(1)
+
     Integer id,
 
     @NotBlank
