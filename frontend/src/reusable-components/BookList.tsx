@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OperationTypes from "../OperationTypes";
 import Book from "../DTO/BookDTO";
 import useFetch from "../functions/useFetch";
 import Popup from "./Popup";
+import Pagination from "./Pagination";
+import PagedBooksDTO from "../DTO/PagedBooksDTO";
+import usePaginationFetch from "../functions/usePaginationFetch";
 
 export type Operation = {
     type: OperationTypes,
@@ -26,7 +29,10 @@ type Props = {
 const BookList = (props: Props) => {
     const {url, operation, bookId, setBookId, feedback, forceUpdate} = {...props} 
     const [isOperationActive, setIsOperationActive] = useState(false);
-    const books: Book[] = useFetch(url, forceUpdate);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [urlWithPagination, setUrlWithPagination] = useState(url+'?page=0')
+    const paginationResult: PagedBooksDTO = usePaginationFetch(urlWithPagination, forceUpdate);
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
         e.preventDefault();
@@ -35,19 +41,30 @@ const BookList = (props: Props) => {
         setIsOperationActive(true);
     }
 
-    if (books.length === 0) {
+    const paginate = (pageNumber: number) => {
+        setCurrentPage(pageNumber)
+    }
+
+    useEffect(() => {
+        const index = currentPage-1
+        setUrlWithPagination(url+'?page='+index)
+    },[currentPage])
+ 
+
+
+    if (paginationResult.books.length === 0) {
         return (
             <section className="book-list__container">
                 <p>No books for display</p>
             </section>
         )
     }
-   
+
     return (
        
         <section className="book-list__container">
             <ul className="book-list__list">
-                {books.map( book => (
+                {paginationResult.books.map( book => (
                 <li className="book" key={book.id} data-key={book.id}>
                     <h2>{book.title}</h2>
                     <div className="book__details">
@@ -67,6 +84,7 @@ const BookList = (props: Props) => {
                 </li>
                 ))}
             </ul>
+            <Pagination totalPages={paginationResult.totalPages} paginate={paginate} currentPage={currentPage}/>
         </section> 
      );
 }
