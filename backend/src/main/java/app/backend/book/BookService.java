@@ -6,6 +6,8 @@ import app.backend.utils.SecurityContextAccessor;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,22 +25,22 @@ public class BookService {
     private final BookTypeRepository bookTypeRepository;
     private final BookTypeMapper bookTypeMapper;
 
-    public List<BookDTO> getAllBooks() {
-        List<BookEntity> books = bookRepository.findAll();
+    public PagedBooksDTO getAllBooks(int page, int size) {
+        Page<BookEntity> pagedBooks = bookRepository.findAll(PageRequest.of(page, size));
 
-        return bookMapper.toDTOs(books);
+        return getPagedBooksDTO(pagedBooks);
     }
 
-    public List<BookDTO> getAllBooksToBorrow() {
-        List<BookEntity> books = bookRepository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0);
+    public PagedBooksDTO getAllBooksToBorrow(int page, int size) {
+        Page<BookEntity> pagedBooks = bookRepository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0, PageRequest.of(page, size));
 
-        return bookMapper.toDTOs(books);
+        return getPagedBooksDTO(pagedBooks);
     }
 
-    public List<BookDTO> getByOwnerUser(int id) {
-        List<BookEntity> books = bookRepository.getByOwnerUsers_Id(id);
+    public PagedBooksDTO getByOwnerUser(int id, int page, int size) {
+        Page<BookEntity> pagedBooks = bookRepository.getByOwnerUsers_Id(id, PageRequest.of(page, size));
 
-        return bookMapper.toDTOs(books);
+        return getPagedBooksDTO(pagedBooks);
     }
 
     public BookDTO getById(int id) {
@@ -48,16 +50,16 @@ public class BookService {
         return bookMapper.toDTO(book);
     }
 
-    public List<BookDTO> getBySortingCriteria(BookSortingCriteriaDTO criteria) {
-        List<BookEntity> books = bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypes(), 0);
+    public PagedBooksDTO getBySortingCriteria(BookSortingCriteriaDTO criteria, int page, int size) {
+        Page<BookEntity> pagedBooks = bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypes(), 0, PageRequest.of(page, size));
 
-        return bookMapper.toDTOs(books);
+        return getPagedBooksDTO(pagedBooks);
     }
 
-    public List<BookDTO> getAllBooksToRemove() {
-        List<BookEntity> books = bookRepository.findAllWithNoOwnerUser();
+    public PagedBooksDTO getAllBooksToRemove(int page, int size) {
+        Page<BookEntity> pagedBooks = bookRepository.findAllWithNoOwnerUser(PageRequest.of(page, size));
 
-        return bookMapper.toDTOs(books);
+        return getPagedBooksDTO(pagedBooks);
     }
 
     public List<BookTypeDTO> getAllBookTypes() {
@@ -123,5 +125,10 @@ public class BookService {
         bookRepository.delete(bookToDelete);
     }
 
+    private PagedBooksDTO getPagedBooksDTO(Page<BookEntity> pagedBooks) {
+        List<BookDTO> books = bookMapper.toDTOs(pagedBooks.getContent());
+
+        return new PagedBooksDTO(pagedBooks.getTotalPages(), books);
+    }
 
 }

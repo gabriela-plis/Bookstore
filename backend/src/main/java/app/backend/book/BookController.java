@@ -20,18 +20,18 @@ public class BookController {
     private final BookService service;
 
     @GetMapping
-    public List<BookDTO> getAllBooks() {
-        return service.getAllBooks();
+    public PagedBooksDTO getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
+        return service.getAllBooks(page, size);
     }
 
     @GetMapping("/to-borrow")
-    public List<BookDTO> getAllBooksToBorrow() {
-        return service.getAllBooksToBorrow();
+    public PagedBooksDTO getAllBooksToBorrow(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
+        return service.getAllBooksToBorrow(page, size);
     }
 
     @GetMapping("/to-remove")
-    public List<BookDTO> getAllBooksToRemove() {
-        return service.getAllBooksToRemove();
+    public PagedBooksDTO getAllBooksToRemove(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
+        return service.getAllBooksToRemove(page, size);
     }
 
     @GetMapping("/{id}")
@@ -40,14 +40,13 @@ public class BookController {
     }
 
     @GetMapping("/user/{id}")
-    public List<BookDTO> getUserBooks(@PathVariable int id) {
-       return service.getByOwnerUser(id);
+    public PagedBooksDTO getUserBooks(@PathVariable int id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
+       return service.getByOwnerUser(id, page, size);
     }
 
     @GetMapping("/criteria")
-    public List<BookDTO> getSortedBooks(@Valid BookSortingCriteriaDTO criteria) {
-        System.out.println(criteria);
-       return service.getBySortingCriteria(criteria);
+    public PagedBooksDTO getSortedBooks(@Valid BookSortingCriteriaDTO criteria, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
+       return service.getBySortingCriteria(criteria, page, size);
     }
 
     @GetMapping("/types")

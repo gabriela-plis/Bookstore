@@ -1,21 +1,19 @@
 package app.backend.book;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.ListCrudRepository;
 
-import java.util.List;
 import java.util.Set;
 
-public interface BookRepository extends ListCrudRepository<BookEntity, Integer> {
+public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
-    @Query("SELECT b from BookEntity b JOIN FETCH b.type")
-    List<BookEntity> findAll();
+    Page<BookEntity> getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(Integer availableAmount, Pageable paging);
 
-    List<BookEntity> getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(Integer availableAmount);
+    Page<BookEntity> getByOwnerUsers_Id(int id, Pageable paging);
 
-    List<BookEntity> getByOwnerUsers_Id(int id);
-
-    List<BookEntity> findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(Integer publishYearMin, Integer publishYearMax, Set<String>typeName, Integer availableAmountGreaterThan);
+    Page<BookEntity> findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(Integer publishYearMin, Integer publishYearMax, Set<String>typeName, Integer availableAmountGreaterThan, Pageable paging);
 
     @Query(
         value = """
@@ -24,5 +22,5 @@ public interface BookRepository extends ListCrudRepository<BookEntity, Integer> 
                 WHERE size(book.ownerUsers) = 0
             """
     )
-    List<BookEntity> findAllWithNoOwnerUser();
+    Page<BookEntity> findAllWithNoOwnerUser(Pageable pageable);
 }
