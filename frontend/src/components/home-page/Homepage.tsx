@@ -5,6 +5,7 @@ import Feedback from "../../reusable-components/Feedback";
 import SearchFilter from "./SearchFilter";
 import { Operation } from "../../reusable-components/BookList"; 
 import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
+import appendParamsToUrl from "../../functions/appendParamsToUrl";
 
 type Props = {
     isAuthenticated: boolean,
@@ -28,26 +29,22 @@ const Homepage = (props: Props) => {
 
     const [searchingCriteria, setSearchingCriteria] = useState<BookSortingCriteria>(initialSearchingCriteria)
 
-    const [url, setUrl] = useState("http://localhost:8080/books/to-borrow")
-
-    const replaceSpaces = function(word: string) {
-        return word.replace(/\s+/g, "+")
-      }
-
+    const initialUrl = "http://localhost:8080/books/to-borrow"
+    const [url, setUrl] = useState(initialUrl)
 
     const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
 
         if(searchingCriteria.types?.size === 0) {
-            setUrl("http://localhost:8080/books/to-borrow")
+            setUrl(initialUrl)
         } else {
-            setUrl("http://localhost:8080/books/criteria".concat('?', "types=", Array.from(searchingCriteria.types!).map(replaceSpaces).join(","), "&", "min=", searchingCriteria.minPublishYear!.toString(), "&", "max=", searchingCriteria.maxPublishYear!.toString()))
+            setUrl(appendParamsToUrl("http://localhost:8080/books/criteria", new Map(Object.entries(searchingCriteria))))
         }
     }
     
     const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        setUrl("http://localhost:8080/books/to-borrow")
+        setUrl(initialUrl)
     }
 
     const [renderFeedback, setRenderFeedback] = useState(false)
@@ -96,13 +93,15 @@ const Homepage = (props: Props) => {
 
     return ( 
     <main className="homepage">
-        <h2 className="homepage__title">Book To Borrow:</h2>
-        {renderLogoutText && 
-            <Feedback text="You have successfully been logged out! Have a nice day" button handleClick={handleCloseFeedback}/>
-        }
-        {renderLogInText && !renderLogoutText &&
-            <Feedback text="Log In to borrow a book!" button={false} />
-        }
+        <div className="homepage__wrapper-top-section">
+            <h2 className="homepage__title">Book To Borrow:</h2>
+            {renderLogoutText && 
+                <Feedback text="You have successfully been logged out! Have a nice day" button handleClick={handleCloseFeedback}/>
+            }
+            {renderLogInText && !renderLogoutText &&
+                <Feedback text="Log In to borrow a book!" button={false} />
+            }
+        </div>
         <BookList url={url} bookId={bookId} setBookId={setBookId} operation={operation} feedback={feedback}/>
         <SearchFilter setSearchingCriteria={setSearchingCriteria} handleReset={handleReset} handleSearch={handleSearch} />
     </main> 
