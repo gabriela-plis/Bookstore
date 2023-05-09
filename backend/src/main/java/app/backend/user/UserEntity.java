@@ -44,7 +44,7 @@ public class UserEntity {
     private String password;
 
     @NotNull
-    @ManyToMany(fetch = EAGER) // 3
+    @ManyToMany(fetch = EAGER)
     @JoinTable(
         name = "users_to_roles",
         joinColumns = @JoinColumn(name ="user_id"),

@@ -9,12 +9,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService service;
 
-    @GetMapping()
+    @GetMapping("/all")
     public List<UserDTO> getUsers() {
         return service.getAllUsers();
     }
@@ -24,7 +24,7 @@ public class UserController {
         return service.getById(id);
     }
 
-    @GetMapping("/this")
+    @GetMapping
     public UserDTO getUser(Principal principal) {
         return service.getByEmail(principal.getName());
     }
