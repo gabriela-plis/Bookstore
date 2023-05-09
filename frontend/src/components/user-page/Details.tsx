@@ -1,9 +1,10 @@
 import User from "../../DTO/UserDTO";
+import { USER_URL } from "../../constants/constants";
 import useFetch from "../../functions/useFetch";
 
 
 const Details = () => {
-    const user: User = useFetch('http://localhost:8080/users/this') as unknown as User;
+    const user: User = useFetch(USER_URL) as unknown as User;
 
     const userData = [
         {title: "First name", className:"first-name", value: user.firstName},

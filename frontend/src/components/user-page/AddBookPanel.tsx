@@ -4,10 +4,11 @@ import Book from "../../DTO/BookDTO";
 import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
+import { BOOKS_URL } from "../../constants/constants";
 
 const AddBookPanel = () => {
 
-    const types = useFetch<BookType>('http://localhost:8080/books/types');
+    const types = useFetch<BookType>(BOOKS_URL + '/types');
 
     const [initialBook, setInitialBook] = useState<Book>({
         title: "",
@@ -82,7 +83,7 @@ const AddBookPanel = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        fetch("http://localhost:8080/books", {
+        fetch(BOOKS_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

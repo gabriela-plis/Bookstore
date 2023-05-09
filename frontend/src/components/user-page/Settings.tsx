@@ -4,11 +4,12 @@ import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import ResetPassword from "../../DTO/ResetPasswordDTO";
+import { USER_URL } from "../../constants/constants";
 
 
 
 const Settings = () => {
-    const userDTO = useFetch('http://localhost:8080/users/this') as unknown as User;
+    const userDTO = useFetch(USER_URL) as unknown as User;
 
     const [user, setUser] = useState<User>({
         id: 0,
@@ -124,7 +125,7 @@ const EditDataPanel = (props: EditDataPanelProps) => {
     const handleEditData = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, setShowEditData: React.Dispatch<React.SetStateAction<boolean>>, dataName: string) => {
         e.preventDefault();
 
-        fetch('http://localhost:8080/users', {
+        fetch(USER_URL, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -234,7 +235,7 @@ const ResetPasswordPanel = (props: ResetPasswordPanelProps) => {
         e.preventDefault();
 
        
-        fetch('http://localhost:8080/users/password', {
+        fetch(USER_URL + '/password', {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             credentials: "include",

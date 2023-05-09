@@ -1,6 +1,7 @@
 import { useReducer, useState } from "react";
 import OperationTypes from "../../OperationTypes";
 import BookList, { Operation } from "../../reusable-components/BookList";
+import { BOOKS_URL } from "../../constants/constants";
 
 const Borrows = () => {
 
@@ -9,7 +10,7 @@ const Borrows = () => {
     const [trigger, forceUpdate] = useReducer(x => x + 1, 0);
 
     const handleReturn = () => {
-        fetch(`http://localhost:8080/books/${bookId}/return`, {
+        fetch(BOOKS_URL + `/${bookId}/return`, {
             method: "POST",
             credentials: "include"
         }).then( () => {
@@ -17,6 +18,8 @@ const Borrows = () => {
         })
 
     }
+
+    const url = BOOKS_URL + `/user/${sessionStorage.getItem('id')}`
 
     const operation: Operation = {
         type: OperationTypes.Return,
@@ -26,7 +29,7 @@ const Borrows = () => {
     return (
         <section className="borrows">
             <h2 className="borrows__title">My Borrows</h2>
-            <BookList url={"http://localhost:8080/books/user/" + sessionStorage.getItem("id")} operation={operation} bookId={bookId} setBookId={setBookId} forceUpdate={trigger}/>
+            <BookList url={url} operation={operation} bookId={bookId} setBookId={setBookId} forceUpdate={trigger}/>
         </section>
      );
 }

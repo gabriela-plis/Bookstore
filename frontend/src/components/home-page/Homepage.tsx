@@ -6,6 +6,7 @@ import SearchFilter from "./SearchFilter";
 import { Operation } from "../../reusable-components/BookList"; 
 import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
 import appendParamsToUrl from "../../functions/appendParamsToUrl";
+import { BOOKS_URL } from "../../constants/constants";
 
 type Props = {
     isAuthenticated: boolean,
@@ -29,7 +30,7 @@ const Homepage = (props: Props) => {
 
     const [searchingCriteria, setSearchingCriteria] = useState<BookSortingCriteria>(initialSearchingCriteria)
 
-    const initialUrl = "http://localhost:8080/books/to-borrow"
+    const initialUrl = BOOKS_URL + '/to-borrow'
     const [url, setUrl] = useState(initialUrl)
 
     const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -38,7 +39,7 @@ const Homepage = (props: Props) => {
         if(searchingCriteria.types?.size === 0) {
             setUrl(initialUrl)
         } else {
-            setUrl(appendParamsToUrl("http://localhost:8080/books/criteria", new Map(Object.entries(searchingCriteria))))
+            setUrl(appendParamsToUrl(BOOKS_URL+'/criteria', new Map(Object.entries(searchingCriteria))))
         }
     }
     
@@ -53,7 +54,7 @@ const Homepage = (props: Props) => {
         if (!isAuthenticated) {
             setRenderLogInText(true);
         } else {
-            fetch(`http://localhost:8080/books/${bookId}/borrow`, {
+            fetch(BOOKS_URL + `/${bookId}/borrow`, {
                 method: "POST",
                 credentials: "include"
             })

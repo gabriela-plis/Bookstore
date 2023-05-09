@@ -1,6 +1,7 @@
 import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
 import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
+import { BOOKS_URL } from "../../constants/constants";
 
 type SearchFilterProps = {
     setSearchingCriteria: React.Dispatch<React.SetStateAction<BookSortingCriteria>>
@@ -36,7 +37,7 @@ type setCriteriaProps = {
 const TypesSection = (props: setCriteriaProps) => {
     const {setSearchingCriteria} = {...props}
 
-    const types: BookType[] = useFetch('http://localhost:8080/books/types');
+    const types: BookType[] = useFetch(BOOKS_URL + '/types');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 

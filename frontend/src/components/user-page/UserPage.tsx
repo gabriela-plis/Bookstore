@@ -9,6 +9,7 @@ import Settings from "./Settings";
 import AddBookPanel from "./AddBookPanel";
 import RemoveBookPanel from "./RemoveBookPanel";
 import Borrows from "./Borrows";
+import { USER_URL } from "../../constants/constants";
 
 type Props = {
     setRenderLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
@@ -59,7 +60,7 @@ const UserPage = (props: Props) => {
 
     }, [location])
 
-    const user: User = useFetch('http://localhost:8080/users/this') as unknown as User;
+    const user: User = useFetch(USER_URL) as unknown as User;
     const [render, setRender] = useState(false)
     let isEmployee = false;
 

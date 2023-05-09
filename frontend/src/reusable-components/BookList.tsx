@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import OperationTypes from "../OperationTypes";
-import Book from "../DTO/BookDTO";
-import useFetch from "../functions/useFetch";
 import Popup from "./Popup";
 import Pagination from "./Pagination";
 import PagedBooksDTO from "../DTO/PagedBooksDTO";

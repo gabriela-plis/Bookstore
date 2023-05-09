@@ -1,9 +1,5 @@
-import { Session } from "inspector";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BrowserRouter } from "react-router-dom";
-import logout from "../functions/logout";
-
+import { LOGOUT_URL } from "../constants/constants";
 
 type HeaderProps = {
     isAuthenticated: boolean,
@@ -16,14 +12,12 @@ const Header = (props: HeaderProps) => {
     const {isAuthenticated, setIsAuthenticated, setRenderLogoutText} = {...props} 
 
     const handleLogout = () => {
-        fetch('http://localhost:8080/logout', {
+        fetch(LOGOUT_URL, {
             method: "POST",
             credentials: "include"
         })
 
         sessionStorage.clear();
-
-        
 
         setIsAuthenticated(false);
         setRenderLogoutText(true);

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../reusable-components/TextInput";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import RegisteredUser from "../../DTO/RegisteredUserDTO"
+import { USER_URL } from "../../constants/constants";
 
 const RegisterPage = () => {
     return ( 
@@ -31,7 +32,7 @@ const RegisterSection = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        fetch('http://localhost:8080/users/register', {
+        fetch(USER_URL + '/register', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(user)

@@ -4,6 +4,7 @@ import PasswordInput from "../../reusable-components/PasswordInput";
 import TextInput from "../../reusable-components/TextInput";
 import LoginData from "../../DTO/LoginDataDTO";
 import User from "../../DTO/UserDTO";
+import { LOGIN_URL } from "../../constants/constants";
 
 
 type Props = {
@@ -33,7 +34,9 @@ const LogInSection = (props: Props) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        fetch('http://localhost:8080/login', {
+        console.log(LOGIN_URL)
+
+        fetch(LOGIN_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(loginData),
