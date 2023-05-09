@@ -16,9 +16,15 @@ public class BookSortingCriteriaDTO {
 
     private final Set<String> types;
 
-    public BookSortingCriteriaDTO(Set<String> types, Integer min, Integer max) {
+    public BookSortingCriteriaDTO(Set<String> types, Integer min, Integer max, Integer minPublishYear, Integer maxPublishYear) {
         this.types = types;
-        this.minPublishYear = min;
-        this.maxPublishYear = max;
+
+        if (min != null && max != null ) {
+            this.minPublishYear = min;
+            this.maxPublishYear = max;
+        } else {
+            this.minPublishYear = minPublishYear;
+            this.maxPublishYear = maxPublishYear;
+        }
     }
 }

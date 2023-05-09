@@ -4,6 +4,8 @@ import app.backend.utils.annotations.ValidIdAbsence;
 import app.backend.utils.annotations.ValidIdPresence;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,18 +22,18 @@ public class BookController {
     private final BookService service;
 
     @GetMapping
-    public PagedBooksDTO getAllBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
-        return service.getAllBooks(page, size);
+    public PagedBooksDTO getAllBooks(@PageableDefault(size = 5) Pageable pageable) {
+        return service.getAllBooks(pageable);
     }
 
     @GetMapping("/to-borrow")
-    public PagedBooksDTO getAllBooksToBorrow(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
-        return service.getAllBooksToBorrow(page, size);
+    public PagedBooksDTO getAllBooksToBorrow(@PageableDefault(size = 5) Pageable pageable) {
+        return service.getAllBooksToBorrow(pageable);
     }
 
     @GetMapping("/to-remove")
-    public PagedBooksDTO getAllBooksToRemove(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
-        return service.getAllBooksToRemove(page, size);
+    public PagedBooksDTO getAllBooksToRemove(@PageableDefault(size = 5) Pageable pageable) {
+        return service.getAllBooksToRemove(pageable);
     }
 
     @GetMapping("/{id}")
@@ -40,13 +42,13 @@ public class BookController {
     }
 
     @GetMapping("/user/{id}")
-    public PagedBooksDTO getUserBooks(@PathVariable int id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
-       return service.getByOwnerUser(id, page, size);
+    public PagedBooksDTO getUserBooks(@PathVariable int id, @PageableDefault(size = 5) Pageable pageable) {
+       return service.getByOwnerUser(id, pageable);
     }
 
     @GetMapping("/criteria")
-    public PagedBooksDTO getSortedBooks(@Valid BookSortingCriteriaDTO criteria, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5", required = false) int size) {
-       return service.getBySortingCriteria(criteria, page, size);
+    public PagedBooksDTO getSortedBooks(@Valid BookSortingCriteriaDTO criteria, @PageableDefault(size = 5) Pageable pageable) {
+       return service.getBySortingCriteria(criteria, pageable);
     }
 
     @GetMapping("/types")
