@@ -15,7 +15,7 @@ public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         clearAuthenticationAttributes(request);
-        getRedirectStrategy().sendRedirect(request, response, "/users/this");
+        getRedirectStrategy().sendRedirect(request, response, "/user");
     }
 
 }
