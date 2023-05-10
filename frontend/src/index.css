@@ -89,6 +89,7 @@ img {
   font-family: inherit;
   font-weight: 700;
   width: clamp(75px, 20vw, 100px);
+  min-height: 0px;
   max-height: 60px;
   cursor: pointer;
 }
@@ -120,13 +121,15 @@ img {
 
 /* when something goes wrong */
 
-.incorrect-data-text {
+.error-text {
   font-size: 0.8rem;
 }
 
-.error-text {
-  font-size: 0.8rem;
+.error-text--red {
   color: red;
+}
+
+.error-text--bold {
   font-weight: bold;
 }
 
@@ -183,6 +186,7 @@ img {
 /* for popup */
 
 .popup__background {
+  z-index: 1;
   position: fixed;
   left: 0;
   top: 0;
@@ -195,10 +199,14 @@ img {
   align-items: center;
 }
 
+.popup__background--brighter {
+  background-color: rgba(0, 0, 0, 0.103);
+}
+
 .popup__container {
   background-color: white;
-  width: 40%;
-  height: 50%;
+  width: min(40%, 450px);
+  height: min(50%, 300px);
   border: 1px solid black;
   padding: 0 2.5rem;
   display: flex;
@@ -285,9 +293,9 @@ img {
   max-width: 100%;
   max-height: 100%;
 
-  display: grid;
+  /* display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr; */
 }
 
 .book-list__list {
@@ -422,24 +430,29 @@ img {
   height: 100%;
   display: grid;
   grid-template-areas: 
-  "filter title feedback"
+  "filter top top"
   "filter books books";
   grid-template-columns: 0.25fr 0.5fr 0.5fr;
-  grid-template-rows: 1fr 6fr;
+  grid-template-rows: minmax(80px, 100px) 1fr;
+}
+
+.homepage__wrapper-top-section {
+  grid-area: top;
+
+  display: flex;
+  margin: 1rem 2rem;
 }
 
 .homepage__title {
   width: 100%;
-  grid-area: title;
   display: flex;
   justify-content:left;
   align-items:self-start;
-  padding:1.2rem 1.5rem;
   font-size: 2rem;
 }
 
 .homepage .feedback {
-  grid-area: feedback;
+  margin-right: 2.5rem;
 }
 
 .homepage .filter {
@@ -462,8 +475,7 @@ img {
   align-items: center;
 
   width: 80%;
-  height: 70%;
-  margin: 0.5rem;
+  height: 100%;
   padding: 0.3rem;
   border-radius: 15px;
   background-color: #99d98c;
@@ -528,6 +540,7 @@ img {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
+  font-family: inherit;
 
   width: 90%;
   margin: 0 0.5rem;
@@ -535,11 +548,23 @@ img {
   border-radius: var(--BORDER-RADIUS);
 }
 
+.filter__input-field {
+  padding-bottom: 1rem;
+}
+
 .filter__button-container {
   border-top: 1px solid var(--BORDER-COLOR);
-  padding-top: 0.5rem;
+  padding-top: 1rem;
   display: flex;
+  justify-content: center;
   gap: 0.5rem;
+}
+
+.filter__button-container .btn {
+  width: clamp(60px, 10vw, 100px);
+  height: clamp(30px, 5vw, 30px);
+  font-size:  clamp(0.8rem, 2.2vw, 1.1rem);
+  font-weight: 600;
 }
 
 /* log in page */
@@ -825,8 +850,8 @@ img {
 
 .edit__content {
   background-color: white;
-  width: 40%;
-  height: 50%;
+  width: min(40%,500px);
+  height: min(50%,270px);
   border: 1px solid black;
   padding: 2.5rem;
 
@@ -840,6 +865,11 @@ img {
   column-gap: 1rem;
   row-gap: 1.8rem;
 }
+
+.edit__content--greater {
+  height: 350px;
+}
+
 
 .edit__title {
   grid-area: title;
@@ -862,7 +892,8 @@ img {
 .edit__content input {
   border: 1px solid var(--BORDER-COLOR);
   border-radius: 10px;
-  height: 6vh;
+  /* height: 6vh; */
+  height: min(6vh, 40px);
   width: 100%;
 
   font-family: inherit;
@@ -887,7 +918,7 @@ img {
   "title image"
   "form image";
   grid-template-columns: 1.2fr 1fr;
-  grid-template-rows: 0.2fr 1fr;
+  grid-template-rows: 1fr 5fr;
   padding-left: 1.5rem;
 
   font-size: 1.3rem;
@@ -944,6 +975,10 @@ img {
   border: 1px solid var(--BORDER-COLOR);
 }
 
+.add-form__radio {
+  padding-right: 1rem;
+}
+
 .btn--add {
   background-color: var(--FCOLOR-LIGHT);
   width: 100px;
@@ -974,12 +1009,9 @@ img {
 
 /* SCREEN SIZE */
 
-@media screen and (min-width: 1280px) {
+@media screen and (min-width: 1300px) {
   .app {
     background: #89c2d9;
-    /* #61a5c2 */
-    /* #89c2d9 */
-
   }
 
   .app__page-container {
@@ -988,6 +1020,22 @@ img {
     border-left: 1px solid rgb(255, 255, 255);
     box-shadow: 0 0 28px 4px white;
     border-right: 1px solid rgb(255, 255, 255);
+  }
+
+  .homepage {
+    grid-template-rows: 1fr 80vh;
+  }
+
+  .homepage__wrapper-top-section{
+    padding-top: 1rem;
+  }
+
+  .add-form {
+    grid-template-rows: 1fr 10fr;    
+  }
+
+  .add-form .form {
+    row-gap: 0;
   }
 
 }
