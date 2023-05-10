@@ -15,6 +15,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Integer> {
 
     Page<BookEntity> findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(Integer publishYearMin, Integer publishYearMax, Set<String>typeName, Integer availableAmountGreaterThan, Pageable paging);
 
+    Page<BookEntity> findByPublishYearBetweenAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(Integer publishYearMin, Integer publishYearMax, Integer availableAmountGreaterThan, Pageable paging);
+
     @Query(
         value = """
                 SELECT book

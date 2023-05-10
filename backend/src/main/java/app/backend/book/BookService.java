@@ -3,6 +3,7 @@ package app.backend.book;
 import app.backend.user.UserEntity;
 import app.backend.user.UserRepository;
 import app.backend.utils.SecurityContextAccessor;
+import app.backend.utils.exceptions.ProductAlreadyBorrowedException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,13 @@ public class BookService {
     }
 
     public PagedBooksDTO getBySortingCriteria(BookSortingCriteriaDTO criteria, Pageable pageable) {
-        Page<BookEntity> pagedBooks = bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypes(), 0, pageable);
+        Page<BookEntity> pagedBooks;
+
+        if (criteria.getTypes().size() != 0) {
+            pagedBooks = bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.getMinPublishYear(), criteria.getMaxPublishYear(), criteria.getTypes(), 0, pageable);
+        } else {
+            pagedBooks = bookRepository.findByPublishYearBetweenAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.getMinPublishYear(), criteria.getMaxPublishYear(),0, pageable);
+        }
 
         return getPagedBooksDTO(pagedBooks);
     }
@@ -84,7 +91,7 @@ public class BookService {
 
         boolean isAlreadyBorrowed = book.getOwnerUsers().stream().anyMatch(user -> user.getEmail().equals(username));
         if(isAlreadyBorrowed) {
-            return;
+            throw new ProductAlreadyBorrowedException();
         }
 
         book.getOwnerUsers().add(userRepository.findByEmail(username).orElseThrow(IllegalStateException::new));

@@ -1,6 +1,5 @@
-package app.backend.utils;
+package app.backend.utils.exceptions;
 
-import app.backend.utils.exceptions.WrongPasswordException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +40,10 @@ public class ResponseExceptionHandler {
     @ExceptionHandler(WrongPasswordException.class)
     public ResponseEntity<Object> handleWrongPasswordException() {
         return new ResponseEntity<>(BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProductAlreadyBorrowedException.class)
+    public ResponseEntity<Object> handleProductAlreadyBorrowedException() {
+        return new ResponseEntity<>(CONFLICT);
     }
 }
