@@ -39,11 +39,12 @@ const RegisterSection = () => {
         })
         .then( resp => {
             if (resp.ok) {
-                navigate('/');
+                navigate('/')
             } else {
-                setWrongData(true);
+                throw Error()
             }
-        });
+        })
+        .catch( error => setWrongData(true));
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +67,7 @@ const RegisterSection = () => {
                     <TextInput name="phone" state={user.phone} setState={handleChange} isRequired={false} placeholder="Phone"/>
                     <PasswordInput name="password" state={user.password} setState={handleChange} placeholder="Password"/>
                 </p>
-                {wrongData && <div className="error-text">Something goes wrong, try again</div>}
+                {wrongData && <div className="error-text error-text--bold">Something goes wrong, try again</div>}
                 <button className="btn btn--pink btn--greater btn--greater-border-radius">Sign In</button>
             </form>
         </section>

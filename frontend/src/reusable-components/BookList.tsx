@@ -40,7 +40,7 @@ const BookList = (props: Props) => {
 
     const [urlWithPagination, setUrlWithPagination] = useState(appendParamsToUrl(url, params))
 
-    const paginationResult: PagedBooksDTO = usePaginationFetch(urlWithPagination, forceUpdate);
+    const paginationResult: PagedBooksDTO = usePaginationFetch(urlWithPagination);
     
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
@@ -92,7 +92,7 @@ const BookList = (props: Props) => {
                     </div>
                     <button className="btn" onClick={(e) => handleClick(e, book.id!)}>{capitalize(operation.type)}</button>
                     {isOperationActive && bookId === book.id && <Popup title={operation.type} book={book} handleOperation={operation.handle} setIsOperationActive={setIsOperationActive}/>}
-                    {feedback?.render &&  
+                   {feedback?.render &&  
                     <div className="popup__background">
                         <section className="popup__container">
                             <p>{feedback.text}</p>
@@ -105,6 +105,8 @@ const BookList = (props: Props) => {
             <Pagination totalPages={paginationResult.totalPages} paginate={paginate} currentPage={currentPage}/>
         </section> 
      );
+
+     
 }
 
 const capitalize = (word: string) => {

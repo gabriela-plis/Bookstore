@@ -12,8 +12,6 @@ function appendParamsToUrl(urlBeginning: string, params: Map<string,string|numbe
 
     })
     
-    console.log(url.toString())
-
     return decodeURIComponent(url.toString());
   }
 

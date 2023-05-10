@@ -90,22 +90,20 @@ const AddBookPanel = () => {
                 body: JSON.stringify(book)
             })
             .then(resp => {
-                if (resp.status === 200) {
+                if (resp.ok) {
                     setError(false)
                     setBook(initialBook)
                     formRef.current?.reset()
-                } 
+                } else {
+                    throw Error()
+                }
             })
-            .catch( error => {
-                setError(true) 
-            })
+            .catch( error => setError(true))
 
     }
 
     const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-
         setBook(initialBook);
-
     }
 
     return ( 
@@ -165,7 +163,7 @@ const AddBookPanel = () => {
                         defaultChecked
                         onChange={(e) => handleChange(e)} 
                     />
-                    <label htmlFor="yes">Yes</label>
+                    <label htmlFor="yes" className="add-form__radio">Yes</label>
                     <input 
                         type="radio" 
                         name="canBeBorrow" 
@@ -173,9 +171,9 @@ const AddBookPanel = () => {
                         id="no" 
                         onChange={(e) => handleChange(e)}
                     />
-                    <label htmlFor="no">No</label>
+                    <label htmlFor="no" className="add-form__radio">No</label>
                 </div>
-                {error && <p className="incorrect-data-text">Something goes wrong, try again</p>}
+                {error && <p className="error-text error-text--bold error-text--red">Something goes wrong, try again</p>}
                 <p className="btns-container">
                 <button className="btn btn--add" >Add</button> 
                 <button className="btn btn--reset" onClick={(e) => handleReset(e)} type="reset">Reset</button>

@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import OperationTypes from "../../OperationTypes";
 import BookList, { FeedbackPopup } from "../../reusable-components/BookList";
 import Feedback from "../../reusable-components/Feedback";
@@ -7,6 +7,7 @@ import { Operation } from "../../reusable-components/BookList";
 import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
 import appendParamsToUrl from "../../functions/appendParamsToUrl";
 import { BOOKS_URL } from "../../constants/constants";
+import _ from 'lodash';
 
 type Props = {
     isAuthenticated: boolean,
@@ -36,19 +37,21 @@ const Homepage = (props: Props) => {
     const handleSearch = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
 
-        if(searchingCriteria.types?.size === 0) {
+        if(_.isEqual(initialSearchingCriteria, searchingCriteria)) {
             setUrl(initialUrl)
         } else {
             setUrl(appendParamsToUrl(BOOKS_URL+'/criteria', new Map(Object.entries(searchingCriteria))))
         }
     }
     
-    const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, ref: React.RefObject<HTMLFormElement>) => {
         e.preventDefault()
         setUrl(initialUrl)
+        ref.current?.reset()
     }
 
     const [renderFeedback, setRenderFeedback] = useState(false)
+    const [feedbackText, setFeedbackText] = useState("")
 
     const handleBorrow = () => {
         if (!isAuthenticated) {
@@ -59,20 +62,28 @@ const Homepage = (props: Props) => {
                 credentials: "include"
             })
             .then(resp => {
-                if (resp.status === 200) {
+                if (resp.ok) {
+                    setFeedbackText("Thank you for borrow this book!")
                     setRenderFeedback(true)
 
                     setTimeout(function () {
                         setRenderFeedback(false)
-                    },1500);
-    
+                    },1300);
+                } else {
+                    throw Error(resp.status.toString());
                 }
+            })
+            .catch(error => {
+                error.message === "409" ? setFeedbackText("You already borrowed this book!") : setFeedbackText("Something goes wrong, try again!")
+                setRenderFeedback(true)
+
+                setTimeout(function () {
+                    setRenderFeedback(false)
+                },1300);
             })
             
         }
 
-        //you already have this book borrowed
-        //borrow
     }
 
     const handleCloseFeedback = () => {
@@ -88,7 +99,7 @@ const Homepage = (props: Props) => {
 
     const feedback: FeedbackPopup = {
         render: renderFeedback,
-        text: "Thank you for borrow this book!"
+        text: feedbackText
     }
 
 

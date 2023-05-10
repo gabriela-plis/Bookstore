@@ -132,15 +132,15 @@ const EditDataPanel = (props: EditDataPanelProps) => {
             body: JSON.stringify(userToSend)
             })
             .then(resp => {
-                if (resp.status === 200) {
+                if (resp.ok) {
                     setError(false)
                     setUser(userToSend)
                     setShowEditData(false)
+                } else {
+                    throw Error()
                 }
             })
-            .catch( error => {
-                setError(true) 
-            })
+            .catch( error => setError(true))
 
     }
 
@@ -173,8 +173,8 @@ const EditDataPanel = (props: EditDataPanelProps) => {
                         placeholder={initialData}
 
                     />
-                </div>
-                {error && <p className="incorrect-data-text">Something goes wrong, try again</p>}
+                {error && <p className="error-text error-text--red">Something goes wrong, try again</p>}                
+        </div>             
                 <button className="btn btn--cancel" onClick={handleCancelOperation}>Cancel</button>
                 <button className="btn btn--save" 
                     onClick={ (e) => {
@@ -251,7 +251,7 @@ const ResetPasswordPanel = (props: ResetPasswordPanelProps) => {
 
     return ( 
         <div className="edit__background">
-            <section className="edit__content">
+            <section className="edit__content edit__content--greater">
                 <h2 className="edit__title">Reset Password</h2>
                 <div className="edit__input-container">
                     <label className="edit__label">Current Password</label>

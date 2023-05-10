@@ -34,8 +34,6 @@ const LogInSection = (props: Props) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(LOGIN_URL)
-
         fetch(LOGIN_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -43,19 +41,16 @@ const LogInSection = (props: Props) => {
             credentials: "include"
         })
         .then ( resp => {
-            if (resp.status === 200) {
+            if (resp.ok) {
                 return resp.json()
-            } 
-
-            setWrongData(true) 
-            return     
+            } else {
+                throw Error()
+            }    
         })
         .then ( data => {
             setUser(data)
         })
-        .catch( error => {
-            setWrongData(true) 
-        })
+        .catch( error => setWrongData(true))
     }
 
     useEffect(() => {
@@ -97,7 +92,7 @@ const LogInSection = (props: Props) => {
                         setState={(e) => handleChange(e)} 
                         placeholder="Password" 
                      />            
-                    {wrongData && <p className="incorrect-data-text">Incorrect email or password</p>}
+                    {wrongData && <p className="error-text">Incorrect email or password</p>}
                 </div>
                 <button className="btn btn--pink btn--greater btn--greater-border-radius" type="submit">Log In</button>
             </form>
