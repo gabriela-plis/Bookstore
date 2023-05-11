@@ -67,9 +67,9 @@ public class SecurityConfig {
             .cors();
 
         http.authorizeHttpRequests()
-            .requestMatchers("/users/register").permitAll()
-            .requestMatchers("/users/*").authenticated()
-            .requestMatchers("/users").authenticated()
+            .requestMatchers("/user/register").permitAll()
+            .requestMatchers("/user/*").authenticated()
+            .requestMatchers("/user").authenticated()
             .requestMatchers("/books/*/borrow").authenticated()
             .requestMatchers("/books/*/return").authenticated()
             .requestMatchers("/books/user/*").authenticated()

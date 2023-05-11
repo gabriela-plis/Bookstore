@@ -43,7 +43,6 @@ public class UserService {
         UserEntity userEntity = userRepository.findByEmail(email)
                 .orElseThrow(EntityNotFoundException::new);
 
-        //czy password się nie zatraci
         mapper.updateEntity(userEntity, updatedUser);
 
         return mapper.toDTO(userEntity);

@@ -9,6 +9,6 @@ public class IdPresenceValidator implements ConstraintValidator<ValidIdPresence,
 
     @Override
     public boolean isValid(BookDTO book, ConstraintValidatorContext context) {
-        return book.id() != null;
+        return book.id() != null && book.id() >= 0;
     }
 }
