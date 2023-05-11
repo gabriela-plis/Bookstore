@@ -29,7 +29,7 @@ class UserControllerTest extends MvcSpecification {
     def "should get all users return 200 status code"() {
         when:
         def result =  mvc
-                .perform(get("/users"))
+                .perform(get("/user/all"))
                 .andDo(print())
 
         then:
@@ -50,7 +50,7 @@ class UserControllerTest extends MvcSpecification {
     def "should not get all users and return 401 status code"() {
         when: "trying access as non-authenticated user"
         def result =  mvc
-                .perform(get("/users"))
+                .perform(get("/user/all"))
                 .andDo(print())
 
         then:
@@ -64,7 +64,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(get("/users/$id"))
+                .perform(get("/user/$id"))
                 .andDo(print())
 
         then:
@@ -87,7 +87,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(get("/users/$id"))
+                .perform(get("/user/$id"))
                 .andDo(print())
 
         then:
@@ -105,7 +105,7 @@ class UserControllerTest extends MvcSpecification {
 
         when: "trying access as non-authenticated user"
         def result = mvc
-                .perform(get("/users/$id"))
+                .perform(get("/user/$id"))
                 .andDo(print())
 
         then:
@@ -120,7 +120,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(get("/users/this"))
+                .perform(get("/user"))
                 .andDo(print())
 
         then:
@@ -220,7 +220,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(post("/users/register")
+                .perform(post("/user/register")
                 .contentType(APPLICATION_JSON)
                 .content(toJson(request))
                 .accept(APPLICATION_JSON))
@@ -252,7 +252,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(post("/users/register")
+                .perform(post("/user/register")
                 .contentType(APPLICATION_JSON)
                 .content(toJson(request))
                 .accept(APPLICATION_JSON))
@@ -289,7 +289,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(put("/users")
+                .perform(put("/user")
                 .contentType(APPLICATION_JSON)
                 .content(toJson(request))
                 .accept(APPLICATION_JSON))
@@ -324,7 +324,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(put("/users")
+                .perform(put("/user")
                     .contentType(APPLICATION_JSON)
                     .content(toJson(request))
                     .accept(APPLICATION_JSON))
@@ -357,7 +357,7 @@ class UserControllerTest extends MvcSpecification {
 
         when:
         def result = mvc
-                .perform(put("/users/password")
+                .perform(put("/user/password")
                         .contentType(APPLICATION_JSON)
                         .content(toJson(request))
                         .accept(APPLICATION_JSON))
@@ -378,7 +378,7 @@ class UserControllerTest extends MvcSpecification {
 
         when: "trying access as non-authenticated user"
         def result = mvc
-                .perform(get("/users/$id"))
+                .perform(get("/user/$id"))
                 .andDo(print())
 
         then:

@@ -4,7 +4,11 @@ import app.backend.user.RoleEntity
 import app.backend.user.UserEntity
 import app.backend.user.UserRepository
 import app.backend.utils.SecurityContextAccessor
+import app.backend.utils.exceptions.ProductAlreadyBorrowedException
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.User
@@ -35,38 +39,42 @@ class BookServiceTest extends Specification {
 
     def "should get all books"() {
         given:
-        1 * bookRepository.findAll() >> getBookEntityList()
+        PageRequest pageRequest = PageRequest.of(0,5)
+        1 * bookRepository.findAll(pageRequest) >> getBookEntities()
 
         when:
-        List<BookDTO> result = bookService.getAllBooks()
+        PagedBooksDTO result = bookService.getAllBooks(pageRequest)
 
         then:
-        result == getBookDTOList()
+        result == getPagedBooksDTO()
 
     }
 
     def "should get all books to borrow"() {
         given:
-        1 * bookRepository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0) >> getBookEntityList()
+        PageRequest pageRequest = PageRequest.of(0,5)
+        1 * bookRepository.getByCanBeBorrowIsTrueAndAvailableAmountIsGreaterThan(0, pageRequest) >> getBookEntities()
 
         when:
-        List<BookDTO> result = bookService.getAllBooksToBorrow()
+        PagedBooksDTO result = bookService.getAllBooksToBorrow(pageRequest)
 
         then:
-        result == getBookDTOList()
+        result == getPagedBooksDTO()
 
     }
 
     def "should get all books by user id"() {
         given:
         int id = 1
-        1 * bookRepository.getByOwnerUsers_Id(id) >> getBookEntityList()
+        PageRequest pageRequest = PageRequest.of(0,5)
+
+        1 * bookRepository.getByOwnerUsers_Id(id, pageRequest) >> getBookEntities()
 
         when:
-        List<BookDTO> result = bookService.getByOwnerUser(id)
+        PagedBooksDTO result = bookService.getByOwnerUser(id, pageRequest)
 
         then:
-        result == getBookDTOList()
+        result == getPagedBooksDTO()
 
     }
 
@@ -94,27 +102,45 @@ class BookServiceTest extends Specification {
         thrown(EntityNotFoundException)
     }
 
-    def "should get books by sorting criteria"() {
+    def "should get books by sorting criteria - min publish year, max publish year, types"() {
         given:
-        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 1999, 2020)
-        1 * bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.minPublishYear, criteria.maxPublishYear, criteria.types, 0) >> getBookEntityList()
+        PageRequest pageRequest = PageRequest.of(0,5)
+        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 1999, 2020, null, null)
+
+        1 * bookRepository.findByPublishYearBetweenAndType_NameInAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.minPublishYear, criteria.maxPublishYear, criteria.types, 0, pageRequest) >> getBookEntities()
 
         when:
-        List<BookDTO> result = bookService.getBySortingCriteria(criteria)
+        PagedBooksDTO result = bookService.getBySortingCriteria(criteria, pageRequest)
 
         then:
-        result == getBookDTOList()
+        result == getPagedBooksDTO()
+    }
+
+    def "should get books by sorting criteria - min publish year, max publish year"() {
+        given:
+        PageRequest pageRequest = PageRequest.of(0,5)
+        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of(), 1999, 2020, null, null)
+
+        1 * bookRepository.findByPublishYearBetweenAndCanBeBorrowIsTrueAndAvailableAmountGreaterThan(criteria.minPublishYear, criteria.maxPublishYear, 0, pageRequest) >> getBookEntities()
+
+        when:
+        PagedBooksDTO result = bookService.getBySortingCriteria(criteria, pageRequest)
+
+        then:
+        result == getPagedBooksDTO()
     }
 
     def "should get all books to remove"() {
         given:
-        1 * bookRepository.findAllWithNoOwnerUser() >> getBookEntityList()
+        PageRequest pageRequest = PageRequest.of(0,5)
+
+        1 * bookRepository.findAllWithNoOwnerUser(pageRequest) >> getBookEntities()
 
         when:
-        List<BookDTO> result = bookService.getAllBooksToRemove()
+        PagedBooksDTO result = bookService.getAllBooksToRemove(pageRequest)
 
         then:
-        result == getBookDTOList()
+        result == getPagedBooksDTO()
     }
 
     def "should get all books types"() {
@@ -217,13 +243,29 @@ class BookServiceTest extends Specification {
     def  "should throw EntityNotFoundException when book to borrow doesn't exists"() {
         given:
         int id = 1
-        bookRepository.findById(id) >> Optional.empty()
+        1 * bookRepository.findById(id) >> Optional.empty()
 
         when:
         bookService.borrowBook(id)
 
         then:
         thrown(EntityNotFoundException)
+
+    }
+
+    def  "should throw ProductAlreadyBorrowedException when user want borrow the same book second time"() {
+        given:
+        int id = 1
+
+        1 * bookRepository.findById(id) >> Optional.of(getBookEntity())
+
+        1 * securityContextAccessor.getAuthentication() >> getAuthentication()
+
+        when:
+        bookService.borrowBook(id)
+
+        then:
+        thrown(ProductAlreadyBorrowedException)
 
     }
 
@@ -287,27 +329,34 @@ class BookServiceTest extends Specification {
 
     }
 
-    private List<BookEntity> getBookEntityList() {
+    private Page<BookEntity> getBookEntities() {
         List<UserEntity> ownerUsers = new ArrayList<>()
 
         BookTypeEntity bookType = new BookTypeEntity(1, "Type", new ArrayList<BookEntity>())
 
-        return List.of(
+        List<BookEntity> books = List.of(
                 new BookEntity(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType, ownerUsers),
                 new BookEntity(2, "The Higgler", "A.E. Coppard", 2016, true, 10, bookType, ownerUsers),
                 new BookEntity(3, "Sense and Sensibility", "Jane Austen", 1999, true, 5, bookType, ownerUsers)
         )
+
+        Page<BookEntity> pagedBooks = new PageImpl<>(books, PageRequest.of(0,5), books.size())
+
+        return pagedBooks;
     }
 
-    private List<BookDTO> getBookDTOList() {
+    private PagedBooksDTO getPagedBooksDTO() {
 
         BookTypeDTO bookType = new BookTypeDTO(1, "Type")
 
-        return List.of(
+        List<BookDTO> books = List.of(
                 new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, bookType),
                 new BookDTO(2, "The Higgler", "A.E. Coppard", 2016, true, 10, bookType),
                 new BookDTO(3, "Sense and Sensibility", "Jane Austen", 1999, true, 5, bookType)
         )
+        
+        return new PagedBooksDTO(1, books)
+        
     }
 
     private BookEntity getBookEntity() {
@@ -342,8 +391,4 @@ class BookServiceTest extends Specification {
         return new UsernamePasswordAuthenticationToken(principal, null)
     }
 
-    private Authentication getNonExistentUserAuthentication () {
-        UserDetails principal = new User("non-existent@gmail.com", "anne123", [])
-        return new UsernamePasswordAuthenticationToken(principal, null)
-    }
 }

@@ -1,8 +1,10 @@
 package app.backend.book
 
 import app.backend.MvcSpecification
+import app.backend.utils.exceptions.ProductAlreadyBorrowedException
 import org.spockframework.spring.SpringBean
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
 import spock.lang.Unroll
@@ -32,18 +34,19 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBooks() >> getBookDTOs()
+        1 * bookService.getAllBooks(_ as PageRequest) >> getPagedBooksDTO()
 
         and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true))) //poszukaj ladniejszego rozwiazania xd
-        result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.totalPages').value(1))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -54,18 +57,19 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBooksToBorrow() >> getBookDTOs()
+        1 * bookService.getAllBooksToBorrow(_ as PageRequest) >> getPagedBooksDTO()
 
         and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.totalPages').value(1))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -77,18 +81,19 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBooksToRemove() >> getBookDTOs() // czy moge
+        1 * bookService.getAllBooksToRemove(_ as PageRequest) >> getPagedBooksDTO()
 
         and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.totalPages').value(1))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -149,18 +154,19 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getByOwnerUser(id) >> getBookDTOs()
+        1 * bookService.getByOwnerUser(id, _ as PageRequest) >> getPagedBooksDTO()
 
         and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.totalPages').value(1))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -180,7 +186,7 @@ class BookControllerTest extends MvcSpecification {
 
     def "should get all book by sorting criteria and return 200 status code"() {
         given:
-        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 2016, 2019)
+        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 2016, 2019, null, null)
 
         when:
         def result = mvc
@@ -191,18 +197,19 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getBySortingCriteria(criteria) >> getBookDTOs()
+        1 * bookService.getBySortingCriteria(criteria, _ as PageRequest) >> getPagedBooksDTO()
 
         and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.totalPages').value(1))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
 
     }
 
@@ -386,6 +393,23 @@ class BookControllerTest extends MvcSpecification {
 
         then:
         result.andExpect(status().isUnauthorized())
+    }
+
+    @WithMockUser
+    def "should not borrow book and return 409 status code"() {
+        given:
+        int id = 1
+
+        when:
+        def result = mvc
+                .perform(post("/books/$id/borrow"))
+                .andDo(print())
+
+        then:
+        1 * bookService.borrowBook(id) >> {throw new ProductAlreadyBorrowedException()}
+
+        and:
+        result.andExpect(status().isConflict())
     }
 
     @WithMockUser
@@ -608,14 +632,16 @@ class BookControllerTest extends MvcSpecification {
         return new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, type)
     }
 
-    private List<BookDTO> getBookDTOs() {
+    private PagedBooksDTO getPagedBooksDTO() {
 
         BookTypeDTO type = new BookTypeDTO(1, "Type")
 
-        return List.of(
+        List<BookDTO> books = List.of(
                 new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, type),
                 new BookDTO(2, "The Higgler", "A.E. Coppard", 2016, true, 5, type),
         )
+
+        return new PagedBooksDTO(1, books)
     }
 
 }
