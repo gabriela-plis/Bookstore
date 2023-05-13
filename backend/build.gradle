@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.0.5'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'groovy'
+    id 'org.liquibase.gradle' version '2.0.4'
 }
 
 group = 'app'
@@ -28,6 +29,8 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.22.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -38,6 +41,10 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-4.0'
     testImplementation 'org.mapstruct:mapstruct:1.5.3.Final'
     testImplementation 'org.apache.groovy:groovy-json:4.0.9'
+    testImplementation 'org.testcontainers:spock:1.18.1'
+    testImplementation "org.testcontainers:postgresql:1.18.1"
+
+
 }
 
 test {
