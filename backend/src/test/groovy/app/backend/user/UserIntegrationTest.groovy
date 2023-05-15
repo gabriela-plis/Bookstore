@@ -1,29 +1,29 @@
 package app.backend.user
 
-import app.backend.MvcSpecification
-import jakarta.persistence.EntityNotFoundException
-import org.spockframework.spring.SpringBean
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import app.backend.IntegrationTestConfig
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
-
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.transaction.annotation.Transactional
 import spock.lang.Unroll
 
 import static groovy.json.JsonOutput.toJson
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.Matchers.containsInAnyOrder
+import static org.hamcrest.Matchers.hasSize
 import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 
-@WebMvcTest(controllers = [UserController])
-class UserControllerTest extends MvcSpecification {
-
-    @SpringBean
-    private final UserService userService = Mock()
+@AutoConfigureMockMvc
+class UserIntegrationTest extends IntegrationTestConfig {
+    @Autowired
+    MockMvc mvc
 
     @WithMockUser
     def "should get all users return 200 status code"() {
@@ -33,16 +33,13 @@ class UserControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * userService.getAllUsers() >> getUserDTOs()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$[*].firstName', containsInAnyOrder("Anne", "Ann")))
-        result.andExpect(jsonPath('$[*].lastName', containsInAnyOrder("Smith", "Johnson")))
-        result.andExpect(jsonPath('$[*].email', containsInAnyOrder("anneS@gmail.com", "annJ@gmail.com")))
-        result.andExpect(jsonPath('$[*].phone', containsInAnyOrder("123456789", "987654321")))
-        result.andExpect(jsonPath('$[*].roles', containsInAnyOrder(List.of("CUSTOMER", "EMPLOYEE"), List.of("CUSTOMER"))))
+        result.andExpect(jsonPath('$[*].id', containsInAnyOrder(1, 2, 3)))
+        result.andExpect(jsonPath('$[*].firstName', containsInAnyOrder("Susan", "Horace", "Anne")))
+        result.andExpect(jsonPath('$[*].lastName', containsInAnyOrder("Wilner", "Williams", "Smith")))
+        result.andExpect(jsonPath('$[*].email', containsInAnyOrder("susanW@gmail.com", "horaceW@gmail.com", "anneS@gmail.com")))
+        result.andExpect(jsonPath('$[*].phone', containsInAnyOrder(null, null, "576815233")))
+        result.andExpect(jsonPath('$[*].roles', containsInAnyOrder(List.of("EMPLOYEE", "CUSTOMER"), List.of("CUSTOMER"), List.of("CUSTOMER"))))
 
     }
 
@@ -60,7 +57,7 @@ class UserControllerTest extends MvcSpecification {
     @WithMockUser
     def "should get user by id and return 200 status code"() {
         given:
-        int id = 1
+        int id = 3
 
         when:
         def result = mvc
@@ -68,22 +65,21 @@ class UserControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * userService.getById(id) >> getUserDTO()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.id').value(1))
+        result.andExpect(jsonPath('$.id').value(3))
         result.andExpect(jsonPath('$.firstName').value("Anne"))
         result.andExpect(jsonPath('$.lastName').value("Smith"))
-        result.andExpect(jsonPath('$.phone').value("123456789"))
-        result.andExpect(jsonPath('$.email').value("anne@gmail.com"))
-
+        result.andExpect(jsonPath('$.phone').value("576815233"))
+        result.andExpect(jsonPath('$.email').value("anneS@gmail.com"))
+        result.andExpect(jsonPath('$.roles[*]', hasSize(2)))
+        result.andExpect(jsonPath('$.roles[0]').value("EMPLOYEE"))
+        result.andExpect(jsonPath('$.roles[1]').value("CUSTOMER"))
     }
 
     @WithMockUser
     def "should not get user by id and return 404 status code"() {
-        given:
-        int id = 1
+        given: "user id that doesn't exist"
+        int id = 100
 
         when:
         def result = mvc
@@ -91,9 +87,6 @@ class UserControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * userService.getById(id) >> { throw new EntityNotFoundException() }
-
-        and:
         result.andExpect(status().isNotFound())
 
     }
@@ -113,129 +106,54 @@ class UserControllerTest extends MvcSpecification {
 
     }
 
-    @WithMockUser(username = "anne@gmail.com")
+    @WithMockUser(username = "anneS@gmail.com")
     def "should get logged user and return 200 status code"() {
-        given:
-        String email = "anne@gmail.com"
-
         when:
         def result = mvc
                 .perform(get("/user"))
                 .andDo(print())
 
         then:
-        1 * userService.getByEmail(email) >> getUserDTO()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.id').value(1))
+        result.andExpect(jsonPath('$.id').value(3))
         result.andExpect(jsonPath('$.firstName').value("Anne"))
         result.andExpect(jsonPath('$.lastName').value("Smith"))
-        result.andExpect(jsonPath('$.phone').value("123456789"))
-        result.andExpect(jsonPath('$.email').value("anne@gmail.com"))
-        result.andExpect(jsonPath('$.roles[*]', hasSize(1)))
-        result.andExpect(jsonPath('$.roles[0]').value("CUSTOMER"))
+        result.andExpect(jsonPath('$.phone').value("576815233"))
+        result.andExpect(jsonPath('$.email').value("anneS@gmail.com"))
+        result.andExpect(jsonPath('$.roles[*]', hasSize(2)))
+        result.andExpect(jsonPath('$.roles[0]').value("EMPLOYEE"))
+        result.andExpect(jsonPath('$.roles[1]').value("CUSTOMER"))
 
     }
-
-//    def "should login user by login data and return 200 status code"() {
-//        given:
-//        def request = [
-//                email   : "anne@gmail.com",
-//                password: "anne123",
-//                employee: false
-//        ]
-//
-//        when:
-//        def result = mvc.perform(post("/users/login")
-//                .contentType(APPLICATION_JSON)
-//                .content(toJson(request))
-//                .accept(APPLICATION_JSON))
-//                .andDo(print())
-//
-//        then:
-//        1 * userService.findByLoginData(_ as LoginDTO) >> getUserDTO()
-//
-//        and:
-//        result.andExpect(status().isOk())
-//        result.andExpect(jsonPath('$.id').value(1))
-//        result.andExpect(jsonPath('$.firstName').value("Anne"))
-//        result.andExpect(jsonPath('$.lastName').value("Smith"))
-//        result.andExpect(jsonPath('$.phone').value("123456789"))
-//        result.andExpect(jsonPath('$.email').value("anne@gmail.com"))
-//        result.andExpect(jsonPath('$.password').value("anne123"))
-//        result.andExpect(jsonPath('$.employee').value(false))
-
-//        result.andExpectAll(
-//            status().isOk(),
-//            jsonPath('$.id').value(1),
-//            jsonPath('$.firstName').value("Anne"),
-//            jsonPath('$.lastName').value("Smith"),
-//            jsonPath('$.phone').value("123456789"),
-//            jsonPath('$.email').value("anne@gmail.com"),
-//            jsonPath('$.password').value("anne123"),
-//            jsonPath('$.employee').value(false)
-//        )
-//    }
-
-//    @Unroll
-//    def "should not login when #invalidData fail validation and return 422 status code"() {
-//        given:
-//        def request = [
-//                email   : email,
-//                password: password,
-//                employee: employee
-//        ]
-//
-//        when:
-//        def result = mvc.perform(post("/users/login")
-//                .contentType(APPLICATION_JSON)
-//                .content(toJson(request))
-//                .accept(APPLICATION_JSON))
-//                .andDo(print())
-//
-//        then:
-//        result.andExpect(status().isUnprocessableEntity())
-//
-//        where:
-//        email            | password  | employee | invalidData
-//        null             | "anne123" | false    | "missing email"
-//        " "              | "anne123" | false    | "empty email"
-//        "anne@gmail.com" | null      | false    | "missing password"
-//        "anne@gmail.com" | " "       | false    | "empty password"
-//        "anne@gmail.com" | "anne123" | null     | "missing is employee"
-//
-//    }
 
     @WithAnonymousUser
     def "should register user and return 200 status code"() {
         given:
         def request = [
                 firstName: "Anne",
-                lastName : "Smith",
+                lastName : "Wick",
                 phone    : "123456789",
-                email    : "anne@gmail.com",
+                email    : "anneW@gmail.com",
                 password: "anne123"
         ]
 
         when:
         def result = mvc
                 .perform(post("/user/register")
-                .contentType(APPLICATION_JSON)
-                .content(toJson(request))
-                .accept(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .accept(APPLICATION_JSON))
                 .andDo(print())
 
         then:
-        1 * userService.register(_ as RegisteredUserDTO) >> getUserDTO()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.id').value(1))
+        result.andExpect(jsonPath('$.id').value(4))
         result.andExpect(jsonPath('$.firstName').value("Anne"))
-        result.andExpect(jsonPath('$.lastName').value("Smith"))
+        result.andExpect(jsonPath('$.lastName').value("Wick"))
         result.andExpect(jsonPath('$.phone').value("123456789"))
-        result.andExpect(jsonPath('$.email').value("anne@gmail.com"))
+        result.andExpect(jsonPath('$.email').value("anneW@gmail.com"))
+        result.andExpect(jsonPath('$.roles[*]', hasSize(1)))
+        result.andExpect(jsonPath('$.roles[0]').value("CUSTOMER"))
     }
 
     @WithAnonymousUser
@@ -253,9 +171,9 @@ class UserControllerTest extends MvcSpecification {
         when:
         def result = mvc
                 .perform(post("/user/register")
-                .contentType(APPLICATION_JSON)
-                .content(toJson(request))
-                .accept(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .accept(APPLICATION_JSON))
                 .andDo(print())
 
         then:
@@ -273,43 +191,41 @@ class UserControllerTest extends MvcSpecification {
         "Anne"    | "Smith"  | "anne@gmail.com" | " "       | "empty password"
     }
 
-    @WithMockUser(username = "anne123@gmail.com")
+    @Transactional
+    @WithMockUser(username = "anneS@gmail.com")
     def "should update user and return 200 status code"() {
-        given:
+        given: "changed firstName, phone, email"
         def request = [
-                id       : 1,
-                firstName: "Anne",
+                id       : 3,
+                firstName: "Gabriela",
                 lastName : "Smith",
                 phone    : "123456789",
                 email    : "anne@gmail.com",
-                roles    : List.of("CUSTOMER")
+                roles    : List.of("EMPLOYEE", "CUSTOMER")
         ]
-
-        String email = "anne123@gmail.com"
 
         when:
         def result = mvc
                 .perform(put("/user")
-                .contentType(APPLICATION_JSON)
-                .content(toJson(request))
-                .accept(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .accept(APPLICATION_JSON))
                 .andDo(print())
 
         then:
-        1 * userService.update(_ as UserDTO, email) >> getUserDTO()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.id').value(1))
-        result.andExpect(jsonPath('$.firstName').value("Anne"))
+        result.andExpect(jsonPath('$.id').value(3))
+        result.andExpect(jsonPath('$.firstName').value("Gabriela"))
         result.andExpect(jsonPath('$.lastName').value("Smith"))
         result.andExpect(jsonPath('$.phone').value("123456789"))
         result.andExpect(jsonPath('$.email').value("anne@gmail.com"))
-        result.andExpect(jsonPath('$.roles[*]', hasSize(1)))
-        result.andExpect(jsonPath('$.roles[0]').value("CUSTOMER"))
+        result.andExpect(jsonPath('$.roles[*]', hasSize(2)))
+        result.andExpect(jsonPath('$.roles[0]').value("EMPLOYEE"))
+        result.andExpect(jsonPath('$.roles[1]').value("CUSTOMER"))
 
     }
 
+    @Transactional
     @WithMockUser
     @Unroll
     def "should not update user when #invalidData fail validation and return 422 status code"() {
@@ -325,9 +241,9 @@ class UserControllerTest extends MvcSpecification {
         when:
         def result = mvc
                 .perform(put("/user")
-                    .contentType(APPLICATION_JSON)
-                    .content(toJson(request))
-                    .accept(APPLICATION_JSON))
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .accept(APPLICATION_JSON))
                 .andDo(print())
 
         then:
@@ -345,15 +261,14 @@ class UserControllerTest extends MvcSpecification {
 
     }
 
-    @WithMockUser(username = "anne@gmail.com")
+    @Transactional
+    @WithMockUser(username = "anneS@gmail.com")
     def "should reset password and return 200 status code"() {
         given:
         def request = [
                 currentPassword: "anne123",
                 newPassword: "anne321"
         ]
-
-        String email = "anne@gmail.com"
 
         when:
         def result = mvc
@@ -364,13 +279,33 @@ class UserControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * userService.resetPassword(_ as ResetPasswordDTO, email)
-
-        and:
         result.andExpect(status().isOk())
 
     }
 
+    @Transactional
+    @WithMockUser(username = "anneS@gmail.com")
+    def "should not reset password and return 500 status code"() {
+        given:
+        def request = [
+                currentPassword: "abc",
+                newPassword: "anne321"
+        ]
+
+        when:
+        def result = mvc
+                .perform(put("/user/password")
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(request))
+                        .accept(APPLICATION_JSON))
+                .andDo(print())
+
+        then:
+        result.andExpect(status().isBadRequest())
+
+    }
+
+    @Transactional
     @WithAnonymousUser
     def "should not reset password and return 401 status code"() {
         given:
@@ -385,17 +320,4 @@ class UserControllerTest extends MvcSpecification {
         result.andExpect(status().isUnauthorized())
 
     }
-
-
-    private UserDTO getUserDTO() {
-        return new UserDTO(1, "Anne", "Smith", "123456789", "anne@gmail.com", List.of("CUSTOMER"))
-    }
-
-    private List<UserDTO> getUserDTOs() {
-        return List.of(
-                new UserDTO(1, "Anne", "Smith", "123456789", "anneS@gmail.com", List.of("CUSTOMER", "EMPLOYEE")),
-                new UserDTO(2, "Ann", "Johnson", "987654321", "annJ@gmail.com", List.of("CUSTOMER"))
-        )
-    }
-
 }

@@ -1,31 +1,34 @@
 package app.backend.book
 
-import app.backend.MvcSpecification
-import app.backend.utils.exceptions.ProductAlreadyBorrowedException
-import jakarta.persistence.EntityNotFoundException
-import org.spockframework.spring.SpringBean
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.data.domain.PageRequest
+import app.backend.IntegrationTestConfig
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.transaction.annotation.Transactional
 import spock.lang.Unroll
 
-import static app.backend.book.ConstraintViolationVariables.*
-import static groovy.json.JsonOutput.*
-import static org.hamcrest.Matchers.*
-import static org.springframework.http.MediaType.*
+import static app.backend.book.ConstraintViolationVariables.NEGATIVE_NUMBER
+import static app.backend.book.ConstraintViolationVariables.WHITESPACE_STRING
+import static app.backend.book.ConstraintViolationVariables.YEAR_GREATER_THAN_MAX
+import static app.backend.book.ConstraintViolationVariables.YEAR_LESS_THAN_MIN
+import static groovy.json.JsonOutput.toJson
+import static org.hamcrest.Matchers.containsInAnyOrder
+import static org.hamcrest.Matchers.hasSize
+import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@WebMvcTest(controllers = [BookController])
-class BookControllerTest extends MvcSpecification {
-
-    @SpringBean
-    private final BookService bookService = Mock()
+@AutoConfigureMockMvc
+class BookIntegrationTest extends IntegrationTestConfig {
+    @Autowired
+    MockMvc mvc
 
     @WithMockUser
     def "should get all books and return 200 status code"() {
@@ -35,19 +38,16 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBooks(_ as PageRequest) >> getPagedBooksDTO()
-
-        and:
         result.andExpect(status().isOk())
         result.andExpect(jsonPath('$.totalPages').value(1))
-        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2, 3, 4)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder( "Dracula", "The Higgler", "Murder!", "The Three Musketeers")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Stoker Bram", "A.E Coppard", "Arnold Bennet", "Alexandre Dumas")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2010, 2016, 2005, 1980)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, false, true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(5, 13, 15, 9)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(4, 5, 3, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Horror", "Romance", "Crime", "Adventure stories")))
 
     }
 
@@ -58,19 +58,17 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBooksToBorrow(_ as PageRequest) >> getPagedBooksDTO()
-
-        and:
         result.andExpect(status().isOk())
         result.andExpect(jsonPath('$.totalPages').value(1))
-        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.books[*]', hasSize(3)))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 3, 4)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder( "Dracula", "Murder!", "The Three Musketeers")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Stoker Bram", "Arnold Bennet", "Alexandre Dumas")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2010, 2005, 1980)))
+        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true, true)))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(5, 15, 9)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(4, 3, 1)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Horror", "Crime", "Adventure stories")))
 
     }
 
@@ -82,19 +80,17 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBooksToRemove(_ as PageRequest) >> getPagedBooksDTO()
-
-        and:
         result.andExpect(status().isOk())
         result.andExpect(jsonPath('$.totalPages').value(1))
-        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
-        result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.books[*]', hasSize(1)))
+        result.andExpect(jsonPath('$.books[0].id').value(2))
+        result.andExpect(jsonPath('$.books[0].title').value("The Higgler"))
+        result.andExpect(jsonPath('$.books[0].author').value("A.E Coppard"))
+        result.andExpect(jsonPath('$.books[0].publishYear').value(2016))
+        result.andExpect(jsonPath('$.books[0].canBeBorrow').value(false))
+        result.andExpect(jsonPath('$.books[0].availableAmount').value(13))
+        result.andExpect(jsonPath('$.books[0].type.id').value(5))
+        result.andExpect(jsonPath('$.books[0].type.name').value("Romance"))
 
     }
 
@@ -122,7 +118,7 @@ class BookControllerTest extends MvcSpecification {
 
     def "should get book by id"() {
         given:
-        int id = 1
+        int id = 2
 
         when:
         def result = mvc
@@ -130,23 +126,21 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getById(id) >> getBookDTO()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.id').value(1))
-        result.andExpect(jsonPath('$.title').value("The Grass is Always Greener"))
-        result.andExpect(jsonPath('$.author').value("Jeffrey Archer"))
-        result.andExpect(jsonPath('$.publishYear').value(2019))
-        result.andExpect(jsonPath('$.canBeBorrow').value(true))
-        result.andExpect(jsonPath('$.availableAmount').value(10))
-        result.andExpect(jsonPath('$.type.id').value(1))
-        result.andExpect(jsonPath('$.type.name').value("Type"))
+        result.andExpect(jsonPath('$.id').value(2))
+        result.andExpect(jsonPath('$.title').value("The Higgler"))
+        result.andExpect(jsonPath('$.author').value("A.E Coppard"))
+        result.andExpect(jsonPath('$.publishYear').value(2016))
+        result.andExpect(jsonPath('$.canBeBorrow').value(false))
+        result.andExpect(jsonPath('$.availableAmount').value(13))
+        result.andExpect(jsonPath('$.type.id').value(5))
+        result.andExpect(jsonPath('$.type.name').value("Romance"))
+
     }
 
     def "should not get book by id and return 404 status code" () {
         given:
-        int id = 1
+        int id = 10
 
         when:
         def result = mvc
@@ -154,16 +148,13 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getById(id) >> {throw new EntityNotFoundException()}
-
-        and:
         result.andExpect(status().isNotFound())
     }
 
     @WithMockUser
     def "should get all book by user id and return 200 status code"() {
         given:
-        int id = 1
+        int id = 2
 
         when:
         def result = mvc
@@ -171,19 +162,17 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getByOwnerUser(id, _ as PageRequest) >> getPagedBooksDTO()
-
-        and:
         result.andExpect(status().isOk())
         result.andExpect(jsonPath('$.totalPages').value(1))
-        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*]', hasSize(2)))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 3)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder( "Dracula", "Murder!")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Stoker Bram", "Arnold Bennet")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2010, 2005)))
         result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(5, 15)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(4, 3)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Horror", "Crime")))
 
     }
 
@@ -202,31 +191,26 @@ class BookControllerTest extends MvcSpecification {
     }
 
     def "should get all book by sorting criteria and return 200 status code"() {
-        given:
-        BookSortingCriteriaDTO criteria = new BookSortingCriteriaDTO(Set.of("Type"), 2016, 2019, null, null)
-
         when:
         def result = mvc
                 .perform(get("/books/criteria")
-                        .param("types", "Type")
-                        .param("min", "2016")
-                        .param("max", "2019"))
+                        .param("types", "Crime", "Horror")
+                        .param("min", "2005")
+                        .param("max", "2010"))
                 .andDo(print())
 
         then:
-        1 * bookService.getBySortingCriteria(criteria, _ as PageRequest) >> getPagedBooksDTO()
-
-        and:
         result.andExpect(status().isOk())
         result.andExpect(jsonPath('$.totalPages').value(1))
-        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder("The Grass is Always Greener", "The Higgler")))
-        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Jeffrey Archer", "A.E. Coppard")))
-        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2019, 2016)))
+        result.andExpect(jsonPath('$.books[*]', hasSize(2)))
+        result.andExpect(jsonPath('$.books[*].id', containsInAnyOrder(1, 3)))
+        result.andExpect(jsonPath('$.books[*].title', containsInAnyOrder( "Dracula", "Murder!")))
+        result.andExpect(jsonPath('$.books[*].author', containsInAnyOrder("Stoker Bram", "Arnold Bennet")))
+        result.andExpect(jsonPath('$.books[*].publishYear', containsInAnyOrder(2010, 2005)))
         result.andExpect(jsonPath('$.books[*].canBeBorrow', containsInAnyOrder(true, true)))
-        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(10, 5)))
-        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(1, 1)))
-        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Type", "Type")))
+        result.andExpect(jsonPath('$.books[*].availableAmount', containsInAnyOrder(5, 15)))
+        result.andExpect(jsonPath('$.books[*].type.id', containsInAnyOrder(4, 3)))
+        result.andExpect(jsonPath('$.books[*].type.name', containsInAnyOrder("Horror", "Crime")))
 
     }
 
@@ -261,18 +245,13 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.getAllBookTypes() >> List.of(
-                new BookTypeDTO(1, "Crime"),
-                new BookTypeDTO(2, "Romance")
-        )
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.[*]', hasSize(2)))
-        result.andExpect(jsonPath('$.[*].id', containsInAnyOrder(1, 2)))
-        result.andExpect(jsonPath('$.[*].name', containsInAnyOrder("Crime", "Romance")))
+        result.andExpect(jsonPath('$.[*]', hasSize(5)))
+        result.andExpect(jsonPath('$.[*].id', containsInAnyOrder(1, 2, 3, 4, 5)))
+        result.andExpect(jsonPath('$.[*].name', containsInAnyOrder("Adventure stories", "Classics", "Crime", "Horror", "Romance")))
     }
 
+    @Transactional
     @WithMockUser(roles = "EMPLOYEE")
     def "should add book and return 200 status code"() {
         given:
@@ -287,21 +266,19 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.save(_ as BookDTO) >> getBookDTO()
-
-        and:
         result.andExpect(status().isOk())
-        result.andExpect(jsonPath('$.id').value(1))
+        result.andExpect(jsonPath('$.id').value(5))
         result.andExpect(jsonPath('$.title').value("The Grass is Always Greener"))
         result.andExpect(jsonPath('$.author').value("Jeffrey Archer"))
         result.andExpect(jsonPath('$.publishYear').value(2019))
         result.andExpect(jsonPath('$.canBeBorrow').value(true))
         result.andExpect(jsonPath('$.availableAmount').value(10))
-        result.andExpect(jsonPath('$.type.id').value(1))
-        result.andExpect(jsonPath('$.type.name').value("Type"))
+        result.andExpect(jsonPath('$.type.id').value(2))
+        result.andExpect(jsonPath('$.type.name').value("Classics"))
 
     }
 
+    @Transactional
     @WithMockUser(roles = "EMPLOYEE")
     def "should not add book when #invalidData fail validation and return 422 status code"() {
         given:
@@ -347,6 +324,7 @@ class BookControllerTest extends MvcSpecification {
 
     }
 
+    @Transactional
     @WithAnonymousUser
     def "should not add book and return 401 status code"() {
         given:
@@ -364,6 +342,7 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isUnauthorized())
     }
 
+    @Transactional
     @WithMockUser
     def "should not add book and return 403 status code"() {
         given:
@@ -381,7 +360,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isForbidden())
     }
 
-    @WithMockUser
+    @Transactional
+    @WithMockUser(username = "anneS@gmail.com")
     def "should borrow book and return 200 status code"() {
         given:
         int id = 1
@@ -392,12 +372,10 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.borrowBook(id)
-
-        and:
         result.andExpect(status().isOk())
     }
 
+    @Transactional
     @WithAnonymousUser
     def "should not borrow book and return 401 status code"() {
         given:
@@ -412,9 +390,10 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isUnauthorized())
     }
 
-    @WithMockUser
+    @Transactional
+    @WithMockUser(username = "susanW@gmail.com")
     def "should not borrow book and return 409 status code"() {
-        given:
+        given: "id of already borrowed book by user"
         int id = 1
 
         when:
@@ -423,13 +402,11 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.borrowBook(id) >> {throw new ProductAlreadyBorrowedException()}
-
-        and:
         result.andExpect(status().isConflict())
     }
 
-    @WithMockUser
+    @Transactional
+    @WithMockUser(username = "susanW@gmail.com")
     def "should return book with 200 status code"() {
         given:
         int id = 1
@@ -440,12 +417,10 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.returnBook(id)
-
-        and:
         result.andExpect(status().isOk())
     }
 
+    @Transactional
     @WithAnonymousUser
     def "should not return book and return 401 status code"() {
         given:
@@ -460,6 +435,7 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isUnauthorized())
     }
 
+    @Transactional
     @WithMockUser(roles = "EMPLOYEE")
     def "should update book and return 200 status code"() {
         given:
@@ -474,9 +450,6 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.update(_ as BookDTO) >> getBookDTO()
-
-        and:
         result.andExpect(status().isOk())
         result.andExpect(jsonPath('$.id').value(1))
         result.andExpect(jsonPath('$.title').value("The Grass is Always Greener"))
@@ -484,10 +457,11 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(jsonPath('$.publishYear').value(2019))
         result.andExpect(jsonPath('$.canBeBorrow').value(true))
         result.andExpect(jsonPath('$.availableAmount').value(10))
-        result.andExpect(jsonPath('$.type.id').value(1))
-        result.andExpect(jsonPath('$.type.name').value("Type"))
+        result.andExpect(jsonPath('$.type.id').value(2))
+        result.andExpect(jsonPath('$.type.name').value("Classics"))
     }
 
+    @Transactional
     @WithMockUser(roles = "EMPLOYEE")
     def "should not update book when #invalidData fail validation and return 422 status code"() {
         given:
@@ -535,6 +509,7 @@ class BookControllerTest extends MvcSpecification {
 
     }
 
+    @Transactional
     @WithAnonymousUser
     def "should not update book and return 401 status code"() {
         given:
@@ -552,6 +527,7 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isUnauthorized())
     }
 
+    @Transactional
     @WithMockUser
     def "should not update book and return 403 status code"() {
         given:
@@ -569,6 +545,8 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isForbidden())
     }
 
+
+    @Transactional
     @WithMockUser(roles = "EMPLOYEE")
     def "should delete book and return 204 status code"() {
         given:
@@ -580,12 +558,10 @@ class BookControllerTest extends MvcSpecification {
                 .andDo(print())
 
         then:
-        1 * bookService.delete(id)
-
-        and:
         result.andExpect(status().isNoContent())
     }
 
+    @Transactional
     @WithAnonymousUser
     def "should not delete book and return 401 status code"() {
         given:
@@ -600,6 +576,7 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isUnauthorized())
     }
 
+    @Transactional
     @WithMockUser
     def "should not delete book and return 403 status code"() {
         given:
@@ -614,6 +591,20 @@ class BookControllerTest extends MvcSpecification {
         result.andExpect(status().isForbidden())
     }
 
+    private LinkedHashMap<String, Serializable> getRequestBookWithoutId() {
+        return [
+                title          : "The Grass is Always Greener",
+                author         : "Jeffrey Archer",
+                publishYear    : 2019,
+                canBeBorrow    : true,
+                availableAmount: 10,
+                type           : [
+                        id  : 2,
+                        name: "Classics"
+                ]
+        ]
+    }
+
     private LinkedHashMap<String, Serializable> getRequestBook() {
         return [
                 id             : 1,
@@ -623,42 +614,9 @@ class BookControllerTest extends MvcSpecification {
                 canBeBorrow    : true,
                 availableAmount: 10,
                 type           : [
-                        id  : 1,
-                        name: "Type"
+                        id  : 2,
+                        name: "Classics"
                 ]
         ]
     }
-
-    private LinkedHashMap<String, Serializable> getRequestBookWithoutId() {
-        return [
-                title          : "The Grass is Always Greener",
-                author         : "Jeffrey Archer",
-                publishYear    : 2019,
-                canBeBorrow    : true,
-                availableAmount: 10,
-                type           : [
-                        id  : 1,
-                        name: "Type"
-                ]
-        ]
-    }
-
-    private BookDTO getBookDTO() {
-        BookTypeDTO type = new BookTypeDTO(1, "Type")
-
-        return new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, type)
-    }
-
-    private PagedBooksDTO getPagedBooksDTO() {
-
-        BookTypeDTO type = new BookTypeDTO(1, "Type")
-
-        List<BookDTO> books = List.of(
-                new BookDTO(1, "The Grass is Always Greener", "Jeffrey Archer", 2019, true, 10, type),
-                new BookDTO(2, "The Higgler", "A.E. Coppard", 2016, true, 5, type),
-        )
-
-        return new PagedBooksDTO(1, books)
-    }
-
 }
