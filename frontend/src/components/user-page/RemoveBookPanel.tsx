@@ -1,5 +1,5 @@
-import OperationTypes from "../../OperationTypes";
-import { BOOKS_URL } from "../../constants/constants";
+import OperationTypes from "../../variable/OperationTypes";
+import { BOOKS_URL } from "../../variable/constants";
 import BookList, { Operation } from "../../reusable-components/BookList";
 import { useReducer, useState } from "react";
 

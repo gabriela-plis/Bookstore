@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import BookList from "../../reusable-components/BookList";
 import UserSidebar from "./Sidebar";
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import useFetch from "../../functions/useFetch";
 import User from "../../DTO/UserDTO";
 import Details from "./Details";
@@ -9,7 +8,7 @@ import Settings from "./Settings";
 import AddBookPanel from "./AddBookPanel";
 import RemoveBookPanel from "./RemoveBookPanel";
 import Borrows from "./Borrows";
-import { USER_URL } from "../../constants/constants";
+import { USER_URL } from "../../variable/constants";
 
 type Props = {
     setRenderLogoutText: React.Dispatch<React.SetStateAction<boolean>>;
@@ -62,11 +61,13 @@ const UserPage = (props: Props) => {
 
     const user: User = useFetch(USER_URL) as unknown as User;
     const [render, setRender] = useState(false)
-    let isEmployee = false;
+    // let isEmployee = false;
+    const [isEmployee, setIsEmployee] = useState(false)
 
     useEffect( () => {
         if (!Array.isArray(user)) {
-            isEmployee = user.roles.includes("EMPLOYEE")
+            // isEmployee = user.roles.includes("EMPLOYEE")
+            setIsEmployee(user.roles.includes("EMPLOYEE"))
             setRender(true)
         }
     },[user])
@@ -74,7 +75,7 @@ const UserPage = (props: Props) => {
 
     return ( 
     <main className="UserPage">
-        {render && <UserSidebar employee={user.roles.includes("EMPLOYEE")} setRenderLogoutText={props.setRenderLogoutText}/>}
+        {render && <UserSidebar employee={isEmployee} setRenderLogoutText={props.setRenderLogoutText}/>}
         {urlPrefixesPresence.borrows && <Borrows />}
         {urlPrefixesPresence.details && <Details />}
         {urlPrefixesPresence.settings && <Settings />}

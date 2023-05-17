@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LOGOUT_URL } from "../constants/constants";
+import { LOGOUT_URL } from "../../variable/constants";
 
 type HeaderProps = {
     isAuthenticated: boolean,

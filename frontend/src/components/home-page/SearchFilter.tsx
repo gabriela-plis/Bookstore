@@ -1,7 +1,7 @@
 import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
 import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
-import { BOOKS_URL } from "../../constants/constants";
+import { BOOKS_URL } from "../../variable/constants";
 import { useRef } from "react";
 
 type SearchFilterProps = {

@@ -4,7 +4,7 @@ import PasswordInput from "../../reusable-components/PasswordInput";
 import TextInput from "../../reusable-components/TextInput";
 import LoginData from "../../DTO/LoginDataDTO";
 import User from "../../DTO/UserDTO";
-import { LOGIN_URL } from "../../constants/constants";
+import { LOGIN_URL } from "../../variable/constants";
 
 
 type Props = {

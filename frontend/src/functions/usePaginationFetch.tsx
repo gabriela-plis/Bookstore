@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PagedBooksDTO from "../DTO/PagedBooksDTO";
 
-function usePaginationFetch<Type>(url: string): PagedBooksDTO {
+function usePaginationFetch(url: string, forceUpdate?: any ): PagedBooksDTO {
 
     const [data, setData] = useState<PagedBooksDTO>({
         totalPages: 0,
@@ -16,7 +16,7 @@ function usePaginationFetch<Type>(url: string): PagedBooksDTO {
         .then ( data => {
             setData(data);
         })
-    },[url]);
+    },[url, forceUpdate]);
 
     return data;
 }

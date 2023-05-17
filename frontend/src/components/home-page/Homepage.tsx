@@ -1,12 +1,12 @@
 import { useState } from "react";
-import OperationTypes from "../../OperationTypes";
+import OperationTypes from "../../variable/OperationTypes";
 import BookList, { FeedbackPopup } from "../../reusable-components/BookList";
 import Feedback from "../../reusable-components/Feedback";
 import SearchFilter from "./SearchFilter";
 import { Operation } from "../../reusable-components/BookList"; 
 import BookSortingCriteria from "../../DTO/BookSortingCriteriaDTO";
 import appendParamsToUrl from "../../functions/appendParamsToUrl";
-import { BOOKS_URL } from "../../constants/constants";
+import { BOOKS_URL } from "../../variable/constants";
 import _ from 'lodash';
 
 type Props = {

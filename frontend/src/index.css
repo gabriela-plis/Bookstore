@@ -253,7 +253,7 @@ img {
 
 .panel-wrapper__panel--image-background {
   background: var(--FCOLOR-LIGHT);
-  background-image: url('./images/background3.jpg');
+  background-image: url('./images/pink-background.jpg');
   background-size:cover;
   background-position: center;
 
@@ -736,7 +736,7 @@ img {
 .details__image {
   grid-area: image;
   
-  background-image: url('./images/details5.jpg');
+  background-image: url('./images/details-photo.jpg');
   background-size: cover;
   background-position:center;
 }
@@ -812,7 +812,7 @@ img {
 .settings__image {
   grid-area: image;
 
-  background-image: url('./images/details3.jpg');
+  background-image: url('./images/settings-photo.jpg');
   background-size: cover;
   background-position:center;
 }
@@ -941,7 +941,7 @@ img {
 .add-form__image {
   grid-area: image;
 
-  background-image: url('./images/photo1.jpg');
+  background-image: url('./images/add-book-photo.jpg');
   background-size: cover;
   background-position:center;
 
@@ -959,6 +959,7 @@ img {
 }
 
 .add-form .form__fields input {
+  font-family: inherit;
   width: 15rem;
   margin-left: 0.75rem;
 }
@@ -1005,6 +1006,21 @@ img {
   padding-top: 0.7rem;
   padding-left: 1.5rem;
   font-size: 2rem;
+}
+
+
+/* not found page */
+
+.not-found-page {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.not-found-page__image {
+  width: 300px;
+  height: 300px;
 }
 
 /* SCREEN SIZE */

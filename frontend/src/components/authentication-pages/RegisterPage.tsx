@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TextInput from "../../reusable-components/TextInput";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import RegisteredUser from "../../DTO/RegisteredUserDTO"
-import { USER_URL } from "../../constants/constants";
+import { USER_URL } from "../../variable/constants";
 
 const RegisterPage = () => {
     return ( 

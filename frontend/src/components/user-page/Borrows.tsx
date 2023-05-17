@@ -1,7 +1,7 @@
 import { useReducer, useState } from "react";
-import OperationTypes from "../../OperationTypes";
+import OperationTypes from "../../variable/OperationTypes";
 import BookList, { Operation } from "../../reusable-components/BookList";
-import { BOOKS_URL } from "../../constants/constants";
+import { BOOKS_URL } from "../../variable/constants";
 
 const Borrows = () => {
 

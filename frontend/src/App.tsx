@@ -1,10 +1,11 @@
-import React, { cloneElement, useEffect, useState } from 'react';
-import Header from './components/Header';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import Header from './components/header/Header';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Homepage from './components/home-page/Homepage';
 import LogInPage from './components/authentication-pages/LogInPage';
 import RegisterPage from './components/authentication-pages/RegisterPage';
 import UserPage from './components/user-page/UserPage';
+import NotFoundPage from './components/not-found-page/NotFoundPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,6 +40,7 @@ function App() {
             <Route path="/user/settings" element={userPage}></Route>
             <Route path="/user/add-book" element={userPage}></Route>
             <Route path="/user/remove-book" element={userPage}></Route>
+            <Route path="*" element={<NotFoundPage />}></Route>
           </Routes>
         </div>
       </div>

@@ -1,9 +1,9 @@
-import addIcon from '../../images/plus.png';
-import removeIcon from '../../images/delete-button.png';
-import settingsIcon from '../../images/settings-blue.png';
+import addIcon from '../../images/plus-icon.png';
+import removeIcon from '../../images/delete-icon.png';
+import settingsIcon from '../../images/settings-icon.png';
 import detailsIcon from '../../images/user -blue.png';
-import borrowsIcon from '../../images/book-color.png';
-import logoutIcon from '../../images/logout.png';
+import borrowsIcon from '../../images/book-icon.png';
+import logoutIcon from '../../images/logout-icon.png';
 
 
 import { Link } from 'react-router-dom';
@@ -58,7 +58,8 @@ const UserSidebar = (props: Props) => {
             {filteredLinks.map(link => (
                 <section className="sidebar__element" key={link.to}>
                     <img 
-                        src={link.icon} 
+                        src={link.icon}
+                        alt="icon" 
                         width="45"
                         height="45"
                         className="icon"

@@ -1,5 +1,5 @@
 import User from "../../DTO/UserDTO";
-import { USER_URL } from "../../constants/constants";
+import { USER_URL } from "../../variable/constants";
 import useFetch from "../../functions/useFetch";
 
 

@@ -4,7 +4,7 @@ import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
 import PasswordInput from "../../reusable-components/PasswordInput";
 import ResetPassword from "../../DTO/ResetPasswordDTO";
-import { USER_URL } from "../../constants/constants";
+import { USER_URL } from "../../variable/constants";
 
 
 

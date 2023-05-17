@@ -4,7 +4,7 @@ import Book from "../../DTO/BookDTO";
 import BookType from "../../DTO/BookTypeDTO";
 import useFetch from "../../functions/useFetch";
 import TextInput from "../../reusable-components/TextInput";
-import { BOOKS_URL } from "../../constants/constants";
+import { BOOKS_URL } from "../../variable/constants";
 
 const AddBookPanel = () => {
 

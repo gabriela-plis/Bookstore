@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import OperationTypes from "../OperationTypes";
+import OperationTypes from "../variable/OperationTypes";
 import Popup from "./Popup";
 import Pagination from "./Pagination";
 import PagedBooksDTO from "../DTO/PagedBooksDTO";
@@ -40,7 +40,7 @@ const BookList = (props: Props) => {
 
     const [urlWithPagination, setUrlWithPagination] = useState(appendParamsToUrl(url, params))
 
-    const paginationResult: PagedBooksDTO = usePaginationFetch(urlWithPagination);
+    const paginationResult: PagedBooksDTO = usePaginationFetch(urlWithPagination, forceUpdate);
     
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
