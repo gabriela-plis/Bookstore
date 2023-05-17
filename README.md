@@ -17,6 +17,8 @@
   <li><b>User Profile Management:</b> Users can view and modify their profile information, including the password.</li>
 </ul>
 
+![bookstore-view](https://github.com/gabriela-plis/bookstore/assets/102433197/6ee5a3db-d926-4e6d-9b42-125bdddb68b3)
+
 ## Technologies
 
 ### Backend
