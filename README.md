@@ -24,6 +24,7 @@
 ### Backend
 <ul>
   <li>Spring Boot</li>
+  <li>Spring Web</li>
   <li>Spring Data</li>
   <li>Spring Security</li>
   <li>Lombok</li>
