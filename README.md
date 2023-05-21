@@ -55,4 +55,13 @@
 </ul>
 
 ## Setup
-Still in progres..
+To run Bookstore, follow instructions:
+<ol>
+  <li>Clone project
+    <p>
+   ```
+  git clone 
+    ```
+    </p>
+  </li>
+</ol>
