@@ -55,13 +55,15 @@
 </ul>
 
 ## Setup
-To run Bookstore, follow instructions:
-<ol>
-  <li>Clone project
-    <p>
-   ```
-  git clone 
-    ```
-    </p>
-  </li>
-</ol>
+To run Bookstore, follow steps:
+1. Clone project
+
+  ``` bash      
+  $ git clone https://github.com/gabriela-plis/bookstore.git
+  ```
+2.  Run docker-compose (be sure that you are on bookstore folder)
+
+  ``` bash
+  docker-compose up -d
+  ```
+
