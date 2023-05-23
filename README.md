@@ -59,7 +59,7 @@ To run Bookstore, follow steps:
 1. Clone project
 
   ``` bash      
-  $ git clone https://github.com/gabriela-plis/bookstore.git
+   git clone https://github.com/gabriela-plis/bookstore.git
   ```
 2.  Run docker-compose (be sure that you are on bookstore folder)
 
