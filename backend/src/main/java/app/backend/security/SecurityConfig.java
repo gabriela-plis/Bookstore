@@ -62,7 +62,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
 
-        // 1
         http.csrf().disable()
             .cors();
 
@@ -83,7 +82,6 @@ public class SecurityConfig {
             .exceptionHandling()
             .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 
-        // 2
 
         http.formLogin(withDefaults());
 
