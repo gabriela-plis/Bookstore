@@ -12,15 +12,19 @@ type Props = {
 }
 
 const LogInPage = (props: Props) => {
+    const {setIsAuthenticated} = {...props}
+    
     return ( 
         <main className="loginPage panel-wrapper">
-            <LogInSection setIsAuthenticated={props.setIsAuthenticated}/>
+            <LogInSection setIsAuthenticated={setIsAuthenticated}/>
             <RegisterOptionSection />
         </main>
      );
 }
 
 const LogInSection = (props: Props) => {
+    const {setIsAuthenticated} = {...props}
+
     const [loginData, setLoginData] = useState<LoginData>({
         email: "",
         password: ""
@@ -30,6 +34,17 @@ const LogInSection = (props: Props) => {
     const navigate = useNavigate();
 
     const [user, setUser] = useState<User>();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        setLoginData(prevState => (
+            {
+                ...prevState,
+                [e.target.name]: e.target.value
+            }
+        )) 
+        
+    }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -53,26 +68,19 @@ const LogInSection = (props: Props) => {
         .catch( error => setWrongData(true))
     }
 
+    const loginUser = (user: User) => {
+        sessionStorage.setItem("id", user.id.toString())
+        setIsAuthenticated(true)                
+
+        navigate('/')
+    }
+
     useEffect(() => {
         if (user !== undefined) {
-            sessionStorage.setItem("id", user.id.toString())
-            props.setIsAuthenticated(true)                
-
-            navigate('/')
+           loginUser(user) 
         }
     },[user])
 
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-        setLoginData(prevState => (
-            {
-                ...prevState,
-                [e.target.name]: e.target.value
-            }
-        )) 
-        
-    }
 
     return (
         <section className="loginPage__login-section panel-wrapper__panel--no-image-background">
