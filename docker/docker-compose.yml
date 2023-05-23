@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_DB=bookstore
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./sql/bookstore.sql:/docker-entrypoint-initdb.d/bookstore.sql
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    ports:
+      - "80:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  backend:
+    depends_on:
+      - db
+    build: ../backend
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bookstore
+    stdin_open: true
+    tty: true
+  frontend:
+    build: ../frontend
+    container_name: react-app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+volumes:
+  db-data:
+  pgadmin-data:
