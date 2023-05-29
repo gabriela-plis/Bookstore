@@ -46,8 +46,9 @@ const Homepage = (props: Props) => {
     
     const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, ref: React.RefObject<HTMLFormElement>) => {
         e.preventDefault()
-        setUrl(initialUrl)
         ref.current?.reset()
+        setSearchingCriteria(initialSearchingCriteria)
+        setUrl(initialUrl)
     }
 
     const [renderFeedback, setRenderFeedback] = useState(false)

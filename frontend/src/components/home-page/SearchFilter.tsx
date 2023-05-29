@@ -20,8 +20,8 @@ const SearchFilter = (props: SearchFilterProps) => {
             <div className="filter__wrapper">
             <h3 className="filter__title">FILTER</h3>
             <form ref={formRef} id="filter-form">
-                <TypesSection setSearchingCriteria={setSearchingCriteria}/>
-                <PublishYearSection setSearchingCriteria={setSearchingCriteria}/>
+                <TypesSection setSearchingCriteria={setSearchingCriteria} />
+                <PublishYearSection setSearchingCriteria={setSearchingCriteria} />
                 <section className="filter__button-container">
                     <button className="btn btn--greater" onClick={(e) => handleSearch(e)}>Search</button>
                     <button className="btn btn--greater" onClick={(e) => handleReset(e, formRef)}>Reset</button>
@@ -39,11 +39,10 @@ type setCriteriaProps = {
 // types checkbox
 const TypesSection = (props: setCriteriaProps) => {
     const {setSearchingCriteria} = {...props}
-
+    
     const types: BookType[] = useFetch(BOOKS_URL + '/types');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.target.checked=true;
 
         if (e.target.checked) {
             setSearchingCriteria(prevState => (
@@ -77,7 +76,9 @@ const TypesSection = (props: setCriteriaProps) => {
                         name={type.name} 
                         id={type.name} 
                         value={type.name} 
-                        onChange={(e) => handleChange(e)}
+                        onClick={(e) => {
+                            handleChange(e as unknown as React.ChangeEvent<HTMLInputElement>)
+                        }}
                     />
                     <label htmlFor={type.name}>{type.name}</label>
                 </p>
