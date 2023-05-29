@@ -61,12 +61,11 @@ const UserPage = (props: Props) => {
 
     const user: User = useFetch(USER_URL) as unknown as User;
     const [render, setRender] = useState(false)
-    // let isEmployee = false;
+
     const [isEmployee, setIsEmployee] = useState(false)
 
     useEffect( () => {
         if (!Array.isArray(user)) {
-            // isEmployee = user.roles.includes("EMPLOYEE")
             setIsEmployee(user.roles.includes("EMPLOYEE"))
             setRender(true)
         }

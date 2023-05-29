@@ -89,9 +89,8 @@ img {
   font-family: inherit;
   font-weight: 700;
   width: clamp(75px, 20vw, 100px);
-  min-height: 0px;
+  min-height: 0;
   max-height: 60px;
-  cursor: pointer;
 }
 
 .btn--pink {
@@ -204,7 +203,7 @@ img {
 }
 
 .popup__container {
-  background-color: white;
+  background-color: var(--BGCOLOR);
   width: min(40%, 450px);
   height: min(50%, 300px);
   border: 1px solid black;
@@ -293,9 +292,7 @@ img {
   max-width: 100%;
   max-height: 100%;
 
-  /* display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr; */
+
 }
 
 .book-list__list {
@@ -308,11 +305,7 @@ img {
   border-bottom: 1px solid var(--BORDER-COLOR);
 
   display: grid;
-  /* grid-template-areas:
-  "title"
-  "descr";
-  grid-template-columns: 1fr;
-  justify-items: center; */
+
   grid-template-areas: 
   "title btn"
   "descr btn";
@@ -360,8 +353,8 @@ img {
 }
 
 .pagination__link {
+  background-color: var(--BGCOLOR);
   display: inline-block;
-  padding: 10px 18px;
   color: #222;
   width: 40px;
   height: 40px;
@@ -369,7 +362,6 @@ img {
   padding: 0;
   text-align: center;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .pagination__link--active {
@@ -721,7 +713,6 @@ img {
 }
 
 .details__field {
-  display: block;
   background-color: #ff7096;
   border-radius: 15px;
   margin: 0.5rem;
@@ -849,7 +840,7 @@ img {
 }
 
 .edit__content {
-  background-color: white;
+  background-color: var(--BGCOLOR);
   width: min(40%,500px);
   height: min(50%,270px);
   border: 1px solid black;
@@ -892,7 +883,6 @@ img {
 .edit__content input {
   border: 1px solid var(--BORDER-COLOR);
   border-radius: 10px;
-  /* height: 6vh; */
   height: min(6vh, 40px);
   width: 100%;
 
@@ -1032,9 +1022,9 @@ img {
 
   .app__page-container {
     width: 75%;
-    background-color: white;
+    background-color: var(--BGCOLOR);
     border-left: 1px solid rgb(255, 255, 255);
-    box-shadow: 0 0 28px 4px white;
+    box-shadow: 0 0 28px 4px var(--BGCOLOR);
     border-right: 1px solid rgb(255, 255, 255);
   }
 
