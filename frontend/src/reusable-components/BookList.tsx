@@ -31,17 +31,15 @@ const BookList = (props: Props) => {
 
     const [currentPage, setCurrentPage] = useState(1);
 
-
-    const [params, setParams] = useState(new Map(
+    const [pageParam, setPageParam] = useState(new Map(
         [
-            ['page', '0'],
+            ['page', 0],
         ]
     ))
 
-    const [urlWithPagination, setUrlWithPagination] = useState(appendParamsToUrl(url, params))
+    const [urlWithPagination, setUrlWithPagination] = useState(appendParamsToUrl(url, pageParam))
 
     const paginationResult: PagedBooksDTO = usePaginationFetch(urlWithPagination, forceUpdate);
-    
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, bookId: number) => {
         e.preventDefault();
@@ -50,25 +48,33 @@ const BookList = (props: Props) => {
         setIsOperationActive(true);
     }
 
+    const updateUrlAndScroll = () => {
+        setUrlWithPagination(appendParamsToUrl(url, pageParam))
+        window.scrollTo(0,0)
+    }
+
     const paginate = (pageNumber: number) => {
         setCurrentPage(pageNumber)
 
         const index = pageNumber-1
-        setParams(params.set('page', index.toString()))
+        setPageParam(pageParam.set('page', index))
+
+        updateUrlAndScroll()
+
     }
 
-    useEffect(() => {
-        setUrlWithPagination(appendParamsToUrl(url, params))
-        window.scrollTo(0,0)
-    },[currentPage]) 
-    
-    useEffect(() => {
-        setParams(params.set('page', '0'))
+  useEffect(() => {
+        setCurrentPage(1);
 
-        setUrlWithPagination(appendParamsToUrl(url, params))
+        const pageParam = new Map(
+            [
+                ['page', 0],
+            ]
+        )
+     
+        setUrlWithPagination(appendParamsToUrl(url, pageParam))
         window.scrollTo(0,0)
-    },[url])
- 
+    },[url]) 
 
     if (paginationResult.books.length === 0) {
         return (
