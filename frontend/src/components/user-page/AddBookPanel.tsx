@@ -9,8 +9,8 @@ import { BOOKS_URL } from "../../variable/constants";
 const AddBookPanel = () => {
 
     const types = useFetch<BookType>(BOOKS_URL + '/types');
-
-    const [initialBook, setInitialBook] = useState<Book>({
+    
+    const initialBook: Book = {
         title: "",
         author: "",
         publishYear: 1980,
@@ -20,7 +20,7 @@ const AddBookPanel = () => {
             id: 0,
             name: ""
         }
-    });
+    }
 
     const [book, setBook] =  useState<Book>(initialBook);
     
@@ -102,7 +102,7 @@ const AddBookPanel = () => {
 
     }
 
-    const handleReset = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleReset = () => {
         setBook(initialBook);
     }
 
@@ -176,7 +176,7 @@ const AddBookPanel = () => {
                 {error && <p className="error-text error-text--bold error-text--red">Something goes wrong, try again</p>}
                 <p className="btns-container">
                 <button className="btn btn--add" >Add</button> 
-                <button className="btn btn--reset" onClick={(e) => handleReset(e)} type="reset">Reset</button>
+                <button className="btn btn--reset" onClick={handleReset} type="reset">Reset</button>
                 </p>
             </form>
             <span className="add-form__image"><div></div></span>
@@ -185,5 +185,4 @@ const AddBookPanel = () => {
     );
 }
 
- 
 export default AddBookPanel;
