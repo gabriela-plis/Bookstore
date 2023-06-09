@@ -1,5 +1,6 @@
 package app.backend.user;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record RegisteredUserDTO(
@@ -12,6 +13,7 @@ public record RegisteredUserDTO(
         String phone,
 
         @NotBlank
+        @Email(regexp = ".+[@].+[\\.].+")
         String email,
 
         @NotBlank
