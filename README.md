@@ -38,7 +38,7 @@
   <li>Liquibase</li>
 </ul>
 
-### Databse
+### Database
 <ul>
   <li>PostgreSQL</li>
 </ul>
