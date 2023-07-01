@@ -61,7 +61,11 @@ To run Bookstore, follow steps:
   ``` bash      
    git clone https://github.com/gabriela-plis/bookstore.git
   ```
-2.  Run docker-compose (be sure that you are on bookstore folder)
+2. Build project
+  ``` bash      
+   gradle build -x test
+  ``` 
+3. Run docker-compose (be sure that you are on bookstore folder)
 
   ``` bash
   docker-compose up -d
